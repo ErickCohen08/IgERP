@@ -1,6 +1,6 @@
 package Clases;
 
-import javax.swing.*;
+import javax.swing.*;  
 
 public class TextAreaEditor extends DefaultCellEditor {
   public TextAreaEditor() {

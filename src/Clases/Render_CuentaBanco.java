@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 package Clases;
-
+ 
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JLabel;

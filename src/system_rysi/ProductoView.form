@@ -1908,7 +1908,7 @@
         </Container>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JDialog" name="dialog_filtrar">
+    <Container class="javax.swing.JDialog" name="dialog_filtrar_producto">
       <Properties>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>

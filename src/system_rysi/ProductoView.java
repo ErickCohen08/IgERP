@@ -77,7 +77,7 @@ public class ProductoView extends javax.swing.JPanel {
 
         System.out.println("Mostrar Tabla Producto");
         mostrar_tabla_producto();
-        ocultarObjetos(false);
+        MostrarObjetos(false);
     }
 
     private void Activar_letras_Mayusculas() {
@@ -2227,7 +2227,7 @@ public class ProductoView extends javax.swing.JPanel {
     private void btn_nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevoActionPerformed
         crear0_modificar1_producto = 0;
         id_producto_global = 0;
-        ocultarObjetos(true);
+        MostrarObjetos(true);
         mostrarMaterial(crear0_modificar1_producto, 0);         
     }//GEN-LAST:event_btn_nuevoActionPerformed
 
@@ -2364,6 +2364,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void btn_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modificarActionPerformed
         int fila = tabla_general.getSelectedRow();
+        //tabla_general.getModel().getValueAt(tabla_general.convertRowIndexToView(tabla_general.getSelectedRow()), 0);
 
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
@@ -2373,7 +2374,7 @@ public class ProductoView extends javax.swing.JPanel {
                 
             crear0_modificar1_producto = 1;
             id_producto_global = id_producto;
-            ocultarObjetos(true);
+            MostrarObjetos(true);
             mostrarMaterial(crear0_modificar1_producto, id_producto);            
         }
     }//GEN-LAST:event_btn_modificarActionPerformed
@@ -2972,7 +2973,7 @@ public class ProductoView extends javax.swing.JPanel {
                 
             crear0_modificar1_producto = 1;
             id_producto_global = id_producto;
-            ocultarObjetos(false);
+            MostrarObjetos(false);
             mostrarMaterial(crear0_modificar1_producto, id_producto);            
         }
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -3190,8 +3191,9 @@ public class ProductoView extends javax.swing.JPanel {
                 if(Autocompletado)
                     AutoCompleteDecorator.decorate(cbo);
                 
-                if(MostrarFilaVacia)
+                if(MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())){
                     cboModel.addElement("");
+                }
                 
                 if(cadenaDefault != null && cadenaDefault.length() > 0)
                     cboModel.addElement(cadenaDefault);
@@ -3463,7 +3465,7 @@ public class ProductoView extends javax.swing.JPanel {
         DefaultTableModel tablaDetalle = (DefaultTableModel) tabla_detalle.getModel();
         tablaDetalle.setRowCount(0);
         
-        ocultarObjetos(true);
+        MostrarObjetos(true);
         dialog_crear_producto.dispose();
     }
 
@@ -3591,11 +3593,11 @@ public class ProductoView extends javax.swing.JPanel {
             if(obj != null){
                 mostrarDatosCajaTexto(obj);
                 tablaProveedorDetalle(listaProDet);
-                MostrarCombo(cboReferencia, 4, false, true, obj.getDesReferencia_precio());
-                MostrarCombo(cboMoneda, 2, false, true, obj.getDesmoneda());
-                MostrarCombo(cboUnidad, 1, false, true, obj.getDesunidad());
-                MostrarCombo(cboAlmacen, 3, false, true, obj.getDesAlmacen());
-                MostrarCombo(cboCategoria, 6, false, true, obj.getDesproductotipo());
+                MostrarCombo(cboReferencia, 4, true, true, obj.getDesReferencia_precio());
+                MostrarCombo(cboMoneda, 2, true, true, obj.getDesmoneda());
+                MostrarCombo(cboUnidad, 1, true, true, obj.getDesunidad());
+                MostrarCombo(cboAlmacen, 3, true, true, obj.getDesAlmacen());
+                MostrarCombo(cboCategoria, 6, true, true, obj.getDesproductotipo());
             }            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -3647,7 +3649,7 @@ public class ProductoView extends javax.swing.JPanel {
         
     }
 
-    private void ocultarObjetos(boolean b) {
+    private void MostrarObjetos(boolean b) {
         btn_guardar.setVisible(b);
         panel_nuevo_detalle.setVisible(b);
     }

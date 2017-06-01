@@ -26,4 +26,7 @@ public class SalidaMaterialBL {
         return sdao.read(pbe);
     }   
     
+    public int create(SalidaMaterialBE sm) throws Exception {
+        return sdao.create(sm);
+    }
 }

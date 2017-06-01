@@ -6,7 +6,7 @@
 
 package entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  *
@@ -29,14 +29,35 @@ public class SalidaMaterialBE {
     int EstadoActivo;
     int EstadoAbierto;
     String Motivo;
+    Date FechaRetorno;
+    
     
     String DesPersonal;
     String DesObra;
     String DesEstadoActivo;
     String DesEstadoAbierto;
+    int TipoOperacion;
     
     int Fila;
 
+    public int getTipoOperacion() {
+        return TipoOperacion;
+    }
+
+    public void setTipoOperacion(int TipoOperacion) {
+        this.TipoOperacion = TipoOperacion;
+    }
+
+    
+    public Date getFechaRetorno() {
+        return FechaRetorno;
+    }
+
+    public void setFechaRetorno(Date FechaRetorno) {
+        this.FechaRetorno = FechaRetorno;
+    }
+
+    
     public int getIdSalidaMaterial() {
         return IdSalidaMaterial;
     }

@@ -6,27 +6,24 @@
 
 package Controller;
 
-import dao.ObrasDAO;
-import entity.ObrasBE;
+import dao.ClienteDAO;
+import entity.ClienteBE;
 import java.util.List;
 
 /**
  *
  * @author admin
  */
-public class ObrasBL {
+public class ClienteBL {
 
-    ObrasDAO pdao;
+    ClienteDAO pdao;
     
-    public ObrasBL() {
-        pdao = new ObrasDAO();
+    public ClienteBL() {
+        pdao = new ClienteDAO();
     }
     
-    public int create(ObrasBE pbe)throws Exception {
-        return pdao.create(pbe);
-    }
-    
-    public List<ObrasBE> read(ObrasBE pbe) throws Exception {
+    public List<ClienteBE> read(ClienteBE pbe) throws Exception {
         return pdao.read(pbe);
-    }    
+    }   
+    
 }

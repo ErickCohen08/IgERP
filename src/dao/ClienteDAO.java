@@ -7,7 +7,7 @@
 package dao;
 
 import database.AccesoDB;
-import entity.ObrasBE;
+import entity.ClienteBE;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +22,7 @@ import service.ICrudService;
  *
  * @author ERCO
  */
-public class ObrasDAO implements ICrudService<ObrasBE>{
+public class ClienteDAO implements ICrudService<ClienteBE>{
     
     // variables
     Connection cn = null;
@@ -30,29 +30,48 @@ public class ObrasDAO implements ICrudService<ObrasBE>{
     CallableStatement cs = null;
     PreparedStatement ps = null;
     private Statement stm = null;
-    final String INSERT = "{call usp_Obra_insert(?,?,?,?,?)}";
-    final String UPDATE = "{call usp_Producto(?,?,?,?,?)}";
-    final String DELETE = "{call usp_Producto_Delete(?)}";
-    final String READ = "{call usp_Obra_Read(?,?,?,?)}";
-    final String GETDATA = "{call usp_Producto_GetData(?)}";
-    
     String sql = "";
     
     @Override
-    public int create(ObrasBE o) throws Exception {
-        int respuesta = 0;
+    public int create(ClienteBE o) throws Exception {
+        int id_producto = 0;
         
-        try {
+        /*try {
+            
+            //guardamos el producto
             cn = AccesoDB.getConnection();
             cs = cn.prepareCall(INSERT);
-            cs.setString(1, o.getDescripcion()); 
-            cs.setString(2, o.getDesCliente()); 
-            cs.setString(3, o.getDireccion());
-            cs.setInt(4, o.getId_empresa());
-            cs.setString(5, o.getUsuarioInserta());
-                    
-            respuesta = cs.executeUpdate();
-            cs.close();
+            cs.setString(1,o.getCodigo());
+            cs.setString(2,o.getDescripcion());
+            cs.setString(3,o.getModelo());
+            cs.setString(4,o.getMarca());
+            cs.setString(5,o.getDescripcion_coloquial());
+            cs.setBigDecimal(6,o.getPeso());
+            cs.setBigDecimal(7,o.getPrecio_promedio());
+            cs.setBigDecimal(8,o.getCantidad());
+            
+            cs.setString(9,o.getDesmoneda());
+            cs.setString(10,o.getDesunidad());
+            cs.setString(11,o.getDesproductotipo());
+            cs.setString(12,o.getDesAlmacen());
+            cs.setString(13,o.getDesReferencia_precio());
+            
+            cs.setInt(14,o.getId_empresa());
+            cs.setString(15,o.getUsuarioInserta());
+            cs.setInt(16, o.getTipoOperacion());
+            cs.setInt(17, o.getId_producto());
+            
+            rs=cs.executeQuery();
+            
+            while (rs.next()) {                
+                id_producto = rs.getInt("id_producto");
+            }
+            
+            rs.close();
+            cs.close(); 
+            
+            
+            //guardamos el detalle
             
         } catch (SQLException e) {
             throw e;
@@ -62,18 +81,18 @@ public class ObrasDAO implements ICrudService<ObrasBE>{
             throw e;
         } finally {
             cn.close();
-        }
+        }*/
         
-        return respuesta;
+        return id_producto;
     }
 
     @Override
-    public int update(ObrasBE o) throws Exception {
+    public int update(ClienteBE o) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public int delete(ObrasBE o) throws Exception {
+    public int delete(ClienteBE o) throws Exception {
         int respuesta = 0;
         
         /*try {
@@ -97,32 +116,25 @@ public class ObrasDAO implements ICrudService<ObrasBE>{
     }
 
     @Override
-    public List<ObrasBE> read(ObrasBE pbe) throws Exception {
-        List<ObrasBE> lista = new ArrayList();
+    public List<ClienteBE> read(ClienteBE pbe) throws Exception {
+        List<ClienteBE> lista = new ArrayList();
         
         try {
-            cn = AccesoDB.getConnection();        
-            cs = cn.prepareCall(READ);
+            cn = AccesoDB.getConnection();
+            stm = cn.createStatement();
+            rs = stm.executeQuery("select id_cliente, razon_social, ruc from TCliente");
             
-            cs.setInt(1,pbe.getIdObra());
-            cs.setString(2, pbe.getDescripcion());
-            cs.setInt(3, pbe.getId_cliente());
-            cs.setInt(4, pbe.getId_empresa());
+            ClienteBE obj;
             
-            rs=cs.executeQuery();
-            
-            ObrasBE emp;
-            while (rs.next()) {                
-                emp = new ObrasBE();
-                emp.setIdObra(rs.getInt("IdObra"));
-                emp.setDescripcion(rs.getString("Descripcion"));
-                emp.setId_cliente(rs.getInt("id_cliente"));
-                emp.setDireccion(rs.getString("direccion"));
-                lista.add(emp);
+            while (rs.next()) {
+                obj = new ClienteBE();
+                obj.setId_cliente(rs.getInt("id_cliente"));
+                obj.setRazon_social(rs.getString("razon_social").trim());
+                obj.setRuc(rs.getString("ruc").trim());
+                lista.add(obj);
             }
-            
             rs.close();
-            cs.close(); 
+            stm.close(); 
         } catch (SQLException e) {            
             throw e;
         } catch (InstantiationException e) {
@@ -137,8 +149,8 @@ public class ObrasDAO implements ICrudService<ObrasBE>{
     }
 
     @Override
-    public ObrasBE readId(int Id) throws Exception {
-        ObrasBE obj = null;
+    public ClienteBE readId(int Id) throws Exception {
+        ClienteBE obj = null;
         
         /*try {
             cn = AccesoDB.getConnection();        
@@ -149,7 +161,7 @@ public class ObrasDAO implements ICrudService<ObrasBE>{
             rs=cs.executeQuery();
             
             while (rs.next()) {                
-                obj = new ObrasBE();
+                obj = new ClienteBE();
                 obj.setId_producto(rs.getInt("id_producto"));
                 obj.setCodigo(rs.getString("codigo"));
                 obj.setDescripcion(rs.getString("descripcion"));

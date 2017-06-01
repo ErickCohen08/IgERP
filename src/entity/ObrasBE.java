@@ -26,10 +26,20 @@ public class ObrasBE {
     Date FechaModifica;
     
     String DesCliente;
+    String Direccion;
     
     public ObrasBE() {        
     }
 
+    public String getDireccion() {
+        return Direccion;
+    }
+
+    public void setDireccion(String Direccion) {
+        this.Direccion = Direccion;
+    }
+
+    
     public int getIdObra() {
         return IdObra;
     }

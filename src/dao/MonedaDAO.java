@@ -8,7 +8,6 @@ package dao;
 
 import database.AccesoDB;
 import entity.MonedaBE;
-import entity.ProductoBE;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -10,7 +10,6 @@ import database.AccesoDB;
 import entity.SalidaMaterialBE;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,14 +38,15 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
     
     @Override
     public int create(SalidaMaterialBE o) throws Exception {
-        int id_producto = 0;
+        int id_salida = 0;
         
-        /*try {
+        try {
             
             //guardamos el producto
             cn = AccesoDB.getConnection();
             cs = cn.prepareCall(INSERT);
-            cs.setString(1,o.getCodigo());
+            
+            /*cs.setString(1,o.getCodigo());
             cs.setString(2,o.getDescripcion());
             cs.setString(3,o.getModelo());
             cs.setString(4,o.getMarca());
@@ -70,7 +70,7 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
             
             while (rs.next()) {                
                 id_producto = rs.getInt("id_producto");
-            }
+            }*/
             
             rs.close();
             cs.close(); 
@@ -86,9 +86,9 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
             throw e;
         } finally {
             cn.close();
-        }*/
+        }
         
-        return id_producto;
+        return id_salida;
     }
 
     @Override
@@ -130,7 +130,7 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
             
             cs.setInt(1,pbe.getIdSalidaMaterial());
             cs.setInt(2, pbe.getId_empresa());
-            cs.setDate(3, pbe.getFechaSalida());
+            //cs.setDate(3, pbe.getFechaSalida());
             cs.setString(4, pbe.getDireccion());
             cs.setString(5, pbe.getMotivo());
             cs.setString(6, pbe.getDesPersonal());
@@ -211,4 +211,5 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
        
         return obj;
     }
+
 }

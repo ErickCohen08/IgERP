@@ -28,6 +28,35 @@ public class SalidaMaterialDetalleBE {
     String ComentarioSalida;
     String ComentarioRetorno;
 
+    String NombreMaterial;
+    String UnidadMaterial;
+    BigDecimal StockMaterial;
+
+    public String getNombreMaterial() {
+        return NombreMaterial;
+    }
+
+    public void setNombreMaterial(String NombreMaterial) {
+        this.NombreMaterial = NombreMaterial;
+    }
+
+    public String getUnidadMaterial() {
+        return UnidadMaterial;
+    }
+
+    public void setUnidadMaterial(String UnidadMaterial) {
+        this.UnidadMaterial = UnidadMaterial;
+    }
+
+    public BigDecimal getStockMaterial() {
+        return StockMaterial;
+    }
+
+    public void setStockMaterial(BigDecimal StockMaterial) {
+        this.StockMaterial = StockMaterial;
+    }
+    
+    
     public SalidaMaterialDetalleBE() {
     }
 

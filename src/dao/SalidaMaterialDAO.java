@@ -28,7 +28,7 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
     ResultSet rs = null;
     CallableStatement cs = null;
     PreparedStatement ps = null;
-    final String INSERT = "{call usp_Producto_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+    final String INSERT = "{call usp_SalidaMaterial_insert(?,?,?,?,?,?,?,?,?)}";
     final String UPDATE = "{call usp_Producto(?,?,?,?,?)}";
     final String DELETE = "{call usp_Producto_Delete(?)}";
     final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?)}";
@@ -42,41 +42,27 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
         
         try {
             
-            //guardamos el producto
             cn = AccesoDB.getConnection();
             cs = cn.prepareCall(INSERT);
             
-            /*cs.setString(1,o.getCodigo());
-            cs.setString(2,o.getDescripcion());
-            cs.setString(3,o.getModelo());
-            cs.setString(4,o.getMarca());
-            cs.setString(5,o.getDescripcion_coloquial());
-            cs.setBigDecimal(6,o.getPeso());
-            cs.setBigDecimal(7,o.getPrecio_promedio());
-            cs.setBigDecimal(8,o.getCantidad());
-            
-            cs.setString(9,o.getDesmoneda());
-            cs.setString(10,o.getDesunidad());
-            cs.setString(11,o.getDesproductotipo());
-            cs.setString(12,o.getDesAlmacen());
-            cs.setString(13,o.getDesReferencia_precio());
-            
-            cs.setInt(14,o.getId_empresa());
-            cs.setString(15,o.getUsuarioInserta());
-            cs.setInt(16, o.getTipoOperacion());
-            cs.setInt(17, o.getId_producto());
+            cs.setInt(1,o.getIdSalidaMaterial());
+            cs.setDate(2, o.getFechaSalida() == null ? null:new java.sql.Date(o.getFechaSalida().getTime()));
+            cs.setString(3,o.getDesPersonal());
+            cs.setString(4,o.getDesObra());
+            cs.setString(5,o.getDireccion());
+            cs.setString(6,o.getMotivo());
+            cs.setInt(7,o.getId_empresa());
+            cs.setString(8,o.getUsuarioInserta());
+            cs.setInt(9, o.getTipoOperacion());
             
             rs=cs.executeQuery();
             
             while (rs.next()) {                
-                id_producto = rs.getInt("id_producto");
-            }*/
+                id_salida = rs.getInt("id_salida");
+            }
             
             rs.close();
             cs.close(); 
-            
-            
-            //guardamos el detalle
             
         } catch (SQLException e) {
             throw e;
@@ -130,7 +116,7 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
             
             cs.setInt(1,pbe.getIdSalidaMaterial());
             cs.setInt(2, pbe.getId_empresa());
-            //cs.setDate(3, pbe.getFechaSalida());
+            cs.setDate(3, pbe.getFechaSalida() == null ? null:new java.sql.Date(pbe.getFechaSalida().getTime()));
             cs.setString(4, pbe.getDireccion());
             cs.setString(5, pbe.getMotivo());
             cs.setString(6, pbe.getDesPersonal());

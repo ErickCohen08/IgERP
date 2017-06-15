@@ -3984,7 +3984,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog(null, "La antidad de material solicitado es mayor al stock existente."); 
+                    JOptionPane.showMessageDialog(null, "La cantidad de material solicitado es mayor al stock existente."); 
                     ban++;
                 }
             }            

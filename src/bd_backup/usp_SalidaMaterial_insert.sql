@@ -1,23 +1,21 @@
 USE [bd_ig-projet]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_Producto_insert]    Script Date: 21/05/2017 12:02:44 ******/
+/****** Object:  StoredProcedure [dbo].[usp_Producto_insert]    Script Date: 11/06/2017 11:20:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[usp_SalidaMaterial_insert]
+ALTER PROCEDURE [dbo].[usp_SalidaMaterial_insert]
 (
-	@IdSalidaMaterial		int = NULL,
-    @FechaSalida			datetime = NULL,
-    @Direccion				varchar(500) = NULL,
-
-    @DesPersonal			varchar(500) = NULL,
-	@DesObra				varchar(500) = NULL,
-	
-	@id_empresa				int = NULL,
-	@usuario				varchar(50) = NULL,
-	@TipoOperacion			int = NULL
-
+	@IdSalidaMaterial	int = NULL,
+    @FechaSalida		DateTime = NULL,
+    @DesPersonal		varchar(500) = NULL,
+    @DesObra			varchar(500) = NULL,
+    @Direccion			varchar(500) = NULL,
+    @Motivo				varchar(100) = NULL,
+	@id_empresa			int = NULL,
+    @Usuario			varchar(50) = NULL,
+    @TipoOperacion		int = NULL
 )
 AS
 BEGIN
@@ -27,167 +25,79 @@ BEGIN TRY
 
 	DECLARE 
 	@vError varchar(100),
-	@vId_moneda int = null,
-	@vId_unidad int,
+	@vId_Personal int = null,
+	@vId_Obra int;
 	
-	
-	--Validamos Codigo
-	IF @codigo IS NOT NULL
+	--Obtenemos Id Personal
+	IF @DesPersonal IS NOT NULL
 	BEGIN
-		IF EXISTS(
-			SELECT id_producto FROM TProducto
-			WHERE	
-			UPPER(DBO.TRIM(codigo)) = UPPER(DBO.TRIM(@codigo)) AND
-			(@id_producto IS NULL OR id_producto <> @id_producto)
-		)RAISERROR('El codigo ingresado ya existe.',16,1);
-	END
+		SELECT @vId_Personal = id_personal
+		FROM TPersonal
+		WHERE
+		(DBO.TRIM(DBO.TRIM(ISNULL(Nombre, '')) +' '+DBO.TRIM(ISNULL(Apellido, '')))) = DBO.TRIM(@DesPersonal);
 
-	
-		
-	--Obtenemos Id Moneda
-	print @Desmoneda
-	IF @Desmoneda IS NOT NULL
-	BEGIN
-		SELECT @vId_moneda = IdDatoComun
-		FROM TDatoComun
-		WHERE	
-		UPPER(DBO.TRIM(DescripcionCorta)) = UPPER(DBO.TRIM(@Desmoneda)) AND 
-		CodigoTabla = 2
-
-		PRINT @vId_moneda
-	
-		IF @vId_moneda is null
-		BEGIN 
-			RAISERROR('La moneda seleccionada no existe.',16,1)
+		IF @vId_Personal IS NULL
+		BEGIN
+			RAISERROR('El personal seleccionado no existe.',16,1)
 		END
 	END
 
 	
-	--Obtenemos la unidad
-	IF @Desunidad IS NOT NULL
+	--Obtenemos la Obra
+	IF @DesObra IS NOT NULL
 	BEGIN
-		SELECT @vId_unidad = IdDatoComun
-		FROM TDatoComun
-		WHERE	
-		UPPER(DBO.TRIM(DescripcionCorta)) = UPPER(DBO.TRIM(@Desunidad)) AND 
-		CodigoTabla = 1
+		SELECT @vId_Obra = IdObra
+		FROM TObras
+		WHERE
+		UPPER(DBO.TRIM(Descripcion)) = UPPER(DBO.TRIM(@DesObra))
 	
-		IF @vId_unidad is null
+		IF @vId_Obra is null
 		BEGIN 
-			RAISERROR('La unidad de medida seleccionada no existe.',16,1)
+			RAISERROR('La Obra seleccionada no existe.',16,1)
 		END	
 	END
 
 	
-	--Obtenemos la categoria
-	IF @Desproductotipo IS NOT NULL
-	BEGIN
-		SELECT @vId_productotipo = IdDatoComun
-		FROM TDatoComun
-		WHERE	
-		UPPER(DBO.TRIM(DescripcionCorta)) = UPPER(DBO.TRIM(@Desproductotipo)) AND 
-		CodigoTabla = 6
-	
-		IF @vId_productotipo is null
-		BEGIN 
-			RAISERROR('La categoría seleccionada no existe.',16,1)
-		END
-	END
-
-	--Obtenemos el almacen
-	IF @DesAlmacen IS NOT NULL
-	BEGIN
-		SELECT @vId_Almacen = IdDatoComun
-		FROM TDatoComun
-		WHERE	
-		UPPER(DBO.TRIM(DescripcionCorta)) = UPPER(DBO.TRIM(@DesAlmacen)) AND 
-		CodigoTabla = 3
-	
-		IF @vId_Almacen is null
-		BEGIN 
-			RAISERROR('El almacén seleccionado no existe.',16,1)
-		END
-	END
-
-	
-	--Obtenemos la referencia del precio
-	IF @DesReferencia_precio IS NOT NULL
-	BEGIN
-		SELECT @vId_Referencia_precio = IdDatoComun
-		FROM TDatoComun
-		WHERE
-		UPPER(DBO.TRIM(DescripcionCorta)) = UPPER(DBO.TRIM(@DesReferencia_precio)) AND 
-		CodigoTabla = 4
-	
-		IF @vId_Referencia_precio is null
-		BEGIN 
-			RAISERROR('La referencia de precio seleccionado no existe.',16,1)
-		END
-	END
-		
-
 	IF @TipoOperacion = 0
 	BEGIN
-		--Guardamos el producto
-		INSERT INTO TProducto (
-			codigo, 
-			descripcion, 
-			modelo, 
-			marca, 
-			descripcion_coloquial, 
-			peso, 
-			precio_promedio, 
-			cantidad,
-			id_moneda,
-			id_unidad,
-			id_productotipo,
+		--Guardar
+		INSERT INTO TSalida_material(
+			FechaSalida,
+			id_personal,
+			id_obra,
+			Direccion,
+			Motivo,
 			id_empresa,
-			id_Almacen,
-			id_Referencia_precio,
-			UsuarioInserta)
+			UsuarioInserta
+			)
 		VALUES (
-			@codigo, 
-			@descripcion, 
-			@modelo, 
-			@marca, 
-			@descripcion_coloquial, 
-			@peso, 
-			@precio_promedio, 
-			@cantidad,
-			@vId_moneda,
-			@vId_unidad,
-			@vId_productotipo,
+			@FechaSalida,
+			@vId_Personal,
+			@vId_Obra,
+			@Direccion,
+			@Motivo,
 			@id_empresa,
-			@vId_Almacen,
-			@vId_Referencia_precio,
-			@usuario);
+			@Usuario
+			);
 	END
 
 	
-	IF @TipoOperacion = 1 AND @id_producto <> 0
+	IF @TipoOperacion = 1 AND @IdSalidaMaterial <> 0
 	BEGIN
 		--Modificar
-		UPDATE TProducto SET 
-			codigo = @codigo, 
-			descripcion = @descripcion, 
-			modelo = @modelo, 
-			marca = @marca, 
-			descripcion_coloquial = @descripcion_coloquial, 
-			peso = @peso, 
-			precio_promedio = @precio_promedio, 
-			cantidad = @cantidad,
-			id_moneda = @vId_moneda,
-			id_unidad = @vId_unidad,
-			id_productotipo = @vId_productotipo,
-			id_empresa = @id_empresa,
-			id_Almacen = @vId_Almacen,
-			id_Referencia_precio = @vId_Referencia_precio,
+		UPDATE TSalida_material SET 
+			FechaSalida = @FechaSalida,
+			id_personal = @vId_Personal,
+			id_obra = @vId_Obra,
+			Direccion = @Direccion,
+			Motivo = @Motivo,
 			UsuarioModifica = @usuario
 		WHERE 
-			id_producto = @id_producto;
+			IdSalidaMaterial = @IdSalidaMaterial and
+			id_empresa = @id_empresa;
 	END
 	
-	SELECT MAX(id_producto) id_producto FROM TProducto;
+	SELECT MAX(IdSalidaMaterial) id_salida FROM TSalida_material;
 
 	COMMIT TRANSACTION
 END TRY

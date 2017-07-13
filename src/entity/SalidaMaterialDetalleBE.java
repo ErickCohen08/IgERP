@@ -25,13 +25,12 @@ public class SalidaMaterialDetalleBE {
     Date FechaSalida;
     String UsuarioEntrega;
     Date FechaEntrega;
-    String ComentarioSalida;
     String ComentarioRetorno;
 
     String NombreMaterial;
     String UnidadMaterial;
     BigDecimal StockMaterial;
-
+    
     public String getNombreMaterial() {
         return NombreMaterial;
     }
@@ -138,14 +137,6 @@ public class SalidaMaterialDetalleBE {
 
     public void setFechaEntrega(Date FechaEntrega) {
         this.FechaEntrega = FechaEntrega;
-    }
-
-    public String getComentarioSalida() {
-        return ComentarioSalida;
-    }
-
-    public void setComentarioSalida(String ComentarioSalida) {
-        this.ComentarioSalida = ComentarioSalida;
     }
 
     public String getComentarioRetorno() {

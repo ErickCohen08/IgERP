@@ -3534,7 +3534,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         
         int band = 0;
         
-        if(FechaSalida != null){
+        if(FechaSalida == null){
             JOptionPane.showMessageDialog(null, "Seleccione una fecha.");
             band++;
         }
@@ -3594,18 +3594,18 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 
                 int id_salida = objSalidaMaterialBL.create(sm);
                 
-                List<ProductoDetalleBE> listaProDet = ObtenerRegistrosProductoDetalle();
-                
-                if(listaProDet != null && !listaProDet.isEmpty()){
+                List<SalidaMaterialDetalleBE> listaSalidaDet = ObtenerRegistrosSalidaDetalle(id_salida);
+                 
+                if(listaSalidaDet != null && !listaSalidaDet.isEmpty()){
                     int i = 0;
                     
-                    for (ProductoDetalleBE obj : listaProDet) {
+                    for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
                         obj.setId_producto(id_salida);
                         
-                        if(i == 0)
-                            objProductoDetalleBL.Eliminar(obj);
+                        //if(i == 0)
+                          //  objProductoDetalleBL.Eliminar(obj);
                         
-                        objProductoDetalleBL.crear(obj);
+                      //  objProductoDetalleBL.crear(obj);
                         i++;
                     }
                 }
@@ -3984,7 +3984,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog(null, "La antidad de material solicitado es mayor al stock existente."); 
+                    JOptionPane.showMessageDialog(null, "La cantidad de material solicitado es mayor al stock existente."); 
                     ban++;
                 }
             }            
@@ -4020,5 +4020,31 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             smd.getStockMaterial(),
             smd.getCantidadSalida()
         });
+    }
+
+    private List<SalidaMaterialDetalleBE> ObtenerRegistrosSalidaDetalle(int id_salida) {
+        
+        List<SalidaMaterialDetalleBE> list = new ArrayList();
+        int filas =  tabla_detalle.getRowCount();
+        
+        if(filas > 0){
+            SalidaMaterialDetalleBE obj;
+            DefaultTableModel tm = (DefaultTableModel) tabla_detalle.getModel();
+            
+            for(int i = 0; i < filas; i++){
+                obj = new SalidaMaterialDetalleBE();
+                obj.setId_detalle_salida_material(id_salida);
+                obj.setId_salida_material(id_salida); 
+                //obj.setRazonsocialProveedor((String) tm.getValueAt(i, 1)); 
+                //obj.setPrecio(new BigDecimal((Double) tm.getValueAt(i, 2))); 
+                
+                
+                
+                list.add(obj);                
+            }
+        }
+        
+        return list;
+        
     }
 }

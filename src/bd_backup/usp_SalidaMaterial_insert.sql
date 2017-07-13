@@ -1,11 +1,11 @@
 USE [bd_ig-projet]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_Producto_insert]    Script Date: 11/06/2017 11:20:09 ******/
+/****** Object:  StoredProcedure [dbo].[usp_SalidaMaterial_insert]    Script Date: 12/07/2017 22:39:33 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[usp_SalidaMaterial_insert]
+ALTER PROCEDURE [dbo].[usp_SalidaMaterial_insert]
 (
 	@IdSalidaMaterial	int = NULL,
     @FechaSalida		DateTime = NULL,

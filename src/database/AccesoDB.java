@@ -18,11 +18,16 @@ public final class AccesoDB {
 //            String user = "sa";
 //            String pwd = "Erco.123";
             
-            String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-            String url = "jdbc:sqlserver://172.22.1.20:1433;databaseName=bd_ig-projet";
-            String user = "sa";
-            String pwd = "V3ct0r";
+//            String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+//            String url = "jdbc:sqlserver://172.22.1.20:1433;databaseName=bd_ig-projet";
+//            String user = "sa";
+//            String pwd = "V3ct0r";
 
+            String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+            String url = "jdbc:sqlserver://VP000058\\VECTOR;databaseName=bd_ig-projet";
+            String user = "sa";
+            String pwd = "vector2016";
+            
             // cargar driver en memoria
             Class.forName(driver).newInstance();
             //obtener la conexion a la BD

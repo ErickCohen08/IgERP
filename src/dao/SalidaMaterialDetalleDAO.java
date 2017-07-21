@@ -7,7 +7,7 @@
 package dao;
 
 import database.AccesoDB;
-import entity.ProductoDetalleBE;
+import entity.SalidaMaterialDetalleBE;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,39 +21,36 @@ import service.ICrudService;
  *
  * @author ERCO
  */
-public class SalidaMaterialDetalleDAO implements ICrudService<ProductoDetalleBE>{
+public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDetalleBE>{
     
     // variables
     Connection cn = null;
     ResultSet rs = null;
     CallableStatement cs = null;
     PreparedStatement ps = null;
-    final String INSERT = "{call spProductoDetalle_crear(?,?,?,?,?)}";
+    final String INSERT = "{call spSalidaMaterialDetalle_crear(?,?,?,?,?,?)}";
     final String UPDATE = "{}";
-    final String DELETE = "{call spProductoDetalle_eliminar(?)}}";
+    final String DELETE = "{call spSalidaMaterialDetalle_eliminar(?)}}";
     final String READ = "{}";
     
     String sql = "";
     
     @Override
-    public int create(ProductoDetalleBE o) throws Exception {
-        int id_producto = 0;
-        
+    public int create(SalidaMaterialDetalleBE o) throws Exception {
         try {
             
             //guardamos el producto
             cn = AccesoDB.getConnection();
             cs = cn.prepareCall(INSERT);
-            cs.setInt(1,o.getId_producto());
-            cs.setString(2,o.getRucProveedor());
-            cs.setBigDecimal(3,o.getPrecio());
-            cs.setInt(4,o.getId_empresa());
-            cs.setInt(5,o.getId_usuario());
+            cs.setInt(1,o.getId_detalle_salida_material());
+            cs.setInt(2,o.getId_salida_material());
+            cs.setInt(3,o.getId_producto());
+            cs.setBigDecimal(4,o.getCantidadSalida());
+            cs.setString(5,o.getUsuarioSalida());
+            cs.setInt(6,o.getTipoOperacion());
             
-            cs.executeUpdate();
-            
-            cs.close(); 
-            
+            cs.executeUpdate();            
+            cs.close();
         } catch (SQLException e) {
             throw e;
         } catch (InstantiationException e) {
@@ -64,22 +61,22 @@ public class SalidaMaterialDetalleDAO implements ICrudService<ProductoDetalleBE>
             cn.close();
         }
         
-        return id_producto;
+        return 0;
     }
 
     @Override
-    public int update(ProductoDetalleBE o) throws Exception {
+    public int update(SalidaMaterialDetalleBE o) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public int delete(ProductoDetalleBE o) throws Exception {
+    public int delete(SalidaMaterialDetalleBE o) throws Exception {
         int respuesta = 0;
         
         try {
             cn = AccesoDB.getConnection();
             cs = cn.prepareCall(DELETE);
-            cs.setInt(1, o.getId_producto());           
+            cs.setInt(1, o.getId_salida_material());
             respuesta = cs.executeUpdate();
             cs.close();
             
@@ -97,28 +94,31 @@ public class SalidaMaterialDetalleDAO implements ICrudService<ProductoDetalleBE>
     }
 
     @Override
-    public List<ProductoDetalleBE> read(ProductoDetalleBE pbe) throws Exception {
-        List<ProductoDetalleBE> lista = new ArrayList();
+    public List<SalidaMaterialDetalleBE> read(SalidaMaterialDetalleBE pbe) throws Exception {
+        
+        List<SalidaMaterialDetalleBE> lista = new ArrayList();
         
         try {
             //abrir conexion a la base de datos
             cn = AccesoDB.getConnection();
-            sql = "select pr.ruc ruc, pr.razon_social razon_social, pd.precio precio, pd.id_empresa id_empresa, pd.id_usuario id_usuario from TProducto_detalle pd inner join TProveedor pr on pd.id_proveedor = pr.id_proveedor  where id_producto = "+pbe.getId_producto()+"";
+            sql = "select dsm.id_detalle_salida_material, dsm.id_salida_material, p.id_producto, p.descripcion, dc.DescripcionCorta UnidadMaterial, dsm.CantidadSalida from TDetalle_salida_material dsm inner join TProducto p on p.id_producto = dsm.id_producto left join TDatoComun dc on p.id_unidad = dc.IdDatoComun where id_salida_material = "+pbe.getId_salida_material()+"";
             ps = cn.prepareStatement(sql);
             rs = ps.executeQuery();
             
-            ProductoDetalleBE pdbe;
+            SalidaMaterialDetalleBE pdbe;
             
             while (rs.next()) {
-                pdbe = new ProductoDetalleBE();
-                pdbe.setRucProveedor(rs.getString("ruc"));
-                pdbe.setRazonsocialProveedor(rs.getString("razon_social"));
-                pdbe.setPrecio(rs.getBigDecimal("precio"));
-                pdbe.setId_empresa(rs.getInt("id_empresa"));
-                pdbe.setId_usuario(rs.getInt("id_usuario"));
+                pdbe = new SalidaMaterialDetalleBE();
+                pdbe.setId_detalle_salida_material(rs.getInt("id_detalle_salida_material"));
+                pdbe.setId_salida_material(rs.getInt("id_salida_material"));
+                pdbe.setId_producto(rs.getInt("id_producto"));
+                pdbe.setUnidadMaterial(rs.getString("UnidadMaterial"));
+                pdbe.setNombreMaterial(rs.getString("descripcion"));
+                pdbe.setCantidadSalida(rs.getBigDecimal("CantidadSalida"));
                 
                 lista.add(pdbe);
             }
+            
             rs.close();
             ps.close();
         } catch (IllegalAccessException e) {
@@ -135,7 +135,30 @@ public class SalidaMaterialDetalleDAO implements ICrudService<ProductoDetalleBE>
     }
 
     @Override
-    public ProductoDetalleBE readId(int o) throws Exception {
+    public SalidaMaterialDetalleBE readId(int o) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public int deleteAll(int id_salida_material) throws Exception {
+        int respuesta = 0;
+        
+        try {
+            cn = AccesoDB.getConnection();
+            cs = cn.prepareCall(DELETE);
+            cs.setInt(1, id_salida_material);
+            respuesta = cs.executeUpdate();
+            cs.close();
+            
+        } catch (SQLException e) {
+            throw e;
+        } catch (InstantiationException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw e;
+        } finally {
+            cn.close();
+        }
+        
+        return respuesta;
     }
 }

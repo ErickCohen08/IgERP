@@ -31,6 +31,8 @@ public class SalidaMaterialDetalleBE {
     String UnidadMaterial;
     BigDecimal StockMaterial;
     
+    int TipoOperacion;
+    
     public String getNombreMaterial() {
         return NombreMaterial;
     }
@@ -145,6 +147,14 @@ public class SalidaMaterialDetalleBE {
 
     public void setComentarioRetorno(String ComentarioRetorno) {
         this.ComentarioRetorno = ComentarioRetorno;
+    }
+
+    public int getTipoOperacion() {
+        return TipoOperacion;
+    }
+
+    public void setTipoOperacion(int TipoOperacion) {
+        this.TipoOperacion = TipoOperacion;
     }
     
     

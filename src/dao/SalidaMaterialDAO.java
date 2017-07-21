@@ -32,7 +32,7 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
     final String UPDATE = "{call usp_Producto(?,?,?,?,?)}";
     final String DELETE = "{call usp_Producto_Delete(?)}";
     final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?)}";
-    final String GETDATA = "{call usp_Producto_GetData(?)}";
+    final String GETDATA = "{call usp_SalidaMaterial_GetData(?)}";
     
     String sql = "";
     
@@ -135,6 +135,7 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
                 emp.setDireccion(rs.getString("Direccion"));
                 emp.setDesEstadoAbierto(rs.getString("DesEstadoAbierto"));
                 emp.setFechaInserta(rs.getDate("FechaInserta"));
+                
                 lista.add(emp);
             }
             
@@ -157,30 +158,24 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
     public SalidaMaterialBE readId(int Id) throws Exception {
         SalidaMaterialBE obj = null;
         
-        /*try {
+        try {
             cn = AccesoDB.getConnection();        
-            cs = cn.prepareCall(GETDATA);
             
-            cs.setInt(1,Id);
-            
+            cs = cn.prepareCall(GETDATA);            
+            cs.setInt(1,Id);            
             rs=cs.executeQuery();
             
             while (rs.next()) {                
                 obj = new SalidaMaterialBE();
-                obj.setId_producto(rs.getInt("id_producto"));
-                obj.setCodigo(rs.getString("codigo"));
-                obj.setDescripcion(rs.getString("descripcion"));
-                obj.setDescripcion_coloquial(rs.getString("descripcion_coloquial"));
-                obj.setDesmoneda(rs.getString("Desmoneda"));
-                obj.setPrecio_promedio(rs.getBigDecimal("precio_promedio"));
-                obj.setMarca(rs.getString("marca"));
-                obj.setModelo(rs.getString("modelo"));
-                obj.setPeso(rs.getBigDecimal("peso"));
-                obj.setDesunidad(rs.getString("Desunidad"));
-                obj.setDesAlmacen(rs.getString("DesAlmacen"));
-                obj.setDesReferencia_precio(rs.getString("DesReferencia_precio"));
-                obj.setDesproductotipo(rs.getString("Desproductotipo"));
-                obj.setCantidad(rs.getBigDecimal("cantidad"));
+                obj.setIdSalidaMaterial(Id);
+                obj.setFechaSalida(rs.getDate("FechaSalida"));
+                obj.setDireccion(rs.getString("Direccion"));
+                obj.setId_personal(rs.getInt("id_personal"));
+                obj.setId_obra(rs.getInt("id_obra"));
+                obj.setId_empresa(rs.getInt("id_empresa"));
+                obj.setMotivo(rs.getString("Motivo"));
+                obj.setDesObra(rs.getString("DesObra"));
+                obj.setDesPersonal(rs.getString("DesPersonal"));                
             }
             
             rs.close();
@@ -193,7 +188,7 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
             throw e;
         } finally {
             cn.close();
-        }*/
+        }
        
         return obj;
     }

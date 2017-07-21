@@ -29,4 +29,8 @@ public class SalidaMaterialBL {
     public int create(SalidaMaterialBE sm) throws Exception {
         return sdao.create(sm);
     }
+    
+    public SalidaMaterialBE readId(int id) throws Exception {
+        return sdao.readId(id);
+    }
 }

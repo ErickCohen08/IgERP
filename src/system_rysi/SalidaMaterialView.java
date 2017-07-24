@@ -101,6 +101,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private void Activar_letras_Mayusculas() {
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(new KeyEventDispatcher() {
+            @Override
             public boolean dispatchKeyEvent(KeyEvent e) {
                 if (e.getID() == KeyEvent.KEY_TYPED) {
                     if (e.getKeyChar() >= 'a' && e.getKeyChar() <= 'z') {
@@ -848,7 +849,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         });
         jScrollPane6.setViewportView(tabla_detalle_salida_material);
         if (tabla_detalle_salida_material.getColumnModel().getColumnCount() > 0) {
-            tabla_detalle_salida_material.getColumnModel().getColumn(0).setResizable(false);
             tabla_detalle_salida_material.getColumnModel().getColumn(0).setPreferredWidth(0);
             tabla_detalle_salida_material.getColumnModel().getColumn(1).setPreferredWidth(1000);
             tabla_detalle_salida_material.getColumnModel().getColumn(2).setPreferredWidth(200);
@@ -1014,6 +1014,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
         txt_codigo.setEditable(false);
         txt_codigo.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        txt_codigo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_codigo.setToolTipText("Ingrese un Codigo para este Material");
         txt_codigo.setOpaque(false);
         txt_codigo.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -2388,12 +2389,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
-            int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de eliminar este registro?", "Eliminar", JOptionPane.YES_NO_OPTION);
-            
-            if (respuesta == JOptionPane.YES_OPTION) {
-                DefaultTableModel tabla = (DefaultTableModel) tabla_detalle_salida_material.getModel();
-                tabla.removeRow(fila);                
-            }
+            DefaultTableModel tabla = (DefaultTableModel) tabla_detalle_salida_material.getModel();
+            tabla.removeRow(fila);            
         }
     }//GEN-LAST:event_EliminarActionPerformed
 
@@ -2429,13 +2426,23 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
+            int band = 0;
             DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
-            int id_salida = Integer.parseInt((String) tm.getValueAt(fila, 1));
+            String estado = (String) tm.getValueAt(fila, 6);
                 
-            crear0_modificar1_producto = 1;
-            id_salidamaterial_global = id_salida;
-            MostrarObjetos(true);
-            mostrarSalidaMaterial(crear0_modificar1_producto, id_salida);            
+            if(!estado.trim().equals("Abierto")){
+                JOptionPane.showMessageDialog(null, "No se puede modificar la salida de material.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                band++;
+            }
+            
+            if(band == 0){                
+                int id_salida = Integer.parseInt((String) tm.getValueAt(fila, 1));
+
+                crear0_modificar1_producto = 1;
+                id_salidamaterial_global = id_salida;
+                MostrarObjetos(true);
+                mostrarSalidaMaterial(crear0_modificar1_producto, id_salida);
+            }                        
         }
     }//GEN-LAST:event_btn_modificarActionPerformed
 
@@ -2449,14 +2456,14 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             
             if (respuesta == JOptionPane.YES_OPTION) {
                 DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
-                int id_producto = (Integer) tm.getValueAt(fila, 0);
                 
-                ProductoBE obj = new ProductoBE();
-                obj.setId_producto(id_producto);
+                SalidaMaterialBE obj = new SalidaMaterialBE();
+                obj.setIdSalidaMaterial(Integer.parseInt((String) tm.getValueAt(fila, 1)));
+                obj.setId_empresa(id_empresa_index);
 
                 try
                 {
-                    if(objProductoBL.ProductoEliminar(obj) > 0){
+                    if(objSalidaMaterialBL.delete(obj) > 0){
                         mostrar_tabla_general();
                         JOptionPane.showMessageDialog(null, "Registro eliminado con éxito.");
                     }
@@ -2644,9 +2651,9 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
             DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
-            int id = (Integer) tm.getValueAt(fila, 0);
+            int id = Integer.parseInt((String) tm.getValueAt(fila, 1));
                 
-            crear0_modificar1_producto = 1;
+            crear0_modificar1_producto = 2;
             id_salidamaterial_global = id;
             MostrarObjetos(false);
             mostrarSalidaMaterial(crear0_modificar1_producto, id);
@@ -2890,8 +2897,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }//GEN-LAST:event_txtMotivoKeyTyped
 
     private void tabla_detalle_salida_materialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_detalle_salida_materialMouseClicked
-        if (evt.getButton() == 3) {
-            mantenimiento_tabla_detalle_salida.show(tabla_detalle_salida_material, evt.getX(), evt.getY());
+        if (evt.getButton() == 3 && crear0_modificar1_producto != 2) {
+            mantenimiento_tabla_detalle_salida.show(tabla_detalle_salida_material, evt.getX(), evt.getY());                        
         }
     }//GEN-LAST:event_tabla_detalle_salida_materialMouseClicked
 
@@ -3266,8 +3273,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }
 
     private void mostrarSalidaMaterial(int accion, int id_salida) {
-        limpiar_caja_texto_crear_salidamaterial();
-        
         if(accion == 0){
             System.out.println("capturar fecha y poner en caja de texto");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -3275,9 +3280,13 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             String s = sdf.format(d);
             txt_fecha_salida.setDate(d);
             cargarCombos();
+            limpiar_caja_texto_crear_salidamaterial();
         }            
-        else
+        else{
+            limpiar_caja_texto_crear_salidamaterial();
             modificarMaterial(id_salida);
+        }
+            
         
         dialog_crear_salida.setSize(925, 625);
         dialog_crear_salida.setLocationRelativeTo(ventana);
@@ -3615,7 +3624,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                     int i = 0;
                     for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
                         if(i==0)
-                            objSalidaMaterialDetalleBL.deleteAll(id_salida);
+                            objSalidaMaterialDetalleBL.deleteAll(id_salida, obj.getId_empresa());
                         
                         objSalidaMaterialDetalleBL.create(obj);
                         i++;
@@ -3639,12 +3648,12 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             if(obj != null){
                 SalidaMaterialDetalleBE objDet = new SalidaMaterialDetalleBE();
                 objDet.setId_salida_material(id);
+                objDet.setId_empresa(id_empresa_index);
                 List<SalidaMaterialDetalleBE> listaProDet = objSalidaMaterialDetalleBL.read(objDet);
             
-                mostrarDatosCajaTexto(obj);
-                
                 MostrarComboPersonal(cboResponsable, true, true, obj.getDesPersonal());
                 MostrarComboObras(cboObra, true, true, obj.getDesObra());
+                mostrarDatosCajaTexto(obj);
                 
                 tablaSalidaMaterialDetalle(listaProDet);
             }            
@@ -3673,7 +3682,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         String valor = String.valueOf(idSalidaMaterial);
         
         while(valor.length() <= 10){
-            valor = "0"+valor;
+            valor = "0" + valor;
         }
         
         return valor;
@@ -4013,7 +4022,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 obj.setCantidadSalida((BigDecimal) tm.getValueAt(i, 3));
                 obj.setId_salida_material(id_salida);
                 obj.setUsuarioSalida(user_index);
-                obj.setTipoOperacion(crear0_modificar1_producto);                
+                obj.setTipoOperacion(crear0_modificar1_producto);                     
+                obj.setId_empresa(id_empresa_index);
                 list.add(obj);          
             }
         }

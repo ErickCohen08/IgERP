@@ -29,8 +29,7 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
     CallableStatement cs = null;
     PreparedStatement ps = null;
     final String INSERT = "{call usp_SalidaMaterial_insert(?,?,?,?,?,?,?,?,?)}";
-    final String UPDATE = "{call usp_Producto(?,?,?,?,?)}";
-    final String DELETE = "{call usp_Producto_Delete(?)}";
+    final String DELETE = "{call usp_SalidaMaterial_Delete(?,?)}";
     final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?)}";
     final String GETDATA = "{call usp_SalidaMaterial_GetData(?)}";
     
@@ -86,10 +85,11 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
     public int delete(SalidaMaterialBE o) throws Exception {
         int respuesta = 0;
         
-        /*try {
+        try {
             cn = AccesoDB.getConnection();
             cs = cn.prepareCall(DELETE);
-            cs.setInt(1, o.getId_producto());           
+            cs.setInt(1, o.getIdSalidaMaterial());
+            cs.setInt(2, o.getId_empresa());
             respuesta = cs.executeUpdate();
             cs.close();
             
@@ -101,7 +101,7 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
             throw e;
         } finally {
             cn.close();
-        }*/
+        }
         
         return respuesta;
     }
@@ -192,5 +192,4 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
        
         return obj;
     }
-
 }

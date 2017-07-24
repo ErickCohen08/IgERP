@@ -18,6 +18,7 @@ public class SalidaMaterialDetalleBE {
     int id_detalle_salida_material;
     int id_salida_material;
     int id_producto;
+    int id_empresa;
     BigDecimal CantidadSalida;
     BigDecimal CantidadRetorno;
     int EstadoSalida;
@@ -156,6 +157,13 @@ public class SalidaMaterialDetalleBE {
     public void setTipoOperacion(int TipoOperacion) {
         this.TipoOperacion = TipoOperacion;
     }
-    
+
+    public int getId_empresa() {
+        return id_empresa;
+    }
+
+    public void setId_empresa(int id_empresa) {
+        this.id_empresa = id_empresa;
+    }
     
 }

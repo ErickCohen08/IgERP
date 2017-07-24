@@ -33,4 +33,8 @@ public class SalidaMaterialBL {
     public SalidaMaterialBE readId(int id) throws Exception {
         return sdao.readId(id);
     }
+    
+    public int delete(SalidaMaterialBE sm) throws Exception {
+        return sdao.delete(sm);
+    }
 }

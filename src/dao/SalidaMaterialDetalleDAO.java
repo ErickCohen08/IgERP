@@ -28,9 +28,9 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
     ResultSet rs = null;
     CallableStatement cs = null;
     PreparedStatement ps = null;
-    final String INSERT = "{call spSalidaMaterialDetalle_crear(?,?,?,?,?,?)}";
+    final String INSERT = "{call spSalidaMaterialDetalle_crear(?,?,?,?,?,?,?)}";
     final String UPDATE = "{}";
-    final String DELETE = "{call spSalidaMaterialDetalle_eliminar(?)}}";
+    final String DELETE = "{call spSalidaMaterialDetalle_eliminar(?,?)}}";
     final String READ = "{}";
     
     String sql = "";
@@ -48,7 +48,7 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
             cs.setBigDecimal(4,o.getCantidadSalida());
             cs.setString(5,o.getUsuarioSalida());
             cs.setInt(6,o.getTipoOperacion());
-            
+            cs.setInt(7,o.getId_empresa());
             cs.executeUpdate();            
             cs.close();
         } catch (SQLException e) {
@@ -101,7 +101,22 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
         try {
             //abrir conexion a la base de datos
             cn = AccesoDB.getConnection();
-            sql = "select dsm.id_detalle_salida_material, dsm.id_salida_material, p.id_producto, p.descripcion, dc.DescripcionCorta UnidadMaterial, dsm.CantidadSalida from TDetalle_salida_material dsm inner join TProducto p on p.id_producto = dsm.id_producto left join TDatoComun dc on p.id_unidad = dc.IdDatoComun where id_salida_material = "+pbe.getId_salida_material()+"";
+            sql = "select "
+                    + "dsm.id_detalle_salida_material, "
+                    + "dsm.id_salida_material, "
+                    + "p.id_producto, "
+                    + "p.descripcion, "
+                    + "dc.DescripcionCorta UnidadMaterial, "
+                    + "dsm.CantidadSalida "
+                    + "from TDetalle_salida_material dsm "
+                    + "inner join TProducto p on p.id_producto = dsm.id_producto "
+                    + "left join TDatoComun dc on p.id_unidad = dc.IdDatoComun "
+                    + "where "
+                    + "dsm.id_salida_material = "+pbe.getId_salida_material()+" and "
+                    + "dsm.id_empresa = "+pbe.getId_empresa()+"";
+            
+            System.out.println(sql);
+            
             ps = cn.prepareStatement(sql);
             rs = ps.executeQuery();
             
@@ -139,13 +154,14 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public int deleteAll(int id_salida_material) throws Exception {
+    public int deleteAll(int id_salida_material, int id_empresa) throws Exception {
         int respuesta = 0;
         
         try {
             cn = AccesoDB.getConnection();
             cs = cn.prepareCall(DELETE);
             cs.setInt(1, id_salida_material);
+            cs.setInt(2, id_empresa);
             respuesta = cs.executeUpdate();
             cs.close();
             

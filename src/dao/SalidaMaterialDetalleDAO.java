@@ -107,7 +107,9 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
                     + "p.id_producto, "
                     + "p.descripcion, "
                     + "dc.DescripcionCorta UnidadMaterial, "
-                    + "dsm.CantidadSalida "
+                    + "dsm.CantidadSalida, "
+                    + "dsm.CantidadRetorno, "
+                    + "dsm.ComentarioRetorno "
                     + "from TDetalle_salida_material dsm "
                     + "inner join TProducto p on p.id_producto = dsm.id_producto "
                     + "left join TDatoComun dc on p.id_unidad = dc.IdDatoComun "
@@ -130,7 +132,8 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
                 pdbe.setUnidadMaterial(rs.getString("UnidadMaterial"));
                 pdbe.setNombreMaterial(rs.getString("descripcion"));
                 pdbe.setCantidadSalida(rs.getBigDecimal("CantidadSalida"));
-                
+                pdbe.setCantidadRetorno(rs.getBigDecimal("CantidadRetorno"));
+                pdbe.setComentarioRetorno(rs.getString("ComentarioRetorno"));
                 lista.add(pdbe);
             }
             

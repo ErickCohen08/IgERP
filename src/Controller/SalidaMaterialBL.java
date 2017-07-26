@@ -30,8 +30,8 @@ public class SalidaMaterialBL {
         return sdao.create(sm);
     }
     
-    public SalidaMaterialBE readId(int id) throws Exception {
-        return sdao.readId(id);
+    public SalidaMaterialBE readId(int id_salida, int id_empresa) throws Exception {
+        return sdao.readId(id_salida, id_empresa);
     }
     
     public int delete(SalidaMaterialBE sm) throws Exception {

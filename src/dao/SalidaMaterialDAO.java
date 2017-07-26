@@ -15,13 +15,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import service.ICrudService;
 
 /**
  *
  * @author ERCO
  */
-public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
+public class SalidaMaterialDAO {
     
     // variables
     Connection cn = null;
@@ -31,11 +30,10 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
     final String INSERT = "{call usp_SalidaMaterial_insert(?,?,?,?,?,?,?,?,?)}";
     final String DELETE = "{call usp_SalidaMaterial_Delete(?,?)}";
     final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?)}";
-    final String GETDATA = "{call usp_SalidaMaterial_GetData(?)}";
+    final String GETDATA = "{call usp_SalidaMaterial_GetData(?,?)}";
     
     String sql = "";
     
-    @Override
     public int create(SalidaMaterialBE o) throws Exception {
         int id_salida = 0;
         
@@ -76,12 +74,6 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
         return id_salida;
     }
 
-    @Override
-    public int update(SalidaMaterialBE o) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public int delete(SalidaMaterialBE o) throws Exception {
         int respuesta = 0;
         
@@ -106,7 +98,6 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
         return respuesta;
     }
 
-    @Override
     public List<SalidaMaterialBE> read(SalidaMaterialBE pbe) throws Exception {
         List<SalidaMaterialBE> lista = new ArrayList();
         
@@ -154,20 +145,20 @@ public class SalidaMaterialDAO implements ICrudService<SalidaMaterialBE>{
         return lista;
     }
 
-    @Override
-    public SalidaMaterialBE readId(int Id) throws Exception {
+    public SalidaMaterialBE readId(int idSalidaMaterial, int idEmpresa) throws Exception {
         SalidaMaterialBE obj = null;
         
         try {
             cn = AccesoDB.getConnection();        
             
             cs = cn.prepareCall(GETDATA);            
-            cs.setInt(1,Id);            
+            cs.setInt(1,idSalidaMaterial);
+            cs.setInt(2,idEmpresa);
             rs=cs.executeQuery();
             
             while (rs.next()) {                
                 obj = new SalidaMaterialBE();
-                obj.setIdSalidaMaterial(Id);
+                obj.setIdSalidaMaterial(idSalidaMaterial);
                 obj.setFechaSalida(rs.getDate("FechaSalida"));
                 obj.setDireccion(rs.getString("Direccion"));
                 obj.setId_personal(rs.getInt("id_personal"));

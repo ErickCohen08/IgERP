@@ -352,6 +352,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jPanel21 = new javax.swing.JPanel();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
         jPanel22 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
         txtCodigo_bus = new javax.swing.JTextField();
@@ -401,11 +402,11 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         dialog_crear_retorno_material = new javax.swing.JDialog();
         centro1 = new javax.swing.JPanel();
         jScrollPane9 = new javax.swing.JScrollPane();
-        tabla_detalle_entrega = new javax.swing.JTable();
+        tablaDetalleEntrega = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
-        txt_fecha_salida1 = new org.jdesktop.swingx.JXDatePicker();
-        txt_codigo1 = new javax.swing.JTextField();
+        txtFechaSalidaEntrega = new org.jdesktop.swingx.JXDatePicker();
+        txtCodigoSalidaMaterialEntrega = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jLabel43 = new javax.swing.JLabel();
         txt_fecha_salida2 = new org.jdesktop.swingx.JXDatePicker();
@@ -435,8 +436,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton1 = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
-        jButton3 = new javax.swing.JButton();
-        jSeparator10 = new javax.swing.JToolBar.Separator();
         jButton6 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -1317,7 +1316,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         });
 
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar_24_24.png"))); // NOI18N
-        jButton8.setText("Buscar");
+        jButton8.setText("Filtrar");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
@@ -1329,14 +1328,29 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             }
         });
 
+        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/filter_delete_24_24.png"))); // NOI18N
+        jButton10.setText("Quitar Filtro");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+        jButton10.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jButton10KeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
         jPanel21.setLayout(jPanel21Layout);
         jPanel21Layout.setHorizontalGroup(
             jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel21Layout.createSequentialGroup()
-                .addGap(0, 437, Short.MAX_VALUE)
+                .addGap(0, 287, Short.MAX_VALUE)
                 .addComponent(jButton8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton10)
+                .addGap(37, 37, 37)
                 .addComponent(jButton7))
         );
         jPanel21Layout.setVerticalGroup(
@@ -1344,7 +1358,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             .addGroup(jPanel21Layout.createSequentialGroup()
                 .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton7)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1850,8 +1865,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
         centro1.setBackground(new java.awt.Color(255, 255, 255));
 
-        tabla_detalle_entrega.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        tabla_detalle_entrega.setModel(new javax.swing.table.DefaultTableModel(
+        tablaDetalleEntrega.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tablaDetalleEntrega.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -1874,22 +1889,22 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tabla_detalle_entrega.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaDetalleEntrega.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tabla_detalle_entregaMouseClicked(evt);
+                tablaDetalleEntregaMouseClicked(evt);
             }
         });
-        jScrollPane9.setViewportView(tabla_detalle_entrega);
-        if (tabla_detalle_entrega.getColumnModel().getColumnCount() > 0) {
-            tabla_detalle_entrega.getColumnModel().getColumn(0).setResizable(false);
-            tabla_detalle_entrega.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tabla_detalle_entrega.getColumnModel().getColumn(1).setResizable(false);
-            tabla_detalle_entrega.getColumnModel().getColumn(1).setPreferredWidth(0);
-            tabla_detalle_entrega.getColumnModel().getColumn(2).setPreferredWidth(700);
-            tabla_detalle_entrega.getColumnModel().getColumn(3).setPreferredWidth(100);
-            tabla_detalle_entrega.getColumnModel().getColumn(4).setPreferredWidth(200);
-            tabla_detalle_entrega.getColumnModel().getColumn(5).setPreferredWidth(200);
-            tabla_detalle_entrega.getColumnModel().getColumn(6).setPreferredWidth(300);
+        jScrollPane9.setViewportView(tablaDetalleEntrega);
+        if (tablaDetalleEntrega.getColumnModel().getColumnCount() > 0) {
+            tablaDetalleEntrega.getColumnModel().getColumn(0).setResizable(false);
+            tablaDetalleEntrega.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tablaDetalleEntrega.getColumnModel().getColumn(1).setResizable(false);
+            tablaDetalleEntrega.getColumnModel().getColumn(1).setPreferredWidth(0);
+            tablaDetalleEntrega.getColumnModel().getColumn(2).setPreferredWidth(700);
+            tablaDetalleEntrega.getColumnModel().getColumn(3).setPreferredWidth(100);
+            tablaDetalleEntrega.getColumnModel().getColumn(4).setPreferredWidth(200);
+            tablaDetalleEntrega.getColumnModel().getColumn(5).setPreferredWidth(200);
+            tablaDetalleEntrega.getColumnModel().getColumn(6).setPreferredWidth(300);
         }
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
@@ -1899,18 +1914,18 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel14.setText("Fecha de salida:");
 
-        txt_fecha_salida1.setEditable(false);
+        txtFechaSalidaEntrega.setEditable(false);
 
-        txt_codigo1.setEditable(false);
-        txt_codigo1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        txt_codigo1.setToolTipText("Ingrese un Codigo para este Material");
-        txt_codigo1.setOpaque(false);
-        txt_codigo1.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtCodigoSalidaMaterialEntrega.setEditable(false);
+        txtCodigoSalidaMaterialEntrega.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        txtCodigoSalidaMaterialEntrega.setToolTipText("Ingrese un Codigo para este Material");
+        txtCodigoSalidaMaterialEntrega.setOpaque(false);
+        txtCodigoSalidaMaterialEntrega.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txt_codigo1KeyReleased(evt);
+                txtCodigoSalidaMaterialEntregaKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txt_codigo1KeyTyped(evt);
+                txtCodigoSalidaMaterialEntregaKeyTyped(evt);
             }
         });
 
@@ -1931,11 +1946,11 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel15)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txt_codigo1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtCodigoSalidaMaterialEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel14)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txt_fecha_salida1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtFechaSalidaEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel43)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1952,9 +1967,9 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                         .addComponent(txt_fecha_salida2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txt_fecha_salida1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtFechaSalidaEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txt_codigo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtCodigoSalidaMaterialEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1968,6 +1983,12 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel16.setForeground(new java.awt.Color(0, 51, 153));
         jLabel16.setText("Responsable:");
+
+        txtResponsableEntrega.setEditable(false);
+        txtResponsableEntrega.setBackground(new java.awt.Color(255, 255, 255));
+
+        txtObraEntrega.setEditable(false);
+        txtObraEntrega.setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -2199,20 +2220,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         });
         jToolBar1.add(jButton1);
         jToolBar1.add(jSeparator5);
-
-        jButton3.setBackground(new java.awt.Color(255, 255, 255));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/filter_delete_24_24.png"))); // NOI18N
-        jButton3.setText("Quitar Filtro");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton3);
-        jToolBar1.add(jSeparator10);
 
         jButton6.setBackground(new java.awt.Color(255, 255, 255));
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/retorno_material_32_32.png"))); // NOI18N
@@ -2479,7 +2486,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        filtrarProducto();
+        mostrar_tabla_general();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -2494,19 +2501,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         dialog_filtrar_salida.setModal(true);
         dialog_filtrar_salida.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        limpiarCboFiltros = true;
-        txtCodigo_bus.setText("");
-        txtDireccion_bus.setText("");
-        txtMotivo_bus.setText("");
-        txt_fechasalida_bus.setDate(null);
-        
-        incializarCombo(cboObra_bus);
-        incializarCombo(cboResponsable_bus);
-        
-        mostrar_tabla_general(); 
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         mostrar_tabla_proveedor();
@@ -2942,17 +2936,17 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_direccion_obraKeyTyped
 
-    private void tabla_detalle_entregaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_detalle_entregaMouseClicked
+    private void tablaDetalleEntregaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaDetalleEntregaMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_tabla_detalle_entregaMouseClicked
+    }//GEN-LAST:event_tablaDetalleEntregaMouseClicked
 
-    private void txt_codigo1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_codigo1KeyReleased
+    private void txtCodigoSalidaMaterialEntregaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoSalidaMaterialEntregaKeyReleased
         // TODO add your handling code here:
-    }//GEN-LAST:event_txt_codigo1KeyReleased
+    }//GEN-LAST:event_txtCodigoSalidaMaterialEntregaKeyReleased
 
-    private void txt_codigo1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_codigo1KeyTyped
+    private void txtCodigoSalidaMaterialEntregaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoSalidaMaterialEntregaKeyTyped
         // TODO add your handling code here:
-    }//GEN-LAST:event_txt_codigo1KeyTyped
+    }//GEN-LAST:event_txtCodigoSalidaMaterialEntregaKeyTyped
 
     private void btn_cancelar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelar1ActionPerformed
         // TODO add your handling code here:
@@ -2977,15 +2971,35 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
             DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
-            int id_producto = (Integer) tm.getValueAt(fila, 0);
-                
+            int idSalidaMaterial = Integer.parseInt((String) tm.getValueAt(fila, 1));
+
             crear0_modificar1_producto = 1;
-            id_salidamaterial_global = id_producto;
+            id_salidamaterial_global = idSalidaMaterial;
             
-            dialog_crear_retorno_material.setSize(925, 625);
-            dialog_crear_retorno_material.setLocationRelativeTo(ventana);
-            dialog_crear_retorno_material.setModal(true);
-            dialog_crear_retorno_material.setVisible(true);
+            try {
+                SalidaMaterialBE obj = objSalidaMaterialBL.readId(idSalidaMaterial, id_empresa_index);
+
+                if(obj != null){
+                    SalidaMaterialDetalleBE objDet = new SalidaMaterialDetalleBE();
+                    objDet.setId_salida_material(idSalidaMaterial);
+                    objDet.setId_empresa(id_empresa_index);
+                    List<SalidaMaterialDetalleBE> listaProDet = objSalidaMaterialDetalleBL.read(objDet);
+
+                    txtCodigoSalidaMaterialEntrega.setText(insertarCeros(obj.getIdSalidaMaterial()));
+                    txtFechaSalidaEntrega.setDate(obj.getFechaSalida());
+                    txtResponsableEntrega.setText(obj.getDesPersonal());
+                    txtObraEntrega.setText(obj.getDesObra());
+                    
+                    tablaDetalleEntrega(listaProDet);
+                    
+                    dialog_crear_retorno_material.setSize(925, 625);
+                    dialog_crear_retorno_material.setLocationRelativeTo(ventana);
+                    dialog_crear_retorno_material.setModal(true);
+                    dialog_crear_retorno_material.setVisible(true);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            }                            
         }
     }//GEN-LAST:event_jButton6ActionPerformed
 
@@ -3042,6 +3056,23 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_txtStockKeyPressed
 
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        limpiarCboFiltros = true;
+        txtCodigo_bus.setText("");
+        txtDireccion_bus.setText("");
+        txtMotivo_bus.setText("");
+        txt_fechasalida_bus.setDate(null);
+        
+        incializarCombo(cboObra_bus);
+        incializarCombo(cboResponsable_bus);
+        
+        mostrar_tabla_general();
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton10KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton10KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton10KeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Eliminar;
     private javax.swing.JButton btnSeleccionProducto;
@@ -3079,10 +3110,10 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JDialog dialog_filtrar_producto;
     private javax.swing.JDialog dialog_filtrar_salida;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
@@ -3164,7 +3195,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JToolBar.Separator jSeparator1;
-    private javax.swing.JToolBar.Separator jSeparator10;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
@@ -3187,16 +3217,18 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JPanel panel_tabla;
     private javax.swing.JPanel sur;
     private javax.swing.JPanel sur1;
+    private javax.swing.JTable tablaDetalleEntrega;
     private javax.swing.JTable tablaProveedor;
-    private javax.swing.JTable tabla_detalle_entrega;
     private javax.swing.JTable tabla_detalle_salida_material;
     private javax.swing.JTable tabla_general;
     private javax.swing.JTable tabla_producto;
+    private javax.swing.JTextField txtCodigoSalidaMaterialEntrega;
     private javax.swing.JTextField txtCodigo_bus;
     private javax.swing.JTextField txtCodigo_bus1;
     private javax.swing.JTextField txtDescripcion_bus;
     private javax.swing.JTextArea txtDireccion;
     private javax.swing.JTextField txtDireccion_bus;
+    private org.jdesktop.swingx.JXDatePicker txtFechaSalidaEntrega;
     private javax.swing.JTextField txtMarca_bus;
     private javax.swing.JTextField txtModelo_bus;
     private javax.swing.JTextArea txtMotivo;
@@ -3210,10 +3242,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JTextField txt_buscar_proveedor;
     private javax.swing.JTextField txt_cantidad;
     private javax.swing.JTextField txt_codigo;
-    private javax.swing.JTextField txt_codigo1;
     private javax.swing.JTextArea txt_direccion_obra;
     private org.jdesktop.swingx.JXDatePicker txt_fecha_salida;
-    private org.jdesktop.swingx.JXDatePicker txt_fecha_salida1;
     private org.jdesktop.swingx.JXDatePicker txt_fecha_salida2;
     private org.jdesktop.swingx.JXDatePicker txt_fechasalida_bus;
     private javax.swing.JTextField txt_nombre_obra;
@@ -3358,6 +3388,25 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         }
         
         tabla_detalle_salida_material.setRowHeight(35);
+    }
+
+    private void tablaDetalleEntrega(List<SalidaMaterialDetalleBE> lista) {
+        DefaultTableModel tabla = (DefaultTableModel) tablaDetalleEntrega.getModel();
+        tabla.setRowCount(0);
+        for (SalidaMaterialDetalleBE obj : lista) {
+            Object[] fila = {
+                obj.getId_detalle_salida_material(),
+                obj.getId_producto(),
+                obj.getNombreMaterial(),
+                obj.getUnidadMaterial(),
+                obj.getCantidadSalida(),
+                obj.getCantidadRetorno(),
+                obj.getComentarioRetorno()
+                };
+            tabla.addRow(fila);
+        }
+        
+        tablaDetalleEntrega.setRowHeight(35);
     }
     
     private void tablaProveedorDetalle(List<ProductoDetalleBE> listaProDet) {
@@ -3643,7 +3692,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
     private void modificarMaterial(int id) {
         try {
-            SalidaMaterialBE obj = objSalidaMaterialBL.readId(id);
+            SalidaMaterialBE obj = objSalidaMaterialBL.readId(id, id_empresa_index);
             
             if(obj != null){
                 SalidaMaterialDetalleBE objDet = new SalidaMaterialDetalleBE();
@@ -3959,6 +4008,13 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "Seleccione un material");
                 ban++;
             } 
+        }
+        
+        if(ban == 0){
+            if(Double.parseDouble(stock) == 0){
+                JOptionPane.showMessageDialog(null, "El material seleccionado no cuenta con stock. Por favor seleccione otro."); 
+                ban++;
+            }
         }
         
         if(ban == 0){

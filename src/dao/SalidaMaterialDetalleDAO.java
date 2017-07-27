@@ -108,7 +108,7 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
                     + "p.descripcion, "
                     + "dc.DescripcionCorta UnidadMaterial, "
                     + "dsm.CantidadSalida, "
-                    + "dsm.CantidadRetorno, "
+                    + "ISNULL(dsm.CantidadRetorno, 0) CantidadRetorno, "
                     + "dsm.ComentarioRetorno "
                     + "from TDetalle_salida_material dsm "
                     + "inner join TProducto p on p.id_producto = dsm.id_producto "

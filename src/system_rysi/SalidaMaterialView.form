@@ -607,6 +607,7 @@
     <Container class="javax.swing.JDialog" name="dialog_crear_salida">
       <Properties>
         <Property name="defaultCloseOperation" type="int" value="2"/>
+        <Property name="title" type="java.lang.String" value="Salida de Materiales"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
 
@@ -2295,7 +2296,7 @@
     <Container class="javax.swing.JDialog" name="dialog_crear_retorno_material">
       <Properties>
         <Property name="defaultCloseOperation" type="int" value="2"/>
-        <Property name="resizable" type="boolean" value="false"/>
+        <Property name="title" type="java.lang.String" value="Retorno de Materiales"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -2353,23 +2354,17 @@
                       <Font name="Tahoma" size="12" style="0"/>
                     </Property>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="7" rowCount="0">
+                      <Table columnCount="6" rowCount="0">
                         <Column editable="false" title="IdDetalle" type="java.lang.Integer"/>
-                        <Column editable="false" title="IdProducto" type="java.lang.Integer"/>
                         <Column editable="false" title="Material" type="java.lang.String"/>
                         <Column editable="false" title="Unidad" type="java.lang.String"/>
-                        <Column editable="false" title="Cantidad Salida" type="java.lang.Double"/>
-                        <Column editable="true" title="Cantidad Entrada" type="java.lang.Double"/>
+                        <Column editable="false" title="Cant. Salida" type="java.lang.Double"/>
+                        <Column editable="true" title="Cant. Entrada" type="java.lang.Double"/>
                         <Column editable="true" title="Comentario" type="java.lang.String"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0">
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="0" resizable="false">
-                          <Title/>
-                          <Editor/>
-                          <Renderer/>
-                        </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="0" resizable="false">
                           <Title/>
                           <Editor/>
@@ -2385,17 +2380,17 @@
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="200" resizable="true">
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="150" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="200" resizable="true">
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="150" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="300" resizable="true">
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="400" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
@@ -2434,7 +2429,7 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jLabel43" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="txt_fecha_salida2" min="-2" pref="171" max="-2" attributes="0"/>
+                          <Component id="txtFechaEntregaMaterial" min="-2" pref="171" max="-2" attributes="0"/>
                           <EmptySpace pref="47" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -2446,7 +2441,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                                   <Component id="jLabel43" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
-                                  <Component id="txt_fecha_salida2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtFechaEntregaMaterial" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel14" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
@@ -2515,7 +2510,7 @@
                     <Property name="text" type="java.lang.String" value="Fecha de retorno:*"/>
                   </Properties>
                 </Component>
-                <Component class="org.jdesktop.swingx.JXDatePicker" name="txt_fecha_salida2">
+                <Component class="org.jdesktop.swingx.JXDatePicker" name="txtFechaEntregaMaterial">
                 </Component>
               </SubComponents>
             </Container>

@@ -32,6 +32,8 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
     final String UPDATE = "{}";
     final String DELETE = "{call spSalidaMaterialDetalle_eliminar(?,?)}}";
     final String READ = "{}";
+    final String RETURN = "{call spSalidaMaterialDetalle_RetornarMaterial(?,?,?,?)}}";
+    
     
     String sql = "";
     
@@ -132,7 +134,7 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
                 pdbe.setUnidadMaterial(rs.getString("UnidadMaterial"));
                 pdbe.setNombreMaterial(rs.getString("descripcion"));
                 pdbe.setCantidadSalida(rs.getBigDecimal("CantidadSalida"));
-                pdbe.setCantidadRetorno(rs.getBigDecimal("CantidadRetorno"));
+                pdbe.setCantidadRetorno(rs.getDouble("CantidadRetorno"));
                 pdbe.setComentarioRetorno(rs.getString("ComentarioRetorno"));
                 lista.add(pdbe);
             }
@@ -165,6 +167,33 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
             cs = cn.prepareCall(DELETE);
             cs.setInt(1, id_salida_material);
             cs.setInt(2, id_empresa);
+            respuesta = cs.executeUpdate();
+            cs.close();
+            
+        } catch (SQLException e) {
+            throw e;
+        } catch (InstantiationException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw e;
+        } finally {
+            cn.close();
+        }
+        
+        return respuesta;
+    }
+    
+    public int retornoMaterial(SalidaMaterialDetalleBE pbe) throws Exception {
+        int respuesta = 0;
+        
+        try {
+            cn = AccesoDB.getConnection();
+            cs = cn.prepareCall(RETURN);
+            cs.setInt(1, pbe.getId_detalle_salida_material());
+            cs.setDouble(2, pbe.getCantidadRetorno());
+            cs.setString(3, pbe.getComentarioRetorno());
+            cs.setString(4, pbe.getUsuarioEntrega());
+            
             respuesta = cs.executeUpdate();
             cs.close();
             

@@ -37,4 +37,8 @@ public class SalidaMaterialDetalleBL {
     public int deleteAll(int id_salida_material, int id_empresa) throws Exception {
         return sdao.deleteAll(id_salida_material, id_empresa);
     }
+    
+    public int retornoMaterial(SalidaMaterialDetalleBE sm) throws Exception {
+        return sdao.retornoMaterial(sm);
+    }    
 }

@@ -20,7 +20,7 @@ public class SalidaMaterialDetalleBE {
     int id_producto;
     int id_empresa;
     BigDecimal CantidadSalida;
-    BigDecimal CantidadRetorno;
+    Double CantidadRetorno;
     int EstadoSalida;
     String UsuarioSalida;
     Date FechaSalida;
@@ -94,11 +94,11 @@ public class SalidaMaterialDetalleBE {
         this.CantidadSalida = CantidadSalida;
     }
 
-    public BigDecimal getCantidadRetorno() {
+    public Double getCantidadRetorno() {
         return CantidadRetorno;
     }
 
-    public void setCantidadRetorno(BigDecimal CantidadRetorno) {
+    public void setCantidadRetorno(Double CantidadRetorno) {
         this.CantidadRetorno = CantidadRetorno;
     }
 

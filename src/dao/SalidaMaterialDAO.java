@@ -31,6 +31,7 @@ public class SalidaMaterialDAO {
     final String DELETE = "{call usp_SalidaMaterial_Delete(?,?)}";
     final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?)}";
     final String GETDATA = "{call usp_SalidaMaterial_GetData(?,?)}";
+    final String RETURN = "{call usp_SalidaMaterial_RetornoMaterial(?,?,?,?)}";
     
     String sql = "";
     
@@ -166,7 +167,8 @@ public class SalidaMaterialDAO {
                 obj.setId_empresa(rs.getInt("id_empresa"));
                 obj.setMotivo(rs.getString("Motivo"));
                 obj.setDesObra(rs.getString("DesObra"));
-                obj.setDesPersonal(rs.getString("DesPersonal"));                
+                obj.setDesPersonal(rs.getString("DesPersonal"));
+                obj.setEstadoAbierto(rs.getInt("EstadoAbierto"));
             }
             
             rs.close();
@@ -183,4 +185,32 @@ public class SalidaMaterialDAO {
        
         return obj;
     }
+
+    public int retornoMaterial(SalidaMaterialBE o) throws Exception {
+        int respuesta = 0;
+        
+        try {
+            cn = AccesoDB.getConnection();
+            cs = cn.prepareCall(RETURN);
+            cs.setInt(1, o.getIdSalidaMaterial());
+            cs.setDate(2, o.getFechaRetorno()== null ? null:new java.sql.Date(o.getFechaRetorno().getTime()));
+            cs.setInt(3, o.getId_empresa());
+            cs.setString(4, o.getUsuarioModifica());
+            
+            respuesta = cs.executeUpdate();
+            cs.close();
+            
+        } catch (SQLException e) {
+            throw e;
+        } catch (InstantiationException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw e;
+        } finally {
+            cn.close();
+        }
+        
+        return respuesta;
+    }
+
 }

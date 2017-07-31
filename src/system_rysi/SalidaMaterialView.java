@@ -26,6 +26,7 @@ import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,7 +72,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     
     //variables globales
     boolean limpiarCboFiltros = true;
-    int gCodigoTabla = 0;
     int crear0_modificar1_producto = 0;
     int id_salidamaterial_global;
     private Component ventana;
@@ -88,14 +88,15 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         initComponents();
 
         if (perfil_usuario_index.equals("Solo Lectura")) {
-            btn_nuevo.setVisible(false);
-            btn_modificar.setVisible(false);
-            btn_eliminar.setVisible(false);
+            btnNuevo.setVisible(false);
+            btnModificar.setVisible(false);
+            btnEliminar.setVisible(false);
         }
 
         System.out.println("Mostrar Tabla Salida de materiales");
         mostrar_tabla_general();
         MostrarObjetos(false);
+        MotrarBotonesControl(false, false, false, false, false);
     }
 
     private void Activar_letras_Mayusculas() {
@@ -399,7 +400,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jButton14 = new javax.swing.JButton();
         jScrollPane8 = new javax.swing.JScrollPane();
         tabla_producto = new javax.swing.JTable();
-        dialog_crear_retorno_material = new javax.swing.JDialog();
+        dialogoRetornoMaterial = new javax.swing.JDialog();
         centro1 = new javax.swing.JPanel();
         jScrollPane9 = new javax.swing.JScrollPane();
         tablaDetalleEntrega = new javax.swing.JTable();
@@ -426,17 +427,20 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
-        btn_nuevo = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        btn_modificar = new javax.swing.JButton();
-        jSeparator2 = new javax.swing.JToolBar.Separator();
-        btn_eliminar = new javax.swing.JButton();
-        jSeparator4 = new javax.swing.JToolBar.Separator();
-        jButton5 = new javax.swing.JButton();
-        jSeparator3 = new javax.swing.JToolBar.Separator();
-        jButton1 = new javax.swing.JButton();
-        jSeparator5 = new javax.swing.JToolBar.Separator();
-        jButton6 = new javax.swing.JButton();
+        btnFiltrar = new javax.swing.JButton();
+        spFiltrar = new javax.swing.JToolBar.Separator();
+        btnNuevo = new javax.swing.JButton();
+        spNuevo = new javax.swing.JToolBar.Separator();
+        btnModificar = new javax.swing.JButton();
+        spModificar = new javax.swing.JToolBar.Separator();
+        btnEliminar = new javax.swing.JButton();
+        spEliminar = new javax.swing.JToolBar.Separator();
+        btnVer = new javax.swing.JButton();
+        spVer = new javax.swing.JToolBar.Separator();
+        btnRetorno = new javax.swing.JButton();
+        spRetorno = new javax.swing.JToolBar.Separator();
+        btnImprimir = new javax.swing.JButton();
+        spImprimir = new javax.swing.JToolBar.Separator();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         panel_tabla = new javax.swing.JPanel();
@@ -1861,8 +1865,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
         dialog_filtrar_producto.getContentPane().add(jPanel28, java.awt.BorderLayout.CENTER);
 
-        dialog_crear_retorno_material.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        dialog_crear_retorno_material.setTitle("Retorno de Materiales");
+        dialogoRetornoMaterial.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        dialogoRetornoMaterial.setTitle("Retorno de Materiales");
 
         centro1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -2044,7 +2048,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        dialog_crear_retorno_material.getContentPane().add(centro1, java.awt.BorderLayout.CENTER);
+        dialogoRetornoMaterial.getContentPane().add(centro1, java.awt.BorderLayout.CENTER);
 
         norte1.setBackground(new java.awt.Color(0, 110, 204));
         norte1.setPreferredSize(new java.awt.Dimension(458, 40));
@@ -2066,7 +2070,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             .addComponent(lbl_titulo1, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
         );
 
-        dialog_crear_retorno_material.getContentPane().add(norte1, java.awt.BorderLayout.NORTH);
+        dialogoRetornoMaterial.getContentPane().add(norte1, java.awt.BorderLayout.NORTH);
 
         sur1.setPreferredSize(new java.awt.Dimension(458, 40));
 
@@ -2116,7 +2120,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        dialog_crear_retorno_material.getContentPane().add(sur1, java.awt.BorderLayout.SOUTH);
+        dialogoRetornoMaterial.getContentPane().add(sur1, java.awt.BorderLayout.SOUTH);
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
@@ -2150,88 +2154,103 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jToolBar1.setFloatable(false);
         jToolBar1.setPreferredSize(new java.awt.Dimension(13, 55));
 
-        btn_nuevo.setBackground(new java.awt.Color(255, 255, 255));
-        btn_nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo_24_24.png"))); // NOI18N
-        btn_nuevo.setText("Nuevo");
-        btn_nuevo.setFocusable(false);
-        btn_nuevo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_nuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_nuevo.addActionListener(new java.awt.event.ActionListener() {
+        btnFiltrar.setBackground(new java.awt.Color(255, 255, 255));
+        btnFiltrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/filtro_24_24.png"))); // NOI18N
+        btnFiltrar.setText("Filtrar");
+        btnFiltrar.setFocusable(false);
+        btnFiltrar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnFiltrar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnFiltrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_nuevoActionPerformed(evt);
+                btnFiltrarActionPerformed(evt);
             }
         });
-        jToolBar1.add(btn_nuevo);
-        jToolBar1.add(jSeparator1);
+        jToolBar1.add(btnFiltrar);
+        jToolBar1.add(spFiltrar);
 
-        btn_modificar.setBackground(new java.awt.Color(255, 255, 255));
-        btn_modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar_24_24.png"))); // NOI18N
-        btn_modificar.setText("Modificar");
-        btn_modificar.setFocusable(false);
-        btn_modificar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_modificar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_modificar.addActionListener(new java.awt.event.ActionListener() {
+        btnNuevo.setBackground(new java.awt.Color(255, 255, 255));
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nuevo_24_24.png"))); // NOI18N
+        btnNuevo.setText("Nuevo");
+        btnNuevo.setFocusable(false);
+        btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_modificarActionPerformed(evt);
+                btnNuevoActionPerformed(evt);
             }
         });
-        jToolBar1.add(btn_modificar);
-        jToolBar1.add(jSeparator2);
+        jToolBar1.add(btnNuevo);
+        jToolBar1.add(spNuevo);
 
-        btn_eliminar.setBackground(new java.awt.Color(255, 255, 255));
-        btn_eliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar_24_24.png"))); // NOI18N
-        btn_eliminar.setText("Eliminar");
-        btn_eliminar.setFocusable(false);
-        btn_eliminar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btn_eliminar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btn_eliminar.addActionListener(new java.awt.event.ActionListener() {
+        btnModificar.setBackground(new java.awt.Color(255, 255, 255));
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/actualizar_24_24.png"))); // NOI18N
+        btnModificar.setText("Modificar");
+        btnModificar.setFocusable(false);
+        btnModificar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnModificar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_eliminarActionPerformed(evt);
+                btnModificarActionPerformed(evt);
             }
         });
-        jToolBar1.add(btn_eliminar);
-        jToolBar1.add(jSeparator4);
+        jToolBar1.add(btnModificar);
+        jToolBar1.add(spModificar);
 
-        jButton5.setBackground(new java.awt.Color(255, 255, 255));
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ver_24_24.png"))); // NOI18N
-        jButton5.setText("Ver");
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar.setBackground(new java.awt.Color(255, 255, 255));
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/eliminar_24_24.png"))); // NOI18N
+        btnEliminar.setText("Eliminar");
+        btnEliminar.setFocusable(false);
+        btnEliminar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnEliminar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnEliminarActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton5);
-        jToolBar1.add(jSeparator3);
+        jToolBar1.add(btnEliminar);
+        jToolBar1.add(spEliminar);
 
-        jButton1.setBackground(new java.awt.Color(255, 255, 255));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/filtro_24_24.png"))); // NOI18N
-        jButton1.setText("Filtrar");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnVer.setBackground(new java.awt.Color(255, 255, 255));
+        btnVer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ver_24_24.png"))); // NOI18N
+        btnVer.setText("Ver");
+        btnVer.setFocusable(false);
+        btnVer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnVer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnVer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnVerActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton1);
-        jToolBar1.add(jSeparator5);
+        jToolBar1.add(btnVer);
+        jToolBar1.add(spVer);
 
-        jButton6.setBackground(new java.awt.Color(255, 255, 255));
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/retorno_material_32_32.png"))); // NOI18N
-        jButton6.setText("Retorno");
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnRetorno.setBackground(new java.awt.Color(255, 255, 255));
+        btnRetorno.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/retorno_material_32_32.png"))); // NOI18N
+        btnRetorno.setText("Retorno");
+        btnRetorno.setFocusable(false);
+        btnRetorno.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnRetorno.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnRetorno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnRetornoActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton6);
+        jToolBar1.add(btnRetorno);
+        jToolBar1.add(spRetorno);
+
+        btnImprimir.setBackground(new java.awt.Color(255, 255, 255));
+        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Salida_Imprimir_24_24.png"))); // NOI18N
+        btnImprimir.setText("Imprimir");
+        btnImprimir.setFocusable(false);
+        btnImprimir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnImprimir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnImprimir);
+        jToolBar1.add(spImprimir);
 
         jPanel1.add(jToolBar1, java.awt.BorderLayout.CENTER);
 
@@ -2263,24 +2282,19 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             }
         });
         tabla_general.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tabla_generalMouseReleased(evt);
-            }
-        });
-        tabla_general.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                tabla_generalKeyReleased(evt);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabla_generalMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tabla_general);
         if (tabla_general.getColumnModel().getColumnCount() > 0) {
             tabla_general.getColumnModel().getColumn(0).setPreferredWidth(100);
-            tabla_general.getColumnModel().getColumn(1).setPreferredWidth(200);
-            tabla_general.getColumnModel().getColumn(2).setPreferredWidth(200);
+            tabla_general.getColumnModel().getColumn(1).setPreferredWidth(150);
+            tabla_general.getColumnModel().getColumn(2).setPreferredWidth(150);
             tabla_general.getColumnModel().getColumn(3).setPreferredWidth(400);
             tabla_general.getColumnModel().getColumn(4).setPreferredWidth(400);
             tabla_general.getColumnModel().getColumn(5).setPreferredWidth(400);
-            tabla_general.getColumnModel().getColumn(6).setPreferredWidth(200);
+            tabla_general.getColumnModel().getColumn(6).setPreferredWidth(300);
         }
 
         javax.swing.GroupLayout panel_tablaLayout = new javax.swing.GroupLayout(panel_tabla);
@@ -2326,12 +2340,12 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         add(jPanel2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevoActionPerformed
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         crear0_modificar1_producto = 0;
         id_salidamaterial_global = 0;
         MostrarObjetos(true);
         mostrarSalidaMaterial(crear0_modificar1_producto, 0);         
-    }//GEN-LAST:event_btn_nuevoActionPerformed
+    }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btn_cancelar_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelar_clienteActionPerformed
         CerrarDialogoCrearObras();
@@ -2404,29 +2418,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         crearmodificarSalidaMaterial();
     }//GEN-LAST:event_btn_guardarActionPerformed
 
-    private void tabla_generalMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_generalMouseReleased
-        /*if (band_index == 0) {
-            int fila;
-            int id_producto;
-            fila = tabla_general.getSelectedRow();
-            m = (DefaultTableModel) tabla_general.getModel();
-            id_producto = Integer.parseInt((String) m.getValueAt(fila, 0));
-            mostrar_datos_producto(id_producto);
-        }*/
-    }//GEN-LAST:event_tabla_generalMouseReleased
-
-    private void tabla_generalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabla_generalKeyReleased
-        /*if (band_index == 0) {
-            int fila;
-            int id_producto;
-            fila = tabla_general.getSelectedRow();
-            m = (DefaultTableModel) tabla_general.getModel();
-            id_producto = Integer.parseInt((String) m.getValueAt(fila, 0));
-            mostrar_datos_producto(id_producto);
-        }*/
-    }//GEN-LAST:event_tabla_generalKeyReleased
-
-    private void btn_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modificarActionPerformed
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         int fila = tabla_general.getSelectedRow();
 
         if (fila == -1) {
@@ -2434,13 +2426,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         } else {
             int band = 0;
             DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
-            String estado = (String) tm.getValueAt(fila, 6);
                 
-            if(!estado.trim().equals("Abierto")){
-                JOptionPane.showMessageDialog(null, "No se puede modificar la salida de material.", "ERROR", JOptionPane.ERROR_MESSAGE);
-                band++;
-            }
-            
             if(band == 0){                
                 int id_salida = Integer.parseInt((String) tm.getValueAt(fila, 1));
 
@@ -2450,9 +2436,9 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 mostrarSalidaMaterial(crear0_modificar1_producto, id_salida);
             }                        
         }
-    }//GEN-LAST:event_btn_modificarActionPerformed
+    }//GEN-LAST:event_btnModificarActionPerformed
 
-    private void btn_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarActionPerformed
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         int fila = tabla_general.getSelectedRow();
 
         if (fila == -1) {
@@ -2478,7 +2464,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 }
             }
         }
-    }//GEN-LAST:event_btn_eliminarActionPerformed
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         dialog_filtrar_salida.dispose();
@@ -2488,7 +2474,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         mostrar_tabla_general();
     }//GEN-LAST:event_jButton8ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
         if(limpiarCboFiltros){
             MostrarComboPersonal(cboResponsable_bus, true, true, null);
             MostrarComboObras(cboObra_bus, true, true, null);
@@ -2499,7 +2485,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         dialog_filtrar_salida.setLocationRelativeTo(ventana);
         dialog_filtrar_salida.setModal(true);
         dialog_filtrar_salida.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnFiltrarActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         mostrar_tabla_proveedor();
@@ -2637,7 +2623,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btn_guardarKeyReleased
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btnVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerActionPerformed
         int fila = tabla_general.getSelectedRow();
 
         if (fila == -1) {
@@ -2651,7 +2637,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             MostrarObjetos(false);
             mostrarSalidaMaterial(crear0_modificar1_producto, id);
         }
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnVerActionPerformed
 
     private void txt_fechasalida_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_fechasalida_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -2948,7 +2934,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCodigoSalidaMaterialEntregaKeyTyped
 
     private void btn_cancelar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelar1ActionPerformed
-        // TODO add your handling code here:
+        CerrarDialogoEntregaMaterial();
     }//GEN-LAST:event_btn_cancelar1ActionPerformed
 
     private void btn_cancelar1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btn_cancelar1KeyReleased
@@ -2963,7 +2949,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_guardar1KeyReleased
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void btnRetornoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetornoActionPerformed
         int fila = tabla_general.getSelectedRow();
 
         if (fila == -1) {
@@ -2984,6 +2970,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                     objDet.setId_empresa(id_empresa_index);
                     List<SalidaMaterialDetalleBE> listaProDet = objSalidaMaterialDetalleBL.read(objDet);
 
+                    limpiarCajaTextoEntregaMaterial();
+                            
                     txtCodigoSalidaMaterialEntrega.setText(insertarCeros(obj.getIdSalidaMaterial()));
                     txtFechaSalidaEntrega.setDate(obj.getFechaSalida());
                     txtResponsableEntrega.setText(obj.getDesPersonal());
@@ -2997,16 +2985,16 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             
                     tablaDetalleEntrega(listaProDet);
                     
-                    dialog_crear_retorno_material.setSize(925, 625);
-                    dialog_crear_retorno_material.setLocationRelativeTo(ventana);
-                    dialog_crear_retorno_material.setModal(true);
-                    dialog_crear_retorno_material.setVisible(true);
+                    dialogoRetornoMaterial.setSize(925, 625);
+                    dialogoRetornoMaterial.setLocationRelativeTo(ventana);
+                    dialogoRetornoMaterial.setModal(true);
+                    dialogoRetornoMaterial.setVisible(true);
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
             }                            
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_btnRetornoActionPerformed
 
     private void tabla_productoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabla_productoKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -3078,9 +3066,35 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton10KeyReleased
 
+    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnImprimirActionPerformed
+
+    private void tabla_generalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_generalMouseClicked
+        try{
+            int fila = tabla_general.getSelectedRow();
+            DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
+            int idSalida = Integer.parseInt((String) tm.getValueAt(fila, 1));
+            
+            SalidaMaterialBE obj = objSalidaMaterialBL.readId(idSalida, id_empresa_index);
+            
+            ControlBotones(obj.getEstadoAbierto());
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_tabla_generalMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Eliminar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnFiltrar;
+    private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnNuevo;
+    private javax.swing.JButton btnRetorno;
     private javax.swing.JButton btnSeleccionProducto;
+    private javax.swing.JButton btnVer;
     private javax.swing.JButton btn_buscar_proveedor;
     private javax.swing.JButton btn_cancelar;
     private javax.swing.JButton btn_cancelar1;
@@ -3089,13 +3103,10 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JButton btn_cliente_cancelar_busqueda;
     private javax.swing.JButton btn_cliente_seleccionar;
     private javax.swing.JButton btn_crea_cliente;
-    private javax.swing.JButton btn_eliminar;
     private javax.swing.JButton btn_guardar;
     private javax.swing.JButton btn_guardar1;
     private javax.swing.JButton btn_guardar_detalle;
-    private javax.swing.JButton btn_modificar;
     private javax.swing.JButton btn_nueva_unidad;
-    private javax.swing.JButton btn_nuevo;
     private javax.swing.JComboBox cboAlmacen_bus;
     private javax.swing.JComboBox cboCategoria_bus;
     private javax.swing.JComboBox cboCliente;
@@ -3110,18 +3121,15 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JPanel centro1;
     private javax.swing.JDialog dialog_buscar_proveedor;
     private javax.swing.JDialog dialog_crear_obra;
-    private javax.swing.JDialog dialog_crear_retorno_material;
     private javax.swing.JDialog dialog_crear_salida;
     private javax.swing.JDialog dialog_filtrar_producto;
     private javax.swing.JDialog dialog_filtrar_salida;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JDialog dialogoRetornoMaterial;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
@@ -3199,11 +3207,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JToolBar.Separator jSeparator1;
-    private javax.swing.JToolBar.Separator jSeparator2;
-    private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator4;
-    private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
     private javax.swing.JSeparator jSeparator8;
@@ -3220,6 +3223,13 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JPanel norte1;
     private javax.swing.JPanel panel_nuevo_detalle;
     private javax.swing.JPanel panel_tabla;
+    private javax.swing.JToolBar.Separator spEliminar;
+    private javax.swing.JToolBar.Separator spFiltrar;
+    private javax.swing.JToolBar.Separator spImprimir;
+    private javax.swing.JToolBar.Separator spModificar;
+    private javax.swing.JToolBar.Separator spNuevo;
+    private javax.swing.JToolBar.Separator spRetorno;
+    private javax.swing.JToolBar.Separator spVer;
     private javax.swing.JPanel sur;
     private javax.swing.JPanel sur1;
     private javax.swing.JTable tablaDetalleEntrega;
@@ -3584,7 +3594,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         limpiarCajaTextoCrearDetalleSalidaMaterial();
         limpiar_caja_texto_crear_salidamaterial();
         
-        gCodigoTabla = 0;
         crear0_modificar1_producto = 0;
         id_salidamaterial_global = 0;
         
@@ -4092,40 +4101,36 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }
 
     private void retornarMateriales() {
-        SalidaMaterialBE sm = capturarValorEntregaMaterial();
-        
-        if(sm != null){
-            try {
-                
-                int id_salida = objSalidaMaterialBL.create(sm);
-                
-                List<SalidaMaterialDetalleBE> listaSalidaDet = ObtenerRegistrosSalidaDetalle(id_salida);
-                 
-                if(listaSalidaDet != null && !listaSalidaDet.isEmpty()){
-                    int i = 0;
-                    for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
-                        if(i==0)
-                            objSalidaMaterialDetalleBL.deleteAll(id_salida, obj.getId_empresa());
-                        
-                        objSalidaMaterialDetalleBL.create(obj);
-                        i++;
+        try {
+            if(validaDatosEntregaMaterial()){
+
+                SalidaMaterialBE sm = capturarValorEntregaMaterial();
+
+                if(sm != null){
+                    objSalidaMaterialBL.retornoMaterial(sm);
+                    List<SalidaMaterialDetalleBE> listaSalidaDet = ObtenerRegistrosEntregaDetalle();
+
+                    if(listaSalidaDet != null && !listaSalidaDet.isEmpty()){
+                        for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
+                            objSalidaMaterialDetalleBL.retornoMaterial(obj);
+                        }
                     }
-                }
-                
-                CerrarDialogoCrearSalidaMaterial();
-                JOptionPane.showMessageDialog(null, "Operación exitosa.");
-                mostrar_tabla_general();
-                
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-            }    
-        }
+
+                    CerrarDialogoEntregaMaterial();
+                    JOptionPane.showMessageDialog(null, "Operación exitosa.");
+                    mostrar_tabla_general();
+                }            
+            }
+        
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }        
     }
 
     private SalidaMaterialBE capturarValorEntregaMaterial() {
         SalidaMaterialBE sm = null;
         
-        String IdSalidaMaterial = txt_codigo.getText().trim();
+        String IdSalidaMaterial = txtCodigoSalidaMaterialEntrega.getText().trim();
         
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date FechaRetorno = txtFechaEntregaMaterial.getDate();
@@ -4147,9 +4152,108 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 
             sm.setId_empresa(id_empresa_index);
             sm.setUsuarioModifica(user_index);
-            sm.setTipoOperacion(crear0_modificar1_producto);            
         }
         
         return sm;
+    }
+    
+    
+    private List<SalidaMaterialDetalleBE> ObtenerRegistrosEntregaDetalle() throws Exception{
+        
+        List<SalidaMaterialDetalleBE> list = new ArrayList();
+        int filas =  tablaDetalleEntrega.getRowCount();
+        
+        if(filas > 0){
+            SalidaMaterialDetalleBE obj;
+            DefaultTableModel tm = (DefaultTableModel) tablaDetalleEntrega.getModel();
+            
+            for(int i = 0; i < filas; i++){
+                obj = new SalidaMaterialDetalleBE();
+                obj.setId_detalle_salida_material((Integer) tm.getValueAt(i, 0));
+                obj.setNombreMaterial((String) tm.getValueAt(i, 1));
+                obj.setCantidadSalida((BigDecimal) tm.getValueAt(i, 3));
+                obj.setCantidadRetorno((Double) tm.getValueAt(i, 4));
+                obj.setComentarioRetorno((String) tm.getValueAt(i, 5));
+                obj.setUsuarioEntrega(user_index);
+                list.add(obj);  
+            }
+        }
+        
+        return list;        
+    }
+
+    private boolean validaDatosEntregaMaterial() throws Exception{
+        boolean resp = true;
+        
+        List<SalidaMaterialDetalleBE> listaSalidaDet = ObtenerRegistrosEntregaDetalle();
+        
+        for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
+            if(obj.getCantidadSalida().compareTo(new BigDecimal(obj.getCantidadRetorno(), MathContext.DECIMAL64)) == -1){
+                JOptionPane.showMessageDialog(null, "Material: "+obj.getNombreMaterial().trim()+".\nEl valor de entrega("+obj.getCantidadRetorno()+") es mayor al valor de salida("+obj.getCantidadSalida()+") ", "ERROR", JOptionPane.ERROR_MESSAGE);
+                resp = false;
+                break;
+            }
+        }
+        
+        return resp;        
+    }
+
+    private void CerrarDialogoEntregaMaterial() {
+        limpiarCajaTextoEntregaMaterial();
+        
+        crear0_modificar1_producto = 0;
+        id_salidamaterial_global = 0;
+        
+        DefaultTableModel tablaDetalle = (DefaultTableModel) tablaDetalleEntrega.getModel();
+        tablaDetalle.setRowCount(0);
+        
+        dialogoRetornoMaterial.dispose();
+    }
+    
+    private void limpiarCajaTextoEntregaMaterial() {
+        txtCodigoSalidaMaterialEntrega.setText("");
+        txtResponsableEntrega.setText("");
+        txtObraEntrega.setText("");
+        txtFechaSalidaEntrega.setDate(null);
+        txtFechaEntregaMaterial.setDate(null);
+    }
+
+    private void MotrarBotonesControl(
+            boolean modificar, 
+            boolean eliminar, 
+            boolean ver,
+            boolean retorno,
+            boolean imprimir) {
+        btnModificar.setVisible(modificar);
+        spModificar.setVisible(modificar);
+        btnEliminar.setVisible(eliminar);
+        spEliminar.setVisible(eliminar);
+        btnVer.setVisible(ver);
+        spVer.setVisible(ver);
+        btnRetorno.setVisible(retorno);
+        spRetorno.setVisible(retorno);
+        btnImprimir.setVisible(imprimir);
+        spImprimir.setVisible(imprimir);
+    }
+
+    private void ControlBotones(int estadoAbierto) {
+        switch (estadoAbierto){
+            
+            case 90001: //Por confirmar Salida
+                MotrarBotonesControl(true, true, false, false, true);
+                break;
+                
+            case 90002: //Salida de Material Confirmado
+                MotrarBotonesControl(false, false, true, true, true);
+                break;
+                
+            case 90003: //Por confirmar Entrega
+                MotrarBotonesControl(false, false, true, true, true);
+                break;
+                
+            case 90004: //Entrega de material confirmado
+                MotrarBotonesControl(false, false, true, false, true);
+                break;            
+        }
     }
 }

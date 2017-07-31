@@ -37,4 +37,8 @@ public class SalidaMaterialBL {
     public int delete(SalidaMaterialBE sm) throws Exception {
         return sdao.delete(sm);
     }
+    
+    public int retornoMaterial(SalidaMaterialBE sm) throws Exception {
+        return sdao.retornoMaterial(sm);
+    }    
 }

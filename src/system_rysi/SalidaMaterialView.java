@@ -95,8 +95,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
         System.out.println("Mostrar Tabla Salida de materiales");
         mostrar_tabla_general();
-        MostrarObjetos(false);
-        MotrarBotonesControl(false, false, false, false, false);
+        MostrarObjetos(false);        
     }
 
     private void Activar_letras_Mayusculas() {
@@ -153,6 +152,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             } else {
                 lblTotal.setText("No se encontraron resultados");
             }
+            
+            MotrarBotonesControl(false, false, false, false, false, false);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
@@ -437,10 +438,12 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         spEliminar = new javax.swing.JToolBar.Separator();
         btnVer = new javax.swing.JButton();
         spVer = new javax.swing.JToolBar.Separator();
+        btnImprimirSalida = new javax.swing.JButton();
+        spImprimirSalida = new javax.swing.JToolBar.Separator();
         btnRetorno = new javax.swing.JButton();
         spRetorno = new javax.swing.JToolBar.Separator();
-        btnImprimir = new javax.swing.JButton();
-        spImprimir = new javax.swing.JToolBar.Separator();
+        btnImprimirEntrega = new javax.swing.JButton();
+        spImprimirEntrega = new javax.swing.JToolBar.Separator();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         panel_tabla = new javax.swing.JPanel();
@@ -1894,11 +1897,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tablaDetalleEntrega.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tablaDetalleEntregaMouseClicked(evt);
-            }
-        });
         jScrollPane9.setViewportView(tablaDetalleEntrega);
         if (tablaDetalleEntrega.getColumnModel().getColumnCount() > 0) {
             tablaDetalleEntrega.getColumnModel().getColumn(0).setResizable(false);
@@ -2141,7 +2139,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 835, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2224,6 +2222,20 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jToolBar1.add(btnVer);
         jToolBar1.add(spVer);
 
+        btnImprimirSalida.setBackground(new java.awt.Color(255, 255, 255));
+        btnImprimirSalida.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Salida_Imprimir_24_24.png"))); // NOI18N
+        btnImprimirSalida.setText("Imprimir Salida");
+        btnImprimirSalida.setFocusable(false);
+        btnImprimirSalida.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnImprimirSalida.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnImprimirSalida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirSalidaActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnImprimirSalida);
+        jToolBar1.add(spImprimirSalida);
+
         btnRetorno.setBackground(new java.awt.Color(255, 255, 255));
         btnRetorno.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/retorno_material_32_32.png"))); // NOI18N
         btnRetorno.setText("Retorno");
@@ -2238,19 +2250,19 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jToolBar1.add(btnRetorno);
         jToolBar1.add(spRetorno);
 
-        btnImprimir.setBackground(new java.awt.Color(255, 255, 255));
-        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Salida_Imprimir_24_24.png"))); // NOI18N
-        btnImprimir.setText("Imprimir");
-        btnImprimir.setFocusable(false);
-        btnImprimir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnImprimir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
+        btnImprimirEntrega.setBackground(new java.awt.Color(255, 255, 255));
+        btnImprimirEntrega.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Salida_Imprimir_24_24.png"))); // NOI18N
+        btnImprimirEntrega.setText("Imprimir Entrega");
+        btnImprimirEntrega.setFocusable(false);
+        btnImprimirEntrega.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnImprimirEntrega.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnImprimirEntrega.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImprimirActionPerformed(evt);
+                btnImprimirEntregaActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnImprimir);
-        jToolBar1.add(spImprimir);
+        jToolBar1.add(btnImprimirEntrega);
+        jToolBar1.add(spImprimirEntrega);
 
         jPanel1.add(jToolBar1, java.awt.BorderLayout.CENTER);
 
@@ -2286,6 +2298,11 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 tabla_generalMouseClicked(evt);
             }
         });
+        tabla_general.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tabla_generalKeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabla_general);
         if (tabla_general.getColumnModel().getColumnCount() > 0) {
             tabla_general.getColumnModel().getColumn(0).setPreferredWidth(100);
@@ -2301,11 +2318,11 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         panel_tabla.setLayout(panel_tablaLayout);
         panel_tablaLayout.setHorizontalGroup(
             panel_tablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 835, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
         );
         panel_tablaLayout.setVerticalGroup(
             panel_tablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
         );
 
         jPanel5.add(panel_tabla, java.awt.BorderLayout.CENTER);
@@ -2324,9 +2341,9 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 835, Short.MAX_VALUE)
+            .addGap(0, 1010, Short.MAX_VALUE)
             .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(lblTotal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 835, Short.MAX_VALUE))
+                .addComponent(lblTotal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2455,10 +2472,9 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
                 try
                 {
-                    if(objSalidaMaterialBL.delete(obj) > 0){
-                        mostrar_tabla_general();
-                        JOptionPane.showMessageDialog(null, "Registro eliminado con éxito.");
-                    }
+                    objSalidaMaterialBL.delete(obj);
+                    mostrar_tabla_general();
+                    JOptionPane.showMessageDialog(null, "Registro eliminado con éxito.");                    
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
                 }
@@ -2921,10 +2937,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_direccion_obraKeyTyped
 
-    private void tablaDetalleEntregaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaDetalleEntregaMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tablaDetalleEntregaMouseClicked
-
     private void txtCodigoSalidaMaterialEntregaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoSalidaMaterialEntregaKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCodigoSalidaMaterialEntregaKeyReleased
@@ -3066,30 +3078,108 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton10KeyReleased
 
-    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnImprimirActionPerformed
+    private void btnImprimirSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirSalidaActionPerformed
+        int fila = tabla_general.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un registro.");
+        } else {
+            try
+            {
+                int band = 0;
+                DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
+                int idSalidaMaterial = Integer.parseInt((String) tm.getValueAt(fila, 1));
+                int estadoAbierto = objSalidaMaterialBL.readId(idSalidaMaterial, id_empresa_index).getEstadoAbierto();
+        
+                if(estadoAbierto == 90001){
+                    if(!verificaExistenciaStockTableBD(idSalidaMaterial, estadoAbierto)){
+                        band++;
+                    }
+                }
+                
+                if(band == 0){                    
+                    switch (estadoAbierto){
+                        case 90001: 
+                            int respuesta = JOptionPane.showConfirmDialog(null, "Una vez impreso el documento, ya no se podrán efectuar cambios.\n\n"
+                                    + "¿Desea continuar con esta operación?", "Confirmar Salida de material e Imprimir", JOptionPane.YES_NO_OPTION);
+            
+                            if (respuesta == JOptionPane.YES_OPTION) {
+                                SalidaMaterialBE obj = new SalidaMaterialBE();
+                                obj.setIdSalidaMaterial(idSalidaMaterial);
+                                obj.setId_empresa(id_empresa_index);
+
+                                objSalidaMaterialBL.confirmarSalida(obj);
+                                imprimirSalidaMaterial();    
+                                mostrar_tabla_general();
+                                JOptionPane.showMessageDialog(null, "Salida confirmada con éxito");
+                            }
+                            
+                            break;
+                        default:
+                            imprimirSalidaMaterial();
+                            JOptionPane.showMessageDialog(null, "Se imprime el documento");
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }            
+        }
+    }//GEN-LAST:event_btnImprimirSalidaActionPerformed
 
     private void tabla_generalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_generalMouseClicked
-        try{
-            int fila = tabla_general.getSelectedRow();
-            DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
-            int idSalida = Integer.parseInt((String) tm.getValueAt(fila, 1));
-            
-            SalidaMaterialBE obj = objSalidaMaterialBL.readId(idSalida, id_empresa_index);
-            
-            ControlBotones(obj.getEstadoAbierto());
-            
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
+        tablaGeneralClick();        
     }//GEN-LAST:event_tabla_generalMouseClicked
+
+    private void btnImprimirEntregaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirEntregaActionPerformed
+        int fila = tabla_general.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un registro.");
+        } else {
+            try
+            {
+                DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
+                int idSalidaMaterial = Integer.parseInt((String) tm.getValueAt(fila, 1));
+                int estadoAbierto = objSalidaMaterialBL.readId(idSalidaMaterial, id_empresa_index).getEstadoAbierto();
+        
+                switch (estadoAbierto){
+                    case 90003:
+                        int respuesta = JOptionPane.showConfirmDialog(null, "Una vez impreso el documento, ya no se podrán efectuar cambios en el retorno de materiales.\n\n¿Desea continuar con esta operación?", "Confirmar Salida de material e Imprimir", JOptionPane.YES_NO_OPTION);
+            
+                        if (respuesta == JOptionPane.YES_OPTION) {
+                            SalidaMaterialBE obj = new SalidaMaterialBE();
+                            obj.setIdSalidaMaterial(idSalidaMaterial);
+                            obj.setId_empresa(id_empresa_index);
+
+                            objSalidaMaterialBL.confirmarRetorno(obj);
+                            imprimirEntregaMaterial();
+                            mostrar_tabla_general();
+                            JOptionPane.showMessageDialog(null, "Retorno de material confirmado con éxito");
+                        }
+                        break;
+                    
+                    default:
+                        imprimirEntregaMaterial();
+                        JOptionPane.showMessageDialog(null, "Se imprime el documento");
+                        break;
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }            
+        }
+    }//GEN-LAST:event_btnImprimirEntregaActionPerformed
+
+    private void tabla_generalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabla_generalKeyReleased
+        tablaGeneralClick();
+    }//GEN-LAST:event_tabla_generalKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Eliminar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnFiltrar;
-    private javax.swing.JButton btnImprimir;
+    private javax.swing.JButton btnImprimirEntrega;
+    private javax.swing.JButton btnImprimirSalida;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnRetorno;
@@ -3225,7 +3315,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JPanel panel_tabla;
     private javax.swing.JToolBar.Separator spEliminar;
     private javax.swing.JToolBar.Separator spFiltrar;
-    private javax.swing.JToolBar.Separator spImprimir;
+    private javax.swing.JToolBar.Separator spImprimirEntrega;
+    private javax.swing.JToolBar.Separator spImprimirSalida;
     private javax.swing.JToolBar.Separator spModificar;
     private javax.swing.JToolBar.Separator spNuevo;
     private javax.swing.JToolBar.Separator spRetorno;
@@ -3673,33 +3764,50 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }
 
     private void crearmodificarSalidaMaterial() {
-        SalidaMaterialBE sm = capturarValorSalidaMaterial();
+        try {
+            int band = 0;
+            int filas =  tabla_detalle_salida_material.getRowCount();
         
-        if(sm != null){
-            try {
-                
-                int id_salida = objSalidaMaterialBL.create(sm);
-                
-                List<SalidaMaterialDetalleBE> listaSalidaDet = ObtenerRegistrosSalidaDetalle(id_salida);
-                 
-                if(listaSalidaDet != null && !listaSalidaDet.isEmpty()){
-                    int i = 0;
-                    for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
-                        if(i==0)
-                            objSalidaMaterialDetalleBL.deleteAll(id_salida, obj.getId_empresa());
-                        
-                        objSalidaMaterialDetalleBL.create(obj);
-                        i++;
-                    }
+            /*verifica si se agrego materiales a la salida*/
+            if(filas < 1){
+                JOptionPane.showMessageDialog(null, "Ingrese materiales a la solicitud de Salida.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                band++;
+            }
+        
+            /*verifica stock de materiales*/
+            if(band == 0){
+                if(!verificaExistenciaStockJTable()){
+                    band++;
                 }
-                
-                CerrarDialogoCrearSalidaMaterial();
-                JOptionPane.showMessageDialog(null, "Operación exitosa.");
-                mostrar_tabla_general();
-                
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-            }    
+            }
+        
+            /*crea la salida y el detalle*/
+            if(band == 0){
+                SalidaMaterialBE sm = capturarValorSalidaMaterial();
+
+                if(sm != null){
+                    int id_salida = objSalidaMaterialBL.create(sm);
+                    List<SalidaMaterialDetalleBE> listaSalidaDet = ObtenerRegistrosSalidaDetalle(id_salida);
+
+                    if(listaSalidaDet != null && !listaSalidaDet.isEmpty()){
+                        int i = 0;
+                        for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
+                            if(i == 0){
+                                objSalidaMaterialDetalleBL.deleteAll(id_salida, obj.getId_empresa());
+                            }                                
+
+                            objSalidaMaterialDetalleBL.create(obj);
+                            i++;
+                        }
+                    }
+
+                    CerrarDialogoCrearSalidaMaterial();
+                    JOptionPane.showMessageDialog(null, "Operación exitosa.");
+                    mostrar_tabla_general();
+                }            
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -4120,8 +4228,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(null, "Operación exitosa.");
                     mostrar_tabla_general();
                 }            
-            }
-        
+            }        
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }        
@@ -4223,7 +4330,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             boolean eliminar, 
             boolean ver,
             boolean retorno,
-            boolean imprimir) {
+            boolean imprimirSalida,
+            boolean imprimirEntrega) {
         btnModificar.setVisible(modificar);
         spModificar.setVisible(modificar);
         btnEliminar.setVisible(eliminar);
@@ -4232,28 +4340,105 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         spVer.setVisible(ver);
         btnRetorno.setVisible(retorno);
         spRetorno.setVisible(retorno);
-        btnImprimir.setVisible(imprimir);
-        spImprimir.setVisible(imprimir);
+        btnImprimirSalida.setVisible(imprimirSalida);
+        spImprimirSalida.setVisible(imprimirSalida);
+        btnImprimirEntrega.setVisible(imprimirEntrega);
+        spImprimirEntrega.setVisible(imprimirEntrega);
     }
 
     private void ControlBotones(int estadoAbierto) {
+        
         switch (estadoAbierto){
             
             case 90001: //Por confirmar Salida
-                MotrarBotonesControl(true, true, false, false, true);
+                MotrarBotonesControl(true, true, false, false, true, false);
                 break;
                 
             case 90002: //Salida de Material Confirmado
-                MotrarBotonesControl(false, false, true, true, true);
+                MotrarBotonesControl(false, false, false, true, true, false);
                 break;
                 
             case 90003: //Por confirmar Entrega
-                MotrarBotonesControl(false, false, true, true, true);
+                MotrarBotonesControl(false, false, false, true, true, true);
                 break;
                 
             case 90004: //Entrega de material confirmado
-                MotrarBotonesControl(false, false, true, false, true);
+                MotrarBotonesControl(false, false, false, false, true, true);
                 break;            
         }
+    }
+
+    private boolean verificaExistenciaStockJTable() throws Exception{
+        boolean resp = true;
+        int filas =  tabla_detalle_salida_material.getRowCount();
+        DefaultTableModel tm = (DefaultTableModel) tabla_detalle_salida_material.getModel();
+        
+        int idProducto;
+        BigDecimal cantidadSalida;
+        BigDecimal cantidadStock;
+        String nombreMaterial;
+        
+        
+        /*optenemos los registros del jtable*/
+        for(int i = 0; i < filas; i++){
+            idProducto = (Integer) tm.getValueAt(i, 0);
+            nombreMaterial = (String) tm.getValueAt(i, 1);
+            cantidadSalida = (BigDecimal) tm.getValueAt(i, 3);
+            cantidadStock = objProductoBL.GetData(idProducto).getCantidad();
+            
+            if(cantidadSalida.doubleValue() > cantidadStock.doubleValue()){
+                JOptionPane.showMessageDialog(null, nombreMaterial + ".\n\nLa cantidad de salida es mayor al Stock existente en almacen.", "ERROR", JOptionPane.ERROR_MESSAGE);                
+                resp = false;
+                break;                
+            }            
+        }
+        
+        return resp;
+    }
+
+    private boolean verificaExistenciaStockTableBD(int idSalidaMaterial, int estadoAbierto) throws Exception{
+        boolean resp = true;
+        
+        SalidaMaterialDetalleBE objDet = new SalidaMaterialDetalleBE();
+        objDet.setId_salida_material(idSalidaMaterial);
+        objDet.setId_empresa(id_empresa_index);
+        List<SalidaMaterialDetalleBE> listaProDet = objSalidaMaterialDetalleBL.read(objDet);
+            
+        BigDecimal cantidadStock;
+            
+        for (SalidaMaterialDetalleBE objSalDet : listaProDet) {
+            cantidadStock = objProductoBL.GetData(objSalDet.getId_producto()).getCantidad();
+                
+            if(objSalDet.getCantidadSalida().doubleValue() > cantidadStock.doubleValue()){
+                JOptionPane.showMessageDialog(null, objSalDet.getNombreMaterial() + ".\n\nLa cantidad de salida es mayor al Stock existente en almacen.\nPor favor, revise los datos de la solicitud de salida.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                resp = false;
+                break;
+            }                
+        }
+        
+        return resp;
+    }
+
+    private void tablaGeneralClick() {
+        try{
+            int fila = tabla_general.getSelectedRow();
+            DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
+            int idSalida = Integer.parseInt((String) tm.getValueAt(fila, 1));
+            
+            SalidaMaterialBE obj = objSalidaMaterialBL.readId(idSalida, id_empresa_index);
+            
+            ControlBotones(obj.getEstadoAbierto());
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void imprimirSalidaMaterial() {
+        
+    }
+
+    private void imprimirEntregaMaterial() {
+        
     }
 }

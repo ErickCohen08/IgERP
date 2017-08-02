@@ -27,11 +27,13 @@ public class SalidaMaterialDAO {
     ResultSet rs = null;
     CallableStatement cs = null;
     PreparedStatement ps = null;
-    final String INSERT = "{call usp_SalidaMaterial_insert(?,?,?,?,?,?,?,?,?)}";
+    final String INSERT = "{call usp_SalidaMaterial_insert(?,?,?,?,?,?,?,?,?)}";    //Inserta y Modifica la salida de material
     final String DELETE = "{call usp_SalidaMaterial_Delete(?,?)}";
     final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?)}";
     final String GETDATA = "{call usp_SalidaMaterial_GetData(?,?)}";
-    final String RETURN = "{call usp_SalidaMaterial_RetornoMaterial(?,?,?,?)}";
+    final String RETORNOMATERIAL = "{call usp_SalidaMaterial_RetornoMaterial(?,?,?,?)}";
+    final String CONFIRMARSALIDA = "{call usp_SalidaMaterial_ConfirmarSalida(?,?)}";
+    final String CONFIRMARRETORNO = "{call usp_SalidaMaterial_ConfirmarRetorno(?,?)}";
     
     String sql = "";
     
@@ -98,7 +100,55 @@ public class SalidaMaterialDAO {
         
         return respuesta;
     }
-
+    
+    public int confirmarSalida(SalidaMaterialBE o) throws Exception {
+        int respuesta = 0;
+        
+        try {
+            cn = AccesoDB.getConnection();
+            cs = cn.prepareCall(CONFIRMARSALIDA);
+            cs.setInt(1, o.getIdSalidaMaterial());
+            cs.setInt(2, o.getId_empresa());
+            respuesta = cs.executeUpdate();
+            cs.close();
+            
+        } catch (SQLException e) {
+            throw e;
+        } catch (InstantiationException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw e;
+        } finally {
+            cn.close();
+        }
+        
+        return respuesta;
+    }
+    
+    public int confirmarRetorno(SalidaMaterialBE o) throws Exception {
+        int respuesta = 0;
+        
+        try {
+            cn = AccesoDB.getConnection();
+            cs = cn.prepareCall(CONFIRMARRETORNO);
+            cs.setInt(1, o.getIdSalidaMaterial());
+            cs.setInt(2, o.getId_empresa());
+            respuesta = cs.executeUpdate();
+            cs.close();
+            
+        } catch (SQLException e) {
+            throw e;
+        } catch (InstantiationException e) {
+            throw e;
+        } catch (IllegalAccessException e) {
+            throw e;
+        } finally {
+            cn.close();
+        }
+        
+        return respuesta;
+    }
+    
     public List<SalidaMaterialBE> read(SalidaMaterialBE pbe) throws Exception {
         List<SalidaMaterialBE> lista = new ArrayList();
         
@@ -191,7 +241,7 @@ public class SalidaMaterialDAO {
         
         try {
             cn = AccesoDB.getConnection();
-            cs = cn.prepareCall(RETURN);
+            cs = cn.prepareCall(RETORNOMATERIAL);
             cs.setInt(1, o.getIdSalidaMaterial());
             cs.setDate(2, o.getFechaRetorno()== null ? null:new java.sql.Date(o.getFechaRetorno().getTime()));
             cs.setInt(3, o.getId_empresa());

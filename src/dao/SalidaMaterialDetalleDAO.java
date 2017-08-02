@@ -119,7 +119,6 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
                     + "dsm.id_salida_material = "+pbe.getId_salida_material()+" and "
                     + "dsm.id_empresa = "+pbe.getId_empresa()+"";
             
-            System.out.println(sql);
             
             ps = cn.prepareStatement(sql);
             rs = ps.executeQuery();

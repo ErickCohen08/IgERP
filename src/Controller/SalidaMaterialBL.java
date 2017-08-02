@@ -41,4 +41,12 @@ public class SalidaMaterialBL {
     public int retornoMaterial(SalidaMaterialBE sm) throws Exception {
         return sdao.retornoMaterial(sm);
     }    
+    
+    public int confirmarSalida(SalidaMaterialBE sm) throws Exception {
+        return sdao.confirmarSalida(sm);
+    }
+    
+    public int confirmarRetorno(SalidaMaterialBE sm) throws Exception {
+        return sdao.confirmarRetorno(sm);
+    }
 }

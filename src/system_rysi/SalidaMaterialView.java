@@ -11,6 +11,7 @@ import Controller.ProveedorBL;
 import Controller.SalidaMaterialBL;
 import Controller.SalidaMaterialDetalleBL;
 import Controller.ValidacionBL;
+import database.AccesoDB;
 import entity.ClienteBE;
 import entity.DatoComunBE;
 import entity.MonedaBE;
@@ -27,16 +28,22 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -52,6 +59,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     int id_empresa_index;
     int id_usuario_index;
     String perfil_usuario_index = "";
+    String aliasUsuarioIndex;
     
     //Banderas
     DefaultTableModel m;
@@ -76,14 +84,15 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     int id_salidamaterial_global;
     private Component ventana;
     
-    public SalidaMaterialView(String controlador, String DSN, String user, String password, int id_empresa, int id_usuario, String perfil_usuario) {
+    public SalidaMaterialView(String controlador, String DSN, String user, String password, int id_empresa, int id_usuario, String perfil_usuario, String alias_usuario) {
         controlador_index = controlador;
         user_index = user;
         password_index = password;
         id_empresa_index = id_empresa;
         id_usuario_index = id_usuario;
         perfil_usuario_index = perfil_usuario;
-
+        aliasUsuarioIndex = alias_usuario;
+        
         System.out.println("\n\nconectando con Salida de materiales");
         initComponents();
 
@@ -254,7 +263,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 pbe.setDireccion(direccion);
         
             pbe.setId_empresa(id_empresa_index);
-            pbe.setUsuarioInserta(user_index);
+            pbe.setUsuarioInserta(aliasUsuarioIndex);
 
             try {
                 int respuesta = objObrasBL.create(pbe);
@@ -3107,17 +3116,16 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                                 SalidaMaterialBE obj = new SalidaMaterialBE();
                                 obj.setIdSalidaMaterial(idSalidaMaterial);
                                 obj.setId_empresa(id_empresa_index);
+                                obj.setUsuarioModifica(aliasUsuarioIndex);
 
                                 objSalidaMaterialBL.confirmarSalida(obj);
-                                imprimirSalidaMaterial();    
+                                imprimirSalidaMaterial(idSalidaMaterial);    
                                 mostrar_tabla_general();
-                                JOptionPane.showMessageDialog(null, "Salida confirmada con éxito");
                             }
                             
                             break;
                         default:
-                            imprimirSalidaMaterial();
-                            JOptionPane.showMessageDialog(null, "Se imprime el documento");
+                            imprimirSalidaMaterial(idSalidaMaterial);
                             break;
                     }
                 }
@@ -3151,17 +3159,16 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                             SalidaMaterialBE obj = new SalidaMaterialBE();
                             obj.setIdSalidaMaterial(idSalidaMaterial);
                             obj.setId_empresa(id_empresa_index);
-
+                            obj.setUsuarioModifica(aliasUsuarioIndex);
+                            
                             objSalidaMaterialBL.confirmarRetorno(obj);
-                            imprimirEntregaMaterial();
+                            imprimirEntregaMaterial(idSalidaMaterial);
                             mostrar_tabla_general();
-                            JOptionPane.showMessageDialog(null, "Retorno de material confirmado con éxito");
                         }
                         break;
                     
                     default:
-                        imprimirEntregaMaterial();
-                        JOptionPane.showMessageDialog(null, "Se imprime el documento");
+                        imprimirEntregaMaterial(idSalidaMaterial);
                         break;
                 }
             } catch (Exception e) {
@@ -3756,7 +3763,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 sm.setMotivo(Motivo);
             
             sm.setId_empresa(id_empresa_index);
-            sm.setUsuarioInserta(user_index);
+            sm.setUsuarioInserta(aliasUsuarioIndex);
             sm.setTipoOperacion(crear0_modificar1_producto);            
         }
         
@@ -4198,7 +4205,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 obj.setId_producto((Integer) tm.getValueAt(i, 0));
                 obj.setCantidadSalida((BigDecimal) tm.getValueAt(i, 3));
                 obj.setId_salida_material(id_salida);
-                obj.setUsuarioSalida(user_index);
+                obj.setUsuarioSalida(aliasUsuarioIndex);
                 obj.setTipoOperacion(crear0_modificar1_producto);                     
                 obj.setId_empresa(id_empresa_index);
                 list.add(obj);          
@@ -4258,7 +4265,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 sm.setIdSalidaMaterial(Integer.parseInt(IdSalidaMaterial));
                 
             sm.setId_empresa(id_empresa_index);
-            sm.setUsuarioModifica(user_index);
+            sm.setUsuarioModifica(aliasUsuarioIndex);
         }
         
         return sm;
@@ -4281,7 +4288,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 obj.setCantidadSalida((BigDecimal) tm.getValueAt(i, 3));
                 obj.setCantidadRetorno((Double) tm.getValueAt(i, 4));
                 obj.setComentarioRetorno((String) tm.getValueAt(i, 5));
-                obj.setUsuarioEntrega(user_index);
+                obj.setUsuarioEntrega(aliasUsuarioIndex);
                 list.add(obj);  
             }
         }
@@ -4434,11 +4441,29 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         }
     }
 
-    private void imprimirSalidaMaterial() {
-        
+    private void imprimirSalidaMaterial(int idSalidaMaterial) throws Exception{
+        String rutaInforme = "reportes\\SalidaMaterial.jasper";
+        Map parametros = new HashMap();
+        parametros.put("IdSalidaMaterial", idSalidaMaterial);
+        parametros.put("idEmpresa", id_empresa_index);    
+        Connection cn = AccesoDB.getConnection();
+            
+        JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);
+        JasperViewer view = new JasperViewer(print, false);
+        view.setTitle("SALIDA DE MATERIAL  N° " + insertarCeros(idSalidaMaterial));
+        view.setVisible(true);
     }
 
-    private void imprimirEntregaMaterial() {
-        
+    private void imprimirEntregaMaterial(int idSalidaMaterial) throws Exception {
+        String rutaInforme = "reportes\\RetornoMaterial.jasper";
+        Map parametros = new HashMap();
+        parametros.put("IdSalidaMaterial", idSalidaMaterial);
+        parametros.put("idEmpresa", id_empresa_index);    
+        Connection cn = AccesoDB.getConnection();
+            
+        JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);
+        JasperViewer view = new JasperViewer(print, false);
+        view.setTitle("SALIDA DE MATERIAL  N° " + insertarCeros(idSalidaMaterial));
+        view.setVisible(true);
     }
 }

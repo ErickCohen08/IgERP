@@ -19,11 +19,12 @@ public class index extends javax.swing.JFrame {
     private Statement sentencia;
     int id_empresa_index;
     int id_usuario_index;
+    String alias_usuario_index;
     String perfil_usuario_index;
     String nombre_usuario_index;
     String nombre_empresa_index;
 
-    public index(int id_usuario, String nombre_usuario, String perfil_usuario, int id_empresa, String nombre_empresa) {
+    public index(int id_usuario, String nombre_usuario, String perfil_usuario, int id_empresa, String nombre_empresa, String alias_usuario) {
         Locale locale = new Locale("es","PE");
         Locale.setDefault(locale);
             
@@ -32,6 +33,7 @@ public class index extends javax.swing.JFrame {
         perfil_usuario_index = perfil_usuario;
         nombre_usuario_index = nombre_usuario;
         nombre_empresa_index = nombre_empresa;
+        alias_usuario_index = alias_usuario;
         System.out.println("Iniciando aplicación");
         initComponents();
 //        setIconImage(new ImageIcon(getClass().getResource("../imagenes/icono.png")).getImage());
@@ -954,7 +956,7 @@ public class index extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        panel_contenido.setViewportView(new SalidaMaterialView(controlador, DSN, user, password, id_empresa_index, id_usuario_index, perfil_usuario_index));
+        panel_contenido.setViewportView(new SalidaMaterialView(controlador, DSN, user, password, id_empresa_index, id_usuario_index, perfil_usuario_index, alias_usuario_index));
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
 public static void main(String args[]) {

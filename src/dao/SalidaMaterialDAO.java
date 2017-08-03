@@ -32,8 +32,8 @@ public class SalidaMaterialDAO {
     final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?)}";
     final String GETDATA = "{call usp_SalidaMaterial_GetData(?,?)}";
     final String RETORNOMATERIAL = "{call usp_SalidaMaterial_RetornoMaterial(?,?,?,?)}";
-    final String CONFIRMARSALIDA = "{call usp_SalidaMaterial_ConfirmarSalida(?,?)}";
-    final String CONFIRMARRETORNO = "{call usp_SalidaMaterial_ConfirmarRetorno(?,?)}";
+    final String CONFIRMARSALIDA = "{call usp_SalidaMaterial_ConfirmarSalida(?,?,?)}";
+    final String CONFIRMARRETORNO = "{call usp_SalidaMaterial_ConfirmarRetorno(?,?,?)}";
     
     String sql = "";
     
@@ -109,6 +109,7 @@ public class SalidaMaterialDAO {
             cs = cn.prepareCall(CONFIRMARSALIDA);
             cs.setInt(1, o.getIdSalidaMaterial());
             cs.setInt(2, o.getId_empresa());
+            cs.setString(3, o.getUsuarioModifica());
             respuesta = cs.executeUpdate();
             cs.close();
             
@@ -133,6 +134,7 @@ public class SalidaMaterialDAO {
             cs = cn.prepareCall(CONFIRMARRETORNO);
             cs.setInt(1, o.getIdSalidaMaterial());
             cs.setInt(2, o.getId_empresa());
+            cs.setString(3, o.getUsuarioModifica());
             respuesta = cs.executeUpdate();
             cs.close();
             

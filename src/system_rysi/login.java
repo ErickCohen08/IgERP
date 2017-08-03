@@ -337,7 +337,7 @@ public final class login extends javax.swing.JFrame {
 
 
                 if (id_usuario != 0 && id_empresa != 0) {
-                    index objPrincipio = new index(id_usuario, nombre_usuario, perfil_usuario, id_empresa, nombre_empresa);
+                    index objPrincipio = new index(id_usuario, nombre_usuario, perfil_usuario, id_empresa, nombre_empresa, usu);
                     objPrincipio.setExtendedState(MAXIMIZED_BOTH);
                     objPrincipio.setVisible(true);
                     this.setVisible(false);
@@ -379,7 +379,7 @@ public final class login extends javax.swing.JFrame {
                 }
 
                 if (id_usuario != 0 && id_empresa != 0) {
-                    index objPrincipio = new index(id_usuario, nombre_usuario, perfil_usuario, id_empresa, nombre_empresa);
+                    index objPrincipio = new index(id_usuario, nombre_usuario, perfil_usuario, id_empresa, nombre_empresa, usu);
                     objPrincipio.setExtendedState(MAXIMIZED_BOTH);
                     objPrincipio.setVisible(true);
                     this.setVisible(false);
@@ -422,7 +422,7 @@ public final class login extends javax.swing.JFrame {
                 }
 
                 if (id_usuario != 0 && id_empresa != 0) {
-                    index objPrincipio = new index(id_usuario, nombre_usuario, perfil_usuario, id_empresa, nombre_empresa);
+                    index objPrincipio = new index(id_usuario, nombre_usuario, perfil_usuario, id_empresa, nombre_empresa, usu);
                     objPrincipio.setExtendedState(MAXIMIZED_BOTH);
                     objPrincipio.setVisible(true);
                     this.setVisible(false);
@@ -473,7 +473,7 @@ public final class login extends javax.swing.JFrame {
                 }
 
                 if (id_usuario != 0 && id_empresa != 0) {
-                    index objPrincipio = new index(id_usuario, nombre_usuario, perfil_usuario, id_empresa, nombre_empresa);
+                    index objPrincipio = new index(id_usuario, nombre_usuario, perfil_usuario, id_empresa, nombre_empresa, usu);
                     objPrincipio.setExtendedState(MAXIMIZED_BOTH);
                     objPrincipio.setVisible(true);
                     this.setVisible(false);

@@ -39,11 +39,13 @@ LEFT JOIN TDetalle_salida_material dsm on dsm.id_salida_material = sm.IdSalidaMa
 LEFT JOIN TProducto pro on pro.id_producto = dsm.id_producto
 LEFT JOIN TDatoComun dc1 on dc1.IdDatoComun = pro.id_unidad
 WHERE 
-sm.IdSalidaMaterial = 1 AND
+sm.IdSalidaMaterial = 3 AND
 sm.id_empresa = 1 AND 
 U.id_empresa = 1 AND 
-o.id_empresa = 1 AND
+--o.id_empresa = 1 AND
 dsm.id_empresa = 1
+
+SELECT * FROM TSalida_material
 
 ---select * from TProducto
 

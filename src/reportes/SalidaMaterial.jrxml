@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="36" bottomMargin="36" isSummaryWithPageHeaderAndFooter="true" uuid="998ddb25-aa21-4492-8a87-17123d25425e">
 	<property name="ireport.zoom" value="1.6105100000000032"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="41"/>
+	<property name="ireport.y" value="33"/>
 	<style name="item" fontName="Arial" fontSize="9">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[]]></conditionExpression>
@@ -72,7 +72,6 @@ WHERE
 sm.IdSalidaMaterial = $P{IdSalidaMaterial} AND
 sm.id_empresa = $P{idEmpresa} AND
 U.id_empresa = $P{idEmpresa} AND
-o.id_empresa = $P{idEmpresa} AND
 dsm.id_empresa = $P{idEmpresa}]]>
 	</queryString>
 	<field name="nroSalidaMaterial" class="java.lang.String"/>
@@ -314,7 +313,7 @@ dsm.id_empresa = $P{idEmpresa}]]>
 		</band>
 	</title>
 	<columnHeader>
-		<band height="25">
+		<band height="20">
 			<staticText>
 				<reportElement uuid="7a6efdde-08cd-4815-89b0-f67db5a533a0" mode="Opaque" x="0" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFCC99"/>
 				<box>

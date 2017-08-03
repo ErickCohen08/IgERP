@@ -30,7 +30,7 @@
 	<queryString>
 		<![CDATA[SELECT
 /*Satos de la salida*/
-('SALIDA DE MATERIAL N° ' + RIGHT('0000000000' + dbo.TRIM(sm.IdSalidaMaterial),10))  nroSalidaMaterial,
+('RETORNO DE MATERIAL N° ' + RIGHT('0000000000' + dbo.TRIM(sm.IdSalidaMaterial),10))  nroSalidaMaterial,
 ISNULL(FORMAT(sm.FechaSalida, 'd', 'en-gb'),'') fechaSalida,
 ISNULL(FORMAT(sm.FechaRetorno, 'd', 'en-gb'),'') fechaRetorno,
 dbo.TRIM(sm.Direccion) direccion,
@@ -72,7 +72,6 @@ WHERE
 sm.IdSalidaMaterial = $P{IdSalidaMaterial} AND
 sm.id_empresa = $P{idEmpresa} AND
 U.id_empresa = $P{idEmpresa} AND
-o.id_empresa = $P{idEmpresa} AND
 dsm.id_empresa = $P{idEmpresa}]]>
 	</queryString>
 	<field name="nroSalidaMaterial" class="java.lang.String"/>

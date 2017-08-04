@@ -89,4 +89,9 @@ INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, 
 INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (90002, 9, 2, 'Salida de Material Confirmado',	null,	'SC',	null,'ERCO','A');
 INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (90003, 9, 3, 'Por confirmar Entrega',			null,	'E',	null,'ERCO','A');
 INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (90004, 9, 4, 'Entrega de material confirmado',	null,	'EC',	null,'ERCO','A');
-	
+
+--Estado Compra de material
+DELETE FROM TDatoComun WHERE CodigoTabla = 10
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (100000, 10, 0, 'Estado Compra de Material',		null,	null,	null,'ERCO','A');
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (100001, 10, 1, 'Por confirmar Compra',			null,	'C',	null,'ERCO','A');
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (100002, 10, 2, 'Compra de Material Confirmado',	null,	'CC',	null,'ERCO','A');

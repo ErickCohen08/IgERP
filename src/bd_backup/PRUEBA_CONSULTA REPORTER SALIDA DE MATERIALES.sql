@@ -45,7 +45,7 @@ U.id_empresa = 1 AND
 --o.id_empresa = 1 AND
 dsm.id_empresa = 1
 
-SELECT * FROM TSalida_material
+--SELECT * FROM TSalida_material
 
 ---select * from TProducto
 

@@ -29,7 +29,7 @@ public class SalidaMaterialDAO {
     PreparedStatement ps = null;
     final String INSERT = "{call usp_SalidaMaterial_insert(?,?,?,?,?,?,?,?,?)}";    //Inserta y Modifica la salida de material
     final String DELETE = "{call usp_SalidaMaterial_Delete(?,?)}";
-    final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?)}";
+    final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?,?,?)}";
     final String GETDATA = "{call usp_SalidaMaterial_GetData(?,?)}";
     final String RETORNOMATERIAL = "{call usp_SalidaMaterial_RetornoMaterial(?,?,?,?)}";
     final String CONFIRMARSALIDA = "{call usp_SalidaMaterial_ConfirmarSalida(?,?,?)}";
@@ -165,6 +165,8 @@ public class SalidaMaterialDAO {
             cs.setString(5, pbe.getMotivo());
             cs.setString(6, pbe.getDesPersonal());
             cs.setString(7, pbe.getDesObra());
+            cs.setDate(8, pbe.getFechaRetorno()== null ? null:new java.sql.Date(pbe.getFechaRetorno().getTime()));
+            cs.setString(9, pbe.getDesEstadoAbierto());
             
             rs=cs.executeQuery();
             

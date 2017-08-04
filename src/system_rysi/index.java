@@ -315,6 +315,7 @@ public class index extends javax.swing.JFrame {
         menu_usuario = new javax.swing.JMenuItem();
         menu_empresa = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
         menu_producto = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         Menu_compra_salidamaterial = new javax.swing.JMenu();
@@ -674,6 +675,10 @@ public class index extends javax.swing.JFrame {
 
         jMenu2.setText("Materiales y Precios       ");
 
+        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/compraMaterial_32_32.png"))); // NOI18N
+        jMenuItem5.setText("Conpra de Materiales");
+        jMenu2.add(jMenuItem5);
+
         menu_producto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/producto_32_32.png"))); // NOI18N
         menu_producto.setText("Materiales");
         menu_producto.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -994,6 +999,7 @@ public static void main(String args[]) {
     private javax.swing.JMenuItem jMenuItem21;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;

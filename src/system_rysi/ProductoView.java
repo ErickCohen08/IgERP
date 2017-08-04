@@ -439,6 +439,7 @@ public class ProductoView extends javax.swing.JPanel {
         jPanel21 = new javax.swing.JPanel();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         jPanel22 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
@@ -474,7 +475,6 @@ public class ProductoView extends javax.swing.JPanel {
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton1 = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
-        jButton3 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         panel_tabla = new javax.swing.JPanel();
@@ -1764,7 +1764,7 @@ public class ProductoView extends javax.swing.JPanel {
         });
 
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar_24_24.png"))); // NOI18N
-        jButton8.setText("Buscar");
+        jButton8.setText("Filtrar");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
@@ -1776,14 +1776,29 @@ public class ProductoView extends javax.swing.JPanel {
             }
         });
 
+        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/filter_delete_24_24.png"))); // NOI18N
+        jButton9.setText("Quitar Filtro");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+        jButton9.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jButton9KeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
         jPanel21.setLayout(jPanel21Layout);
         jPanel21Layout.setHorizontalGroup(
             jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel21Layout.createSequentialGroup()
-                .addGap(0, 541, Short.MAX_VALUE)
+                .addGap(0, 354, Short.MAX_VALUE)
                 .addComponent(jButton8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton9)
+                .addGap(74, 74, 74)
                 .addComponent(jButton7))
         );
         jPanel21Layout.setVerticalGroup(
@@ -1791,7 +1806,8 @@ public class ProductoView extends javax.swing.JPanel {
             .addGroup(jPanel21Layout.createSequentialGroup()
                 .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton7)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -2107,19 +2123,6 @@ public class ProductoView extends javax.swing.JPanel {
         jToolBar1.add(jButton1);
         jToolBar1.add(jSeparator5);
 
-        jButton3.setBackground(new java.awt.Color(255, 255, 255));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/filter_delete_24_24.png"))); // NOI18N
-        jButton3.setText("Quitar Filtro");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton3);
-
         jPanel1.add(jToolBar1, java.awt.BorderLayout.CENTER);
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -2432,7 +2435,7 @@ public class ProductoView extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        filtrarProducto();
+        mostrar_tabla_producto();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -2450,23 +2453,6 @@ public class ProductoView extends javax.swing.JPanel {
         dialog_filtrar_producto.setModal(true);
         dialog_filtrar_producto.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        limpiarCboFiltros = true;
-        txtCodigo_bus.setText("");
-        txtDescripcion_bus.setText("");
-        txtModelo_bus.setText("");
-        txtMarca_bus.setText("");
-        txtNombreComun_bus.setText("");
-        
-        incializarCombo(cbo_referencia_bus);
-        incializarCombo(cboMoneda_bus);
-        incializarCombo(cboUnidad_bus);
-        incializarCombo(cboAlmacen_bus);
-        incializarCombo(cboCategoria_bus);
-        
-        mostrar_tabla_producto(); 
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void tabla_detalleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_detalleMouseClicked
         if (evt.getButton() == 3) {
@@ -2750,7 +2736,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void txtCodigo_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigo_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2759,7 +2745,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void txtDescripcion_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcion_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2768,7 +2754,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void txtModelo_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtModelo_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2777,7 +2763,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void txtMarca_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMarca_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2786,7 +2772,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void cbo_referencia_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbo_referencia_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2795,7 +2781,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void txtNombreComun_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreComun_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2804,7 +2790,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void cboMoneda_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboMoneda_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2813,7 +2799,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void cboUnidad_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboUnidad_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2822,7 +2808,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void cboAlmacen_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboAlmacen_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2831,7 +2817,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void cboCategoria_busKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboCategoria_busKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2840,7 +2826,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void jButton8KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton8KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -2858,7 +2844,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void cbo_referencia_busKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbo_referencia_busKeyPressed
        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            filtrarProducto();
+            mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose(); 
@@ -3004,6 +2990,27 @@ public class ProductoView extends javax.swing.JPanel {
         btn_buscar_proveedor.requestFocus();
     }//GEN-LAST:event_jTabbedPane1FocusLost
 
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        limpiarCboFiltros = true;
+        txtCodigo_bus.setText("");
+        txtDescripcion_bus.setText("");
+        txtModelo_bus.setText("");
+        txtMarca_bus.setText("");
+        txtNombreComun_bus.setText("");
+        
+        incializarCombo(cbo_referencia_bus);
+        incializarCombo(cboMoneda_bus);
+        incializarCombo(cboUnidad_bus);
+        incializarCombo(cboAlmacen_bus);
+        incializarCombo(cboCategoria_bus);
+        
+        mostrar_tabla_producto();
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton9KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton9KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton9KeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Centro;
     private javax.swing.JPanel DatosProveedor;
@@ -3043,11 +3050,11 @@ public class ProductoView extends javax.swing.JPanel {
     private javax.swing.JDialog dialog_filtrar_producto;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -3450,11 +3457,6 @@ public class ProductoView extends javax.swing.JPanel {
     private void CerrarDialogoCrearProveedor() {
         limpiar_caja_texto_crear_proveedor();
         dialog_crear_proveedor.dispose();
-    }
-
-    private void filtrarProducto() {
-        mostrar_tabla_producto(); 
-        dialog_filtrar_producto.dispose();
     }
 
     private void CerrarDialogoCrearProducto() {

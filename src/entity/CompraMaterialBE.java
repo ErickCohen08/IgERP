@@ -36,6 +36,7 @@ public class CompraMaterialBE {
     int EstadoAbierto;
     
     String DesProveedor;
+    String RucProveedor;
     String DesMoneda;
     double DesIgv;
     String DesObra;
@@ -259,6 +260,14 @@ public class CompraMaterialBE {
 
     public void setTipoOperacion(int TipoOperacion) {
         this.TipoOperacion = TipoOperacion;
+    }
+
+    public String getRucProveedor() {
+        return RucProveedor;
+    }
+
+    public void setRucProveedor(String RucProveedor) {
+        this.RucProveedor = RucProveedor;
     }
     
 }

@@ -79,6 +79,7 @@ public class SalidaMaterialDetalleDAO implements ICrudService<SalidaMaterialDeta
             cn = AccesoDB.getConnection();
             cs = cn.prepareCall(DELETE);
             cs.setInt(1, o.getId_salida_material());
+            cs.setInt(2, o.getId_empresa());
             respuesta = cs.executeUpdate();
             cs.close();
             

@@ -27,11 +27,11 @@ public class CompraMaterialDAO {
     ResultSet rs = null;
     CallableStatement cs = null;
     PreparedStatement ps = null;
-    final String INSERT = "{call usp_SalidaMaterial_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";    //Inserta y Modifica
-    final String DELETE = "{call usp_SalidaMaterial_Delete(?,?)}";
-    final String READ = "{call usp_SalidaMaterial_Read(?,?,?,?,?,?,?,?,?)}";
-    final String GETDATA = "{call usp_SalidaMaterial_GetData(?,?)}";
-    final String CONFIRMARCOMPRA = "{call usp_SalidaMaterial_ConfirmarSalida(?,?,?)}";
+    final String INSERT = "{call usp_CompraMaterial_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+    final String DELETE = "{call usp_CompraMaterial_Delete(?,?)}";
+    final String READ = "{call usp_CompraMaterial_Read(?,?,?,?,?,?,?,?,?)}";
+    final String GETDATA = "{call usp_CompraMaterial_GetData(?,?)}";
+    final String CONFIRMARCOMPRA = "{call usp_CompraMaterial_ConfirmarCompra(?,?,?)}";
     
     String sql = "";
     
@@ -62,7 +62,7 @@ public class CompraMaterialDAO {
             rs=cs.executeQuery();
             
             while (rs.next()) {                
-                idCompra = rs.getInt("IdCompra");
+                    idCompra = rs.getInt("IdCompra");
             }
             
             rs.close();
@@ -140,33 +140,26 @@ public class CompraMaterialDAO {
             cs.setInt(1,obj.getIdCompra());
             cs.setDate(2, obj.getFechaCompra() == null ? null:new java.sql.Date(obj.getFechaCompra().getTime()));
             cs.setString(3,obj.getNumeroCompra());
-            cs.setString(8,obj.getDesProveedor());
-            cs.setString(9,obj.getDesMoneda());
-            cs.setString(11,obj.getDesObra());
-            cs.setString(12,obj.getDesDocumento());
-            cs.setInt(13,obj.getId_empresa());
+            cs.setString(4,obj.getDesProveedor());
+            cs.setString(5,obj.getDesMoneda());
+            cs.setString(6,obj.getDesObra());
+            cs.setString(7,obj.getDesDocumento());
+            cs.setString(8,obj.getDesEstadoAbierto());
+            cs.setInt(9,obj.getId_empresa());
             
             rs=cs.executeQuery();
             
             CompraMaterialBE emp;
             while (rs.next()) {                
                 emp = new CompraMaterialBE();
-                emp.setIdSalidaMaterial(rs.getInt("IdSalidaMaterial"));
-                emp.setFechaSalida(rs.getDate("FechaSalida"));
-                emp.setDesPersonal(rs.getString("DesPersonal"));
-                emp.setDesObra(rs.getString("DesObra"));
-                emp.setDireccion(rs.getString("Direccion"));
-                emp.setDesEstadoAbierto(rs.getString("DesEstadoAbierto"));
-                emp.setFechaInserta(rs.getDate("FechaInserta"));
-                
                 emp.setFila(rs.getInt("Fila"));
                 emp.setIdCompra(rs.getInt("IdCompra"));
                 emp.setFechaCompra(rs.getDate("FechaCompra"));
-                emp.setNumeroCompra(3,obj.getNumeroCompra());
-                emp.setDesProveedor(8,obj.getDesProveedor());
-                emp.setDesMoneda(9,obj.getDesMoneda());
-                emp.setDesDocumento(12,obj.getDesDocumento());
-                
+                emp.setNumeroCompra(rs.getString("NumeroCompra"));
+                emp.setDesProveedor(rs.getString("DesProveedor"));
+                emp.setDesMoneda(rs.getString("DesMoneda"));
+                emp.setDesDocumento(rs.getString("DesDocumento"));
+                emp.setDesEstadoAbierto(rs.getString("DesEstadoAbierto"));
                 lista.add(emp);
             }
             
@@ -185,29 +178,41 @@ public class CompraMaterialDAO {
         return lista;
     }
 
-    public CompraMaterialBE readId(int idSalidaMaterial, int idEmpresa) throws Exception {
+    public CompraMaterialBE readId(int idCompra, int idEmpresa) throws Exception {
         CompraMaterialBE obj = null;
         
         try {
             cn = AccesoDB.getConnection();        
             
             cs = cn.prepareCall(GETDATA);            
-            cs.setInt(1,idSalidaMaterial);
+            cs.setInt(1,idCompra);
             cs.setInt(2,idEmpresa);
             rs=cs.executeQuery();
             
             while (rs.next()) {                
                 obj = new CompraMaterialBE();
-                obj.setIdSalidaMaterial(idSalidaMaterial);
-                obj.setFechaSalida(rs.getDate("FechaSalida"));
-                obj.setDireccion(rs.getString("Direccion"));
-                obj.setId_personal(rs.getInt("id_personal"));
+                obj.setIdCompra(rs.getInt("IdCompra"));
+                obj.setFechaCompra(rs.getDate("FechaCompra"));
+                obj.setNumeroCompra(rs.getString("NumeroCompra"));
+                obj.setCalculoIgv(rs.getBigDecimal("CalculoIgv"));
+                obj.setSubTotal(rs.getBigDecimal("SubTotal"));
+                obj.setTotal(rs.getBigDecimal("Total"));
+                obj.setTotalLetras(rs.getString("TotalLetras"));
+                obj.setId_proveedor(rs.getInt("id_proveedor"));
+                obj.setId_moneda(rs.getInt("id_moneda"));
+                obj.setId_igv(rs.getInt("id_igv"));
                 obj.setId_obra(rs.getInt("id_obra"));
+                obj.setId_documento(rs.getInt("id_documento"));
                 obj.setId_empresa(rs.getInt("id_empresa"));
-                obj.setMotivo(rs.getString("Motivo"));
-                obj.setDesObra(rs.getString("DesObra"));
-                obj.setDesPersonal(rs.getString("DesPersonal"));
                 obj.setEstadoAbierto(rs.getInt("EstadoAbierto"));
+                
+                obj.setDesProveedor(rs.getString("DesProveedor"));
+                obj.setRucProveedor(rs.getString("RucProveedor"));
+                obj.setDesMoneda(rs.getString("DesMoneda"));
+                obj.setDesIgv(rs.getDouble("DesIgv"));
+                obj.setDesObra(rs.getString("DesObra"));
+                obj.setDesDocumento(rs.getString("DesDocumento"));
+                obj.setDesEstadoAbierto(rs.getString("DesEstadoAbierto"));                
             }
             
             rs.close();
@@ -224,5 +229,4 @@ public class CompraMaterialDAO {
        
         return obj;
     }
-
 }

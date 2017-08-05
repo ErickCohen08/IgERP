@@ -676,7 +676,12 @@ public class index extends javax.swing.JFrame {
         jMenu2.setText("Materiales y Precios       ");
 
         jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/compraMaterial_32_32.png"))); // NOI18N
-        jMenuItem5.setText("Conpra de Materiales");
+        jMenuItem5.setText("Compra de Materiales");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem5);
 
         menu_producto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/producto_32_32.png"))); // NOI18N
@@ -963,6 +968,10 @@ public class index extends javax.swing.JFrame {
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         panel_contenido.setViewportView(new SalidaMaterialView(controlador, DSN, user, password, id_empresa_index, id_usuario_index, perfil_usuario_index, alias_usuario_index));
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        panel_contenido.setViewportView(new CompraMaterialView(controlador, DSN, user, password, id_empresa_index, id_usuario_index, perfil_usuario_index, alias_usuario_index));
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
 public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {

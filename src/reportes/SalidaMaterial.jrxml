@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="36" bottomMargin="36" isSummaryWithPageHeaderAndFooter="true" uuid="998ddb25-aa21-4492-8a87-17123d25425e">
 	<property name="ireport.zoom" value="1.6105100000000032"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="297"/>
 	<property name="ireport.y" value="33"/>
 	<style name="item" fontName="Arial" fontSize="9">
 		<conditionalStyle>
@@ -233,7 +233,7 @@ dsm.id_empresa = $P{idEmpresa}]]>
 			</textField>
 			<image>
 				<reportElement uuid="cfeeb066-e4eb-42e4-9c52-4de045f8a14d" x="0" y="0" width="235" height="68"/>
-				<imageExpression><![CDATA["G:\\ErCo\\Proyectos\\System_Rysi - 8.0\\IgERP\\src\\imagenes\\1.png"]]></imageExpression>
+				<imageExpression><![CDATA["imagenes\\"+$F{logo}]]></imageExpression>
 			</image>
 			<rectangle radius="5">
 				<reportElement uuid="34b381b8-89b4-470d-8b74-27058d7053fd" x="187" y="93" width="180" height="111"/>

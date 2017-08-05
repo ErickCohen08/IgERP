@@ -95,3 +95,10 @@ DELETE FROM TDatoComun WHERE CodigoTabla = 10
 INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (100000, 10, 0, 'Estado Compra de Material',		null,	null,	null,'ERCO','A');
 INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (100001, 10, 1, 'Por confirmar Compra',			null,	'C',	null,'ERCO','A');
 INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (100002, 10, 2, 'Compra de Material Confirmado',	null,	'CC',	null,'ERCO','A');
+
+--Documentos de compra o venta
+DELETE FROM TDatoComun WHERE CodigoTabla = 11
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (110000, 11, 0, 'Documento Compra Venta',	null,	null,	null,'ERCO','A');
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (110001, 11, 1, 'Factura',					null,	'F',	null,'ERCO','A');
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (110002, 11, 2, 'Boleta',					null,	'B',	null,'ERCO','A');
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (110003, 11, 3, 'Ticket',					null,	'T',	null,'ERCO','A');

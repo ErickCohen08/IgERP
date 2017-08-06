@@ -106,7 +106,7 @@ public class CompraMaterialDetalleDAO implements ICrudService<CompraMaterialDeta
             cs = cn.prepareCall(READ);
             
             cs.setInt(1,pbe.getIdCompra());
-            cs.setInt(1,pbe.getId_empresa());
+            cs.setInt(2,pbe.getId_empresa());
             
             rs=cs.executeQuery();
             
@@ -127,7 +127,7 @@ public class CompraMaterialDetalleDAO implements ICrudService<CompraMaterialDeta
             }
             
             rs.close();
-            ps.close();
+            cs.close();
         } catch (IllegalAccessException e) {
             throw e;
         } catch (InstantiationException e) {

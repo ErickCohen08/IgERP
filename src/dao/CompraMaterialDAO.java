@@ -156,6 +156,7 @@ public class CompraMaterialDAO {
                 emp.setIdCompra(rs.getInt("IdCompra"));
                 emp.setFechaCompra(rs.getDate("FechaCompra"));
                 emp.setNumeroCompra(rs.getString("NumeroCompra"));
+                emp.setTotal(rs.getBigDecimal("Total"));
                 emp.setDesProveedor(rs.getString("DesProveedor"));
                 emp.setDesMoneda(rs.getString("DesMoneda"));
                 emp.setDesDocumento(rs.getString("DesDocumento"));

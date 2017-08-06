@@ -30,13 +30,13 @@ import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -111,6 +111,9 @@ public class CompraMaterialView extends javax.swing.JPanel {
         System.out.println("Mostrar Tabla Compra de materiales");
         mostrar_tabla_general();
         MostrarObjetos(false);        
+        
+        Locale locale = new Locale("es","PE");
+        Locale.setDefault(locale);
     }
 
     private void Activar_letras_Mayusculas() {
@@ -1118,8 +1121,8 @@ public class CompraMaterialView extends javax.swing.JPanel {
         txtNumeroCompra.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         txtNumeroCompra.setOpaque(false);
         txtNumeroCompra.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtNumeroCompraKeyPressed(evt);
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumeroCompraKeyTyped(evt);
             }
         });
 
@@ -2582,8 +2585,8 @@ public class CompraMaterialView extends javax.swing.JPanel {
             tabla_general.getColumnModel().getColumn(3).setPreferredWidth(500);
             tabla_general.getColumnModel().getColumn(4).setPreferredWidth(150);
             tabla_general.getColumnModel().getColumn(5).setPreferredWidth(200);
-            tabla_general.getColumnModel().getColumn(6).setPreferredWidth(300);
-            tabla_general.getColumnModel().getColumn(7).setPreferredWidth(300);
+            tabla_general.getColumnModel().getColumn(6).setPreferredWidth(200);
+            tabla_general.getColumnModel().getColumn(7).setPreferredWidth(200);
             tabla_general.getColumnModel().getColumn(8).setPreferredWidth(300);
         }
 
@@ -2700,7 +2703,8 @@ public class CompraMaterialView extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
             DefaultTableModel tabla = (DefaultTableModel) tabla_detalle_compre_material.getModel();
-            tabla.removeRow(fila);            
+            tabla.removeRow(fila);
+            calcularTotales(obtenerSubTotal());
         }
     }//GEN-LAST:event_EliminarActionPerformed
 
@@ -3202,7 +3206,7 @@ public class CompraMaterialView extends javax.swing.JPanel {
         
                 if(band == 0){                    
                     switch (estadoAbierto){
-                        case 90001: 
+                        case 100001: 
                             int respuesta = JOptionPane.showConfirmDialog(null, "Una vez impreso el documento, ya no se podrán efectuar cambios.\n\n"
                                     + "¿Desea continuar con esta operación?", "Confirmar Compra de material e Imprimir", JOptionPane.YES_NO_OPTION);
             
@@ -3213,15 +3217,13 @@ public class CompraMaterialView extends javax.swing.JPanel {
                                 obj.setUsuarioModifica(aliasUsuarioIndex);
 
                                 objCompraMaterialBL.confirmarCompra(obj);
-                                //imprimirSalidaMaterial(idSalidaMaterial);    
-                                JOptionPane.showMessageDialog(null, "Se impreme");
+                                imprimirSalidaMaterial(idSalidaMaterial);    
                                 mostrar_tabla_general();
                             }
                             
                             break;
                         default:
-                            //imprimirSalidaMaterial(idSalidaMaterial);
-                            JOptionPane.showMessageDialog(null, "Impreso");
+                            imprimirSalidaMaterial(idSalidaMaterial);
                             break;
                     }
                 }
@@ -3409,12 +3411,6 @@ public class CompraMaterialView extends javax.swing.JPanel {
         tamaño_de_caja(caja, evt, limite);
     }//GEN-LAST:event_txt_correo_proveedor_crearKeyTyped
 
-    private void txtNumeroCompraKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroCompraKeyPressed
-        JTextField caja = txtNumeroCompra;
-        int limite = 15;
-        tamaño_de_caja(caja, evt, limite);
-    }//GEN-LAST:event_txtNumeroCompraKeyPressed
-
     private void btnNuevoProveedorCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProveedorCompraActionPerformed
         txt_buscar_proveedor.setText("");
         limpiar_caja_texto_crear_proveedor();
@@ -3473,6 +3469,12 @@ public class CompraMaterialView extends javax.swing.JPanel {
     private void txtFechaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaCompraActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFechaCompraActionPerformed
+
+    private void txtNumeroCompraKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroCompraKeyTyped
+        JTextField caja = txtNumeroCompra;
+        int limite = 15;
+        tamaño_de_caja(caja, evt, limite);
+    }//GEN-LAST:event_txtNumeroCompraKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Eliminar;
@@ -3718,6 +3720,8 @@ public class CompraMaterialView extends javax.swing.JPanel {
         
         if(txtNumDocumentoBus.getText().trim().length() > 0)
             pbe.setNumeroCompra(txtNumDocumentoBus.getText().trim());
+        
+        pbe.setId_empresa(id_empresa_index);
         
         return pbe;
     }
@@ -4092,6 +4096,7 @@ public class CompraMaterialView extends javax.swing.JPanel {
                 sm.setDesObra(DesObra);
             
             sm.setDesDocumento(DesDocumento);
+            sm.setNumeroCompra(NumeroCompra);
             sm.setId_empresa(id_empresa_index);
             sm.setUsuarioInserta(aliasUsuarioIndex);
             sm.setTipoOperacion(crear0_modificar1_producto);
@@ -4641,10 +4646,12 @@ public class CompraMaterialView extends javax.swing.JPanel {
         switch (estadoAbierto){
             
             case 100001: //Por confirmar Salida
+                btnImprimirSalida.setText("Confirmar Compra");
                 MotrarBotonesControl(true, true, true);
                 break;
                 
             case 100002: //Salida de Material Confirmado
+                btnImprimirSalida.setText("Ver Compra");
                 MotrarBotonesControl(false, false, true);
                 break;
                         
@@ -4667,28 +4674,15 @@ public class CompraMaterialView extends javax.swing.JPanel {
     }
 
     private void imprimirSalidaMaterial(int idSalidaMaterial) throws Exception{
-        String rutaInforme = "reportes\\SalidaMaterial.jasper";
+        String rutaInforme = "reportes\\CompraMaterial.jasper";
         Map parametros = new HashMap();
-        parametros.put("IdCompra", idSalidaMaterial);
+        parametros.put("idCompra", idSalidaMaterial);
         parametros.put("idEmpresa", id_empresa_index);    
         Connection cn = AccesoDB.getConnection();
             
         JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);
         JasperViewer view = new JasperViewer(print, false);
-        view.setTitle("SALIDA DE MATERIAL  N° " + insertarCeros(idSalidaMaterial));
-        view.setVisible(true);
-    }
-
-    private void imprimirEntregaMaterial(int idSalidaMaterial) throws Exception {
-        String rutaInforme = "reportes\\RetornoMaterial.jasper";
-        Map parametros = new HashMap();
-        parametros.put("IdCompra", idSalidaMaterial);
-        parametros.put("idEmpresa", id_empresa_index);    
-        Connection cn = AccesoDB.getConnection();
-            
-        JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);
-        JasperViewer view = new JasperViewer(print, false);
-        view.setTitle("SALIDA DE MATERIAL  N° " + insertarCeros(idSalidaMaterial));
+        view.setTitle("COMPRA DE MATERIAL  N° " + insertarCeros(idSalidaMaterial));
         view.setVisible(true);
     }
 

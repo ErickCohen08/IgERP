@@ -2985,7 +2985,7 @@
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="spRetorno">
             </Component>
-            <Component class="javax.swing.JButton" name="btnImprimirEntrega">
+            <Component class="javax.swing.JButton" name="btnImprimirRetorno">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -2993,13 +2993,13 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/imagenes/Salida_Imprimir_24_24.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Imprimir Entrega"/>
+                <Property name="text" type="java.lang.String" value="Imprimir Retorno"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImprimirEntregaActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImprimirRetornoActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="spImprimirEntrega">

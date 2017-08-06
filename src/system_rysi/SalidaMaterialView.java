@@ -453,7 +453,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         spImprimirSalida = new javax.swing.JToolBar.Separator();
         btnRetorno = new javax.swing.JButton();
         spRetorno = new javax.swing.JToolBar.Separator();
-        btnImprimirEntrega = new javax.swing.JButton();
+        btnImprimirRetorno = new javax.swing.JButton();
         spImprimirEntrega = new javax.swing.JToolBar.Separator();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -2287,18 +2287,18 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jToolBar1.add(btnRetorno);
         jToolBar1.add(spRetorno);
 
-        btnImprimirEntrega.setBackground(new java.awt.Color(255, 255, 255));
-        btnImprimirEntrega.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Salida_Imprimir_24_24.png"))); // NOI18N
-        btnImprimirEntrega.setText("Imprimir Entrega");
-        btnImprimirEntrega.setFocusable(false);
-        btnImprimirEntrega.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnImprimirEntrega.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnImprimirEntrega.addActionListener(new java.awt.event.ActionListener() {
+        btnImprimirRetorno.setBackground(new java.awt.Color(255, 255, 255));
+        btnImprimirRetorno.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Salida_Imprimir_24_24.png"))); // NOI18N
+        btnImprimirRetorno.setText("Imprimir Retorno");
+        btnImprimirRetorno.setFocusable(false);
+        btnImprimirRetorno.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnImprimirRetorno.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnImprimirRetorno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImprimirEntregaActionPerformed(evt);
+                btnImprimirRetornoActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnImprimirEntrega);
+        jToolBar1.add(btnImprimirRetorno);
         jToolBar1.add(spImprimirEntrega);
 
         jPanel1.add(jToolBar1, java.awt.BorderLayout.CENTER);
@@ -3150,7 +3150,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnImprimirSalidaActionPerformed
 
-    private void btnImprimirEntregaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirEntregaActionPerformed
+    private void btnImprimirRetornoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirRetornoActionPerformed
         int fila = tabla_general.getSelectedRow();
 
         if (fila == -1) {
@@ -3186,7 +3186,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }            
         }
-    }//GEN-LAST:event_btnImprimirEntregaActionPerformed
+    }//GEN-LAST:event_btnImprimirRetornoActionPerformed
 
     private void tabla_generalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabla_generalKeyReleased
         tablaGeneralClick();
@@ -3212,7 +3212,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JMenuItem Eliminar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnFiltrar;
-    private javax.swing.JButton btnImprimirEntrega;
+    private javax.swing.JButton btnImprimirRetorno;
     private javax.swing.JButton btnImprimirSalida;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnNuevo;
@@ -4384,7 +4384,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         spRetorno.setVisible(retorno);
         btnImprimirSalida.setVisible(imprimirSalida);
         spImprimirSalida.setVisible(imprimirSalida);
-        btnImprimirEntrega.setVisible(imprimirEntrega);
+        btnImprimirRetorno.setVisible(imprimirEntrega);
         spImprimirEntrega.setVisible(imprimirEntrega);
     }
 
@@ -4393,18 +4393,26 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         switch (estadoAbierto){
             
             case 90001: //Por confirmar Salida
+                btnImprimirSalida.setText("Confirmar Salida");
                 MotrarBotonesControl(true, true, false, true, false);
                 break;
                 
             case 90002: //Salida de Material Confirmado
+                btnImprimirSalida.setText("Ver Salida");
+                btnRetorno.setText("Retorno");               
                 MotrarBotonesControl(false, false, true, true, false);
                 break;
                 
             case 90003: //Por confirmar Entrega
+                btnImprimirSalida.setText("Ver Salida");
+                btnRetorno.setText("Modificar Retorno");
+                btnImprimirRetorno.setText("Confirmar Retorno");
                 MotrarBotonesControl(false, false, true, true, true);
                 break;
                 
             case 90004: //Entrega de material confirmado
+                btnImprimirSalida.setText("Ver Salida");
+                btnImprimirRetorno.setText("Ver Retorno");
                 MotrarBotonesControl(false, false, false, true, true);
                 break;            
         }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="36" bottomMargin="36" isSummaryWithPageHeaderAndFooter="true" uuid="998ddb25-aa21-4492-8a87-17123d25425e">
 	<property name="ireport.zoom" value="1.6105100000000032"/>
-	<property name="ireport.x" value="297"/>
-	<property name="ireport.y" value="33"/>
+	<property name="ireport.x" value="187"/>
+	<property name="ireport.y" value="165"/>
 	<style name="item" fontName="Arial" fontSize="9">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[]]></conditionExpression>
@@ -113,48 +113,6 @@ dsm.id_empresa = $P{idEmpresa}]]>
 					<pen lineWidth="0.25"/>
 				</graphicElement>
 			</rectangle>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="b4034864-8452-4f31-9760-059be695fc76" x="445" y="16" width="50" height="13" forecolor="#666666"/>
-				<box>
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{ruc_empresa}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="d59cb2c5-574d-4f5f-80f4-58be8cbba6e8" x="293" y="29" width="202" height="13" forecolor="#666666"/>
-				<box>
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="Arial" size="8" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{direccion_empresa}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="c0fdf3dd-9554-46da-ac28-c82ddaef9bfa" x="414" y="16" width="30" height="13" forecolor="#666666"/>
-				<box>
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="8" isBold="false" isItalic="true" isUnderline="false"/>
-				</textElement>
-				<text><![CDATA[R.U.C.:]]></text>
-			</staticText>
 			<line>
 				<reportElement uuid="42da3144-084c-4c3b-b25f-4ef68e4b003c" x="0" y="53" width="555" height="1" backcolor="#FF9900"/>
 				<graphicElement>
@@ -178,14 +136,14 @@ dsm.id_empresa = $P{idEmpresa}]]>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="084c1930-f0c7-453a-a6b5-d471ce56beea" x="5" y="115" width="170" height="13"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="9"/>
+					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fechaSalida}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="d95dac18-a9da-4dc9-b254-028dfb297b83" x="5" y="148" width="170" height="34" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="9"/>
+					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{personalResponsableSalida}]]></textFieldExpression>
 			</textField>
@@ -199,14 +157,14 @@ dsm.id_empresa = $P{idEmpresa}]]>
 			<staticText>
 				<reportElement uuid="c274d6e6-e425-4ce4-a399-acd57b6f10a0" x="5" y="102" width="80" height="13"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Fecha de Salida:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="c274d6e6-e425-4ce4-a399-acd57b6f10a0" x="5" y="135" width="53" height="13"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Solicitante:]]></text>
 			</staticText>
@@ -217,20 +175,6 @@ dsm.id_empresa = $P{idEmpresa}]]>
 				</textElement>
 				<text><![CDATA[Mediante el presente documento, se confirma la entrega de material al personal solicitante.]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="760e7279-15dc-4636-b269-24e47aa22647" x="397" y="4" width="88" height="13" forecolor="#666666"/>
-				<textElement textAlignment="Right">
-					<font fontName="Arial" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement uuid="0f96b36d-f3e0-4f8f-8c9c-88cc6cbabd80" x="485" y="4" width="10" height="13" forecolor="#666666"/>
-				<textElement textAlignment="Right">
-					<font fontName="Arial" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
 			<image>
 				<reportElement uuid="cfeeb066-e4eb-42e4-9c52-4de045f8a14d" x="0" y="0" width="235" height="68"/>
 				<imageExpression><![CDATA["imagenes\\"+$F{logo}]]></imageExpression>
@@ -264,51 +208,72 @@ dsm.id_empresa = $P{idEmpresa}]]>
 			<staticText>
 				<reportElement uuid="c274d6e6-e425-4ce4-a399-acd57b6f10a0" x="190" y="102" width="80" height="13"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Obra:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="084c1930-f0c7-453a-a6b5-d471ce56beea" x="190" y="115" width="170" height="34"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="9"/>
+					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{obra}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="c274d6e6-e425-4ce4-a399-acd57b6f10a0" x="190" y="153" width="80" height="13"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Dirección:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="084c1930-f0c7-453a-a6b5-d471ce56beea" x="190" y="166" width="170" height="34" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="9"/>
+					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="084c1930-f0c7-453a-a6b5-d471ce56beea" x="378" y="102" width="170" height="98" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Calibri" size="9"/>
+					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{motivo}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="c274d6e6-e425-4ce4-a399-acd57b6f10a0" x="5" y="187" width="40" height="13"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Calibri" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Estado:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="084c1930-f0c7-453a-a6b5-d471ce56beea" x="45" y="187" width="130" height="13"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Calibri" size="9"/>
+					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{estadoAbierto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="ed818310-ff31-444d-987a-c9e5703eb8c5" x="323" y="23" width="175" height="13" forecolor="#666666"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="760e7279-15dc-4636-b269-24e47aa22647" x="400" y="10" width="88" height="13" forecolor="#666666"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="0f96b36d-f3e0-4f8f-8c9c-88cc6cbabd80" x="488" y="10" width="10" height="13" forecolor="#666666"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -376,7 +341,7 @@ dsm.id_empresa = $P{idEmpresa}]]>
 					<bottomPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+					<font fontName="Arial" size="9" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{unidadMaterial}]]></textFieldExpression>
 			</textField>
@@ -386,7 +351,7 @@ dsm.id_empresa = $P{idEmpresa}]]>
 					<bottomPen lineWidth="0.0"/>
 				</box>
 				<textElement>
-					<font fontName="Calibri" size="9" isPdfEmbedded="false"/>
+					<font fontName="Arial" size="9" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombreMaterial}]]></textFieldExpression>
 			</textField>
@@ -396,14 +361,14 @@ dsm.id_empresa = $P{idEmpresa}]]>
 					<bottomPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right">
-					<font fontName="Calibri" size="9" isStrikeThrough="false" isPdfEmbedded="false"/>
+					<font fontName="Arial" size="9" isStrikeThrough="false" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidadSalida}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="1df82c29-0bb5-433f-967e-1e55df17322e" x="0" y="1" width="25" height="15"/>
 				<textElement>
-					<font fontName="Calibri" size="9"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>

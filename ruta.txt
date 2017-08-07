@@ -1,1 +1,4 @@
-bin\compile   c:\proyectos\dist\install.xml -b  c:\proyectos\dist
+ir a la carpeta izPack
+C:\Program Files\IzPack
+
+bin\compile   c:\Instalador\install.xml -b  c:\Instalador

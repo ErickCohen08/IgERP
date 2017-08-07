@@ -799,16 +799,11 @@
                                 <Component class="javax.swing.JComboBox" name="cbo_perfil">
                                   <Properties>
                                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                                      <StringArray count="9">
+                                      <StringArray count="4">
                                         <StringItem index="0" value="Administrador"/>
-                                        <StringItem index="1" value="Facturas"/>
-                                        <StringItem index="2" value="Guias"/>
-                                        <StringItem index="3" value="Facturas y Guias"/>
-                                        <StringItem index="4" value="Compras"/>
-                                        <StringItem index="5" value="Salidad de Materiales"/>
-                                        <StringItem index="6" value="Compras y Salidas de Materiales"/>
-                                        <StringItem index="7" value="Reportes"/>
-                                        <StringItem index="8" value="Solo Lectura"/>
+                                        <StringItem index="1" value="Facturacion"/>
+                                        <StringItem index="2" value="Cotizacion"/>
+                                        <StringItem index="3" value="Almacen"/>
                                       </StringArray>
                                     </Property>
                                   </Properties>

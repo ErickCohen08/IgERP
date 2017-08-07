@@ -1,1 +1,0 @@
-jdbc:odbc:system_rysi

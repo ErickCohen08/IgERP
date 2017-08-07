@@ -215,7 +215,6 @@ public final class login extends javax.swing.JFrame {
 
         txt_alias.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         txt_alias.setForeground(new java.awt.Color(0, 0, 153));
-        txt_alias.setText("erco");
         txt_alias.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_aliasKeyReleased(evt);
@@ -231,7 +230,6 @@ public final class login extends javax.swing.JFrame {
         });
 
         txt_contrasena.setForeground(new java.awt.Color(0, 51, 153));
-        txt_contrasena.setText("erco.123");
         txt_contrasena.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_contrasenaKeyReleased(evt);

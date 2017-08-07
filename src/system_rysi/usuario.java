@@ -699,7 +699,7 @@ public class usuario extends javax.swing.JPanel {
             }
         });
 
-        cbo_perfil.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Administrador", "Facturas", "Guias", "Facturas y Guias", "Compras", "Salidad de Materiales", "Compras y Salidas de Materiales", "Reportes", "Solo Lectura" }));
+        cbo_perfil.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Administrador", "Facturacion", "Cotizacion", "Almacen" }));
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);

@@ -40,16 +40,9 @@ public class index extends javax.swing.JFrame {
         System.out.println("conectando a la base de datos");
         conexion();
         
-        reglas_perfil(perfil_usuario);
+        reglas_perfil(perfil_usuario.trim());
         label_logo.setText(nombre_empresa);
-        label_nombre.setText(nombre_usuario);
-        
-        Menu_compra_salidamaterial.setVisible(false);
-        menu_reportes.setVisible(false);
-        menu_backup.setVisible(false);
-        menu_obras.setVisible(false);
-        jSeparator2.setVisible(false);
-
+        label_nombre.setText(nombre_usuario);        
     }
 
     private void conexion() {
@@ -115,160 +108,47 @@ public class index extends javax.swing.JFrame {
 
     private void reglas_perfil(String perfil_usuario) {
 
-        if (perfil_usuario.equals("Facturas")) {
-            //Registros
-            menu_cliente.setVisible(true);
-            menu_proveedor.setVisible(false);
-            menu_personal.setVisible(false);
-
-            menu_documento.setVisible(true);
-            menu_igv.setVisible(true);
-            menu_vehiculo.setVisible(true);
-            menu_empresa_transportes.setVisible(true);
-            menu_conductor.setVisible(true);
-            menu_tipopago.setVisible(true);
-
-            menu_producto.setVisible(false);
-            menu_obras.setVisible(false);
-            
-            menu_moneda.setVisible(true);
-            menu_producto.setVisible(true);
-
-            menu_usuario.setVisible(false);
-            menu_empresa.setVisible(false);
-
-            //Factyura - Guia
-            Menu_factura_guia.setVisible(true);
-            menu_factura.setVisible(true);
-            menu_guia.setVisible(true);
-
-
-            //Otros menus
-            Menu_compra_salidamaterial.setVisible(false);
-            menu_reportes.setVisible(false);
-            menu_backup.setVisible(false);
-
-            //Botones
-            btn_Factura.setVisible(true);
-            btn_Guias.setVisible(true);
-            btn_clientes.setVisible(true);
-
-
-        }
-        if (perfil_usuario.equals("Guias")) {
-            //Registros
-            menu_cliente.setVisible(true);
-            menu_proveedor.setVisible(false);
-            menu_personal.setVisible(false);
-
-            menu_documento.setVisible(true);
-            menu_igv.setVisible(true);
-            menu_vehiculo.setVisible(true);
-            menu_empresa_transportes.setVisible(true);
-            menu_conductor.setVisible(true);
-            menu_tipopago.setVisible(true);
-
-            menu_producto.setVisible(false);
-            menu_obras.setVisible(false);
-
-            menu_moneda.setVisible(true);
-            menu_producto.setVisible(true);
-            
-            menu_usuario.setVisible(false);
-            menu_empresa.setVisible(false);
-
-            //Factyura - Guia
-            Menu_factura_guia.setVisible(true);
-            menu_factura.setVisible(true);
-            menu_guia.setVisible(true);
-
-
-            //Otros menus
-            Menu_compra_salidamaterial.setVisible(false);
-            menu_reportes.setVisible(false);
-            menu_backup.setVisible(false);
-
-            //Botones
-            btn_Factura.setVisible(true);
-            btn_Guias.setVisible(true);
-            btn_clientes.setVisible(true);
+            /*Administrador
+            Facturacion
+            Cotizacion
+            Almacen*/
+                    
+        if (perfil_usuario.equals("Facturacion")) {
+            menuAdministracion.setVisible(false);
+            menuRegistros.setVisible(true);
+            menuAlmacen.setVisible(false);
+            menuCotizaciones.setVisible(false);
+            menuFactura.setVisible(true);
+            menuGuia.setVisible(true);
         }
         
-        if (perfil_usuario.equals("Facturas y Guias")) {
-            //Registros
-            menu_cliente.setVisible(true);
-            menu_proveedor.setVisible(false);
-            menu_personal.setVisible(false);
-
-            menu_documento.setVisible(true);
-            menu_igv.setVisible(true);
-            menu_vehiculo.setVisible(true);
-            menu_empresa_transportes.setVisible(true);
-            menu_conductor.setVisible(true);
-            menu_tipopago.setVisible(true);
-
-            menu_producto.setVisible(false);
-            menu_obras.setVisible(false);
-
-            menu_moneda.setVisible(true);
-            menu_producto.setVisible(true);
-            
-            menu_usuario.setVisible(false);
-            menu_empresa.setVisible(false);
-
-            //Factyura - Guia
-            Menu_factura_guia.setVisible(true);
-            menu_factura.setVisible(true);
-            menu_guia.setVisible(true);
-
-
-            //Otros menus
-            Menu_compra_salidamaterial.setVisible(false);
-            menu_reportes.setVisible(false);
-            menu_backup.setVisible(false);
-
-            //Botones
-            btn_Factura.setVisible(true);
-            btn_Guias.setVisible(true);
-            btn_clientes.setVisible(true);
+        if (perfil_usuario.equals("Cotizacion")) {
+            menuAdministracion.setVisible(false);
+            menuRegistros.setVisible(true);
+            menuAlmacen.setVisible(false);
+            menuCotizaciones.setVisible(true);
+            menuFactura.setVisible(false);
+            menuGuia.setVisible(false);
         }
         
-        if (perfil_usuario.equals("Compras")) {
-
-            //Otros menus
-            Menu_registros.setVisible(false);
-            Menu_factura_guia.setVisible(false);
-            Menu_compra_salidamaterial.setVisible(false);
-            menu_reportes.setVisible(false);
-            menu_backup.setVisible(false);
+        if (perfil_usuario.equals("Almacen")) {
+            menuAdministracion.setVisible(false);
+            menuRegistros.setVisible(true);
+            menuAlmacen.setVisible(true);
+            menuCotizaciones.setVisible(false);
+            menuFactura.setVisible(false);
+            menuGuia.setVisible(false);
         }
         
-        if (perfil_usuario.equals("Salidad de Materiales")) {
-            //Otros menus
-            Menu_registros.setVisible(false);
-            Menu_factura_guia.setVisible(false);
-            Menu_compra_salidamaterial.setVisible(false);
-            menu_reportes.setVisible(false);
-            menu_backup.setVisible(false);
+        if (perfil_usuario.equals("Administrador")) {
+            menuAdministracion.setVisible(true);
+            menuRegistros.setVisible(true);
+            menuAlmacen.setVisible(true);
+            menuCotizaciones.setVisible(true);
+            menuFactura.setVisible(true);
+            menuGuia.setVisible(true);
         }
         
-        if (perfil_usuario.equals("Compras y Salidas de Materiales")) {
-            //Otros menus
-            Menu_registros.setVisible(false);
-            Menu_factura_guia.setVisible(false);
-            Menu_compra_salidamaterial.setVisible(false);
-            menu_reportes.setVisible(false);
-            menu_backup.setVisible(false);
-        }
-        
-        if (perfil_usuario.equals("Reportes")) {
-            //Otros menus
-            Menu_registros.setVisible(false);
-            Menu_factura_guia.setVisible(false);
-            Menu_compra_salidamaterial.setVisible(false);
-            menu_reportes.setVisible(false);
-            menu_backup.setVisible(false);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -300,44 +180,36 @@ public class index extends javax.swing.JFrame {
         jMenuItem16 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
         jMenuItem18 = new javax.swing.JMenuItem();
-        Menu_registros = new javax.swing.JMenu();
+        menuAdministracion = new javax.swing.JMenu();
+        menu_usuario = new javax.swing.JMenuItem();
+        menu_empresa = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        menu_moneda = new javax.swing.JMenuItem();
+        menu_obras = new javax.swing.JMenuItem();
+        menuRegistros = new javax.swing.JMenu();
         menu_cliente = new javax.swing.JMenuItem();
         menu_proveedor = new javax.swing.JMenuItem();
         menu_personal = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         menu_documento = new javax.swing.JMenuItem();
         menu_igv = new javax.swing.JMenuItem();
-        jSeparator5 = new javax.swing.JPopupMenu.Separator();
-        menu_moneda = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        menu_obras = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        menu_usuario = new javax.swing.JMenuItem();
-        menu_empresa = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        menuAlmacen = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         menu_producto = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
-        Menu_compra_salidamaterial = new javax.swing.JMenu();
-        jMenuItem13 = new javax.swing.JMenuItem();
-        jMenuItem14 = new javax.swing.JMenuItem();
-        menu_cotizaciones = new javax.swing.JMenu();
+        menuCotizaciones = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         menu_cuenta_banco = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        Menu_factura_guia = new javax.swing.JMenu();
+        menuFactura = new javax.swing.JMenu();
         menu_factura = new javax.swing.JMenuItem();
         menu_tipopago = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        menuGuia = new javax.swing.JMenu();
         menu_guia = new javax.swing.JMenuItem();
         menu_vehiculo = new javax.swing.JMenuItem();
         menu_empresa_transportes = new javax.swing.JMenuItem();
         menu_conductor = new javax.swing.JMenuItem();
-        menu_reportes = new javax.swing.JMenu();
-        menu_backup = new javax.swing.JMenu();
-        jMenuItem15 = new javax.swing.JMenuItem();
-        jMenuItem21 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ErCo System's");
@@ -576,80 +448,7 @@ public class index extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        Menu_registros.setText("Registros         ");
-
-        menu_cliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cliente_32_32.png"))); // NOI18N
-        menu_cliente.setText("Cliente");
-        menu_cliente.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        menu_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menu_clienteActionPerformed(evt);
-            }
-        });
-        Menu_registros.add(menu_cliente);
-
-        menu_proveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/proveedor_32_32.png"))); // NOI18N
-        menu_proveedor.setText("Provedor");
-        menu_proveedor.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        menu_proveedor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menu_proveedorActionPerformed(evt);
-            }
-        });
-        Menu_registros.add(menu_proveedor);
-
-        menu_personal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/personal_32_32.png"))); // NOI18N
-        menu_personal.setText("Personal");
-        menu_personal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        menu_personal.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menu_personalActionPerformed(evt);
-            }
-        });
-        Menu_registros.add(menu_personal);
-        Menu_registros.add(jSeparator3);
-
-        menu_documento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/documentos_32_32.png"))); // NOI18N
-        menu_documento.setText("Documento");
-        menu_documento.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        menu_documento.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menu_documentoActionPerformed(evt);
-            }
-        });
-        Menu_registros.add(menu_documento);
-
-        menu_igv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/igv_32_32.png"))); // NOI18N
-        menu_igv.setText("I.G.V.");
-        menu_igv.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        menu_igv.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menu_igvActionPerformed(evt);
-            }
-        });
-        Menu_registros.add(menu_igv);
-        Menu_registros.add(jSeparator5);
-
-        menu_moneda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/moneda_32_32.png"))); // NOI18N
-        menu_moneda.setText("Monedas");
-        menu_moneda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menu_monedaActionPerformed(evt);
-            }
-        });
-        Menu_registros.add(menu_moneda);
-        Menu_registros.add(jSeparator2);
-
-        menu_obras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/obra_32_32.png"))); // NOI18N
-        menu_obras.setText("Obras");
-        menu_obras.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        menu_obras.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menu_obrasActionPerformed(evt);
-            }
-        });
-        Menu_registros.add(menu_obras);
-        Menu_registros.add(jSeparator1);
+        menuAdministracion.setText("Administracion         ");
 
         menu_usuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/usuario_32_32.png"))); // NOI18N
         menu_usuario.setText("Usuario");
@@ -659,7 +458,7 @@ public class index extends javax.swing.JFrame {
                 menu_usuarioActionPerformed(evt);
             }
         });
-        Menu_registros.add(menu_usuario);
+        menuAdministracion.add(menu_usuario);
 
         menu_empresa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/empresa_32_32.png"))); // NOI18N
         menu_empresa.setText("Empresa");
@@ -669,11 +468,86 @@ public class index extends javax.swing.JFrame {
                 menu_empresaActionPerformed(evt);
             }
         });
-        Menu_registros.add(menu_empresa);
+        menuAdministracion.add(menu_empresa);
+        menuAdministracion.add(jSeparator5);
 
-        jMenuBar1.add(Menu_registros);
+        menu_moneda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/moneda_32_32.png"))); // NOI18N
+        menu_moneda.setText("Monedas");
+        menu_moneda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_monedaActionPerformed(evt);
+            }
+        });
+        menuAdministracion.add(menu_moneda);
 
-        jMenu2.setText("Materiales y Precios       ");
+        menu_obras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/obra_32_32.png"))); // NOI18N
+        menu_obras.setText("Obras");
+        menu_obras.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        menu_obras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_obrasActionPerformed(evt);
+            }
+        });
+        menuAdministracion.add(menu_obras);
+
+        jMenuBar1.add(menuAdministracion);
+
+        menuRegistros.setText("Registros         ");
+
+        menu_cliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cliente_32_32.png"))); // NOI18N
+        menu_cliente.setText("Cliente");
+        menu_cliente.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        menu_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_clienteActionPerformed(evt);
+            }
+        });
+        menuRegistros.add(menu_cliente);
+
+        menu_proveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/proveedor_32_32.png"))); // NOI18N
+        menu_proveedor.setText("Provedor");
+        menu_proveedor.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        menu_proveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_proveedorActionPerformed(evt);
+            }
+        });
+        menuRegistros.add(menu_proveedor);
+
+        menu_personal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/personal_32_32.png"))); // NOI18N
+        menu_personal.setText("Personal");
+        menu_personal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        menu_personal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_personalActionPerformed(evt);
+            }
+        });
+        menuRegistros.add(menu_personal);
+        menuRegistros.add(jSeparator3);
+
+        menu_documento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/documentos_32_32.png"))); // NOI18N
+        menu_documento.setText("Documento");
+        menu_documento.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        menu_documento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_documentoActionPerformed(evt);
+            }
+        });
+        menuRegistros.add(menu_documento);
+
+        menu_igv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/igv_32_32.png"))); // NOI18N
+        menu_igv.setText("I.G.V.");
+        menu_igv.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        menu_igv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_igvActionPerformed(evt);
+            }
+        });
+        menuRegistros.add(menu_igv);
+
+        jMenuBar1.add(menuRegistros);
+
+        menuAlmacen.setText("Almacen              ");
 
         jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/compraMaterial_32_32.png"))); // NOI18N
         jMenuItem5.setText("Compra de Materiales");
@@ -682,7 +556,7 @@ public class index extends javax.swing.JFrame {
                 jMenuItem5ActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem5);
+        menuAlmacen.add(jMenuItem5);
 
         menu_producto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/producto_32_32.png"))); // NOI18N
         menu_producto.setText("Materiales");
@@ -692,7 +566,7 @@ public class index extends javax.swing.JFrame {
                 menu_productoActionPerformed(evt);
             }
         });
-        jMenu2.add(menu_producto);
+        menuAlmacen.add(menu_producto);
 
         jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/salida_material_32_32.png"))); // NOI18N
         jMenuItem3.setText("Salida de Materiales");
@@ -701,25 +575,11 @@ public class index extends javax.swing.JFrame {
                 jMenuItem3ActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem3);
+        menuAlmacen.add(jMenuItem3);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(menuAlmacen);
 
-        Menu_compra_salidamaterial.setText("Compras y Salidas     ");
-
-        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/compra_32_32.png"))); // NOI18N
-        jMenuItem13.setText("Compra");
-        Menu_compra_salidamaterial.add(jMenuItem13);
-
-        jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/salida_material_32_32.png"))); // NOI18N
-        jMenuItem14.setText("Salida de Material");
-        Menu_compra_salidamaterial.add(jMenuItem14);
-
-        jMenuBar1.add(Menu_compra_salidamaterial);
-
-        menu_cotizaciones.setText("Cotizaciones        ");
+        menuCotizaciones.setText("Cotizaciones        ");
 
         jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cotizacion.png"))); // NOI18N
         jMenuItem1.setText("Cotizaciones");
@@ -728,7 +588,7 @@ public class index extends javax.swing.JFrame {
                 jMenuItem1ActionPerformed(evt);
             }
         });
-        menu_cotizaciones.add(jMenuItem1);
+        menuCotizaciones.add(jMenuItem1);
 
         jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/forma_de_pago.png"))); // NOI18N
         jMenuItem2.setText("Formas de Pago");
@@ -737,7 +597,7 @@ public class index extends javax.swing.JFrame {
                 jMenuItem2ActionPerformed(evt);
             }
         });
-        menu_cotizaciones.add(jMenuItem2);
+        menuCotizaciones.add(jMenuItem2);
 
         menu_cuenta_banco.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/bancos_32_32.png"))); // NOI18N
         menu_cuenta_banco.setText("Cuentas de Bancos");
@@ -746,7 +606,7 @@ public class index extends javax.swing.JFrame {
                 menu_cuenta_bancoActionPerformed(evt);
             }
         });
-        menu_cotizaciones.add(menu_cuenta_banco);
+        menuCotizaciones.add(menu_cuenta_banco);
 
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/tipo_cotizacion_32_32.png"))); // NOI18N
         jMenuItem4.setText("Tipos de Cotizacion");
@@ -755,11 +615,11 @@ public class index extends javax.swing.JFrame {
                 jMenuItem4ActionPerformed(evt);
             }
         });
-        menu_cotizaciones.add(jMenuItem4);
+        menuCotizaciones.add(jMenuItem4);
 
-        jMenuBar1.add(menu_cotizaciones);
+        jMenuBar1.add(menuCotizaciones);
 
-        Menu_factura_guia.setText("Facturas          ");
+        menuFactura.setText("Facturas          ");
 
         menu_factura.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
         menu_factura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/factura_32_32.png"))); // NOI18N
@@ -769,7 +629,7 @@ public class index extends javax.swing.JFrame {
                 menu_facturaActionPerformed(evt);
             }
         });
-        Menu_factura_guia.add(menu_factura);
+        menuFactura.add(menu_factura);
 
         menu_tipopago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/tipopago_32_32.png"))); // NOI18N
         menu_tipopago.setText("Tipo de Pago");
@@ -778,11 +638,11 @@ public class index extends javax.swing.JFrame {
                 menu_tipopagoActionPerformed(evt);
             }
         });
-        Menu_factura_guia.add(menu_tipopago);
+        menuFactura.add(menu_tipopago);
 
-        jMenuBar1.add(Menu_factura_guia);
+        jMenuBar1.add(menuFactura);
 
-        jMenu3.setText("Guías       ");
+        menuGuia.setText("Guías       ");
 
         menu_guia.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
         menu_guia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/guia_32_32.png"))); // NOI18N
@@ -792,7 +652,7 @@ public class index extends javax.swing.JFrame {
                 menu_guiaActionPerformed(evt);
             }
         });
-        jMenu3.add(menu_guia);
+        menuGuia.add(menu_guia);
 
         menu_vehiculo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/vehiculo.png"))); // NOI18N
         menu_vehiculo.setText("Vehículo");
@@ -802,7 +662,7 @@ public class index extends javax.swing.JFrame {
                 menu_vehiculoActionPerformed(evt);
             }
         });
-        jMenu3.add(menu_vehiculo);
+        menuGuia.add(menu_vehiculo);
 
         menu_empresa_transportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/empresa_transportes_32_32.png"))); // NOI18N
         menu_empresa_transportes.setText("Empresa de Transportes");
@@ -811,7 +671,7 @@ public class index extends javax.swing.JFrame {
                 menu_empresa_transportesActionPerformed(evt);
             }
         });
-        jMenu3.add(menu_empresa_transportes);
+        menuGuia.add(menu_empresa_transportes);
 
         menu_conductor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/conductor_32_32.png"))); // NOI18N
         menu_conductor.setText("Conductor");
@@ -820,26 +680,9 @@ public class index extends javax.swing.JFrame {
                 menu_conductorActionPerformed(evt);
             }
         });
-        jMenu3.add(menu_conductor);
+        menuGuia.add(menu_conductor);
 
-        jMenuBar1.add(jMenu3);
-
-        menu_reportes.setText("Reportes     ");
-        jMenuBar1.add(menu_reportes);
-
-        menu_backup.setText("Backup");
-
-        jMenuItem15.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/restore_32_32.png"))); // NOI18N
-        jMenuItem15.setText("Generar");
-        menu_backup.add(jMenuItem15);
-
-        jMenuItem21.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/backup_32_32.png"))); // NOI18N
-        jMenuItem21.setText("Restaurar");
-        menu_backup.add(jMenuItem21);
-
-        jMenuBar1.add(menu_backup);
+        jMenuBar1.add(menuGuia);
 
         setJMenuBar(jMenuBar1);
 
@@ -984,9 +827,6 @@ public static void main(String args[]) {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu Menu_compra_salidamaterial;
-    private javax.swing.JMenu Menu_factura_guia;
-    private javax.swing.JMenu Menu_registros;
     private javax.swing.JButton btn_Factura;
     private javax.swing.JButton btn_Guias;
     private javax.swing.JButton btn_cerrar_sesion;
@@ -994,23 +834,15 @@ public static void main(String args[]) {
     private javax.swing.JButton btn_salir;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem13;
-    private javax.swing.JMenuItem jMenuItem14;
-    private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem21;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private jcMousePanel.jcMousePanel jcMousePanel1;
@@ -1018,10 +850,14 @@ public static void main(String args[]) {
     private javax.swing.JLabel label_foto_usuario;
     private javax.swing.JLabel label_logo;
     private javax.swing.JLabel label_nombre;
-    private javax.swing.JMenu menu_backup;
+    private javax.swing.JMenu menuAdministracion;
+    private javax.swing.JMenu menuAlmacen;
+    private javax.swing.JMenu menuCotizaciones;
+    private javax.swing.JMenu menuFactura;
+    private javax.swing.JMenu menuGuia;
+    private javax.swing.JMenu menuRegistros;
     private javax.swing.JMenuItem menu_cliente;
     private javax.swing.JMenuItem menu_conductor;
-    private javax.swing.JMenu menu_cotizaciones;
     private javax.swing.JMenuItem menu_cuenta_banco;
     private javax.swing.JMenuItem menu_documento;
     private javax.swing.JMenuItem menu_empresa;
@@ -1034,7 +870,6 @@ public static void main(String args[]) {
     private javax.swing.JMenuItem menu_personal;
     private javax.swing.JMenuItem menu_producto;
     private javax.swing.JMenuItem menu_proveedor;
-    private javax.swing.JMenu menu_reportes;
     private javax.swing.JMenuItem menu_tipopago;
     private javax.swing.JMenuItem menu_usuario;
     private javax.swing.JMenuItem menu_vehiculo;

@@ -1393,7 +1393,7 @@ public class CompraMaterialView extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_guardar)
-                    .addComponent(btn_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_cancelar))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -2542,7 +2542,6 @@ public class CompraMaterialView extends javax.swing.JPanel {
         panel_tabla.setBackground(new java.awt.Color(255, 255, 255));
         panel_tabla.setPreferredSize(new java.awt.Dimension(300, 461));
 
-        tabla_general.setAutoCreateRowSorter(true);
         tabla_general.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 

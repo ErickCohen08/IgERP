@@ -2313,7 +2313,6 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         panel_tabla.setBackground(new java.awt.Color(255, 255, 255));
         panel_tabla.setPreferredSize(new java.awt.Dimension(300, 461));
 
-        tabla_general.setAutoCreateRowSorter(true);
         tabla_general.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 

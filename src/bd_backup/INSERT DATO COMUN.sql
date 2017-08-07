@@ -102,3 +102,11 @@ INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, 
 INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (110001, 11, 1, 'Factura',					null,	'F',	null,'ERCO','A');
 INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (110002, 11, 2, 'Boleta',					null,	'B',	null,'ERCO','A');
 INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (110003, 11, 3, 'Ticket',					null,	'T',	null,'ERCO','A');
+
+--Documentos de kardex
+DELETE FROM TDatoComun WHERE CodigoTabla = 12
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (120000, 12, 0, 'Ingresos de kardex',				null,	null,	null,'ERCO','A');
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (120001, 12, 1, 'Ingreso a almacen, Stock Inicial',	null,	null,	null,'ERCO','A');
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (120002, 12, 2, 'Compra de material',				null,	null,	null,'ERCO','A');
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (120003, 12, 3, 'Salida de material',				null,	null,	null,'ERCO','A');
+INSERT INTO TDatoComun (IdDatoComun, CodigoTabla, CodigoFila, DescripcionCorta, DescripcionLarga, ValorTexto1, ValorTexto2, UsuarioInserta, Estado) VALUES (120004, 12, 4, 'Retorno de material',				null,	null,	null,'ERCO','A');

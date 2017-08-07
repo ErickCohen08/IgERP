@@ -879,7 +879,7 @@ public class index extends javax.swing.JFrame {
     }//GEN-LAST:event_menu_personalActionPerformed
 
     private void menu_productoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_productoActionPerformed
-        panel_contenido.setViewportView(new ProductoView(controlador, DSN, user, password, id_empresa_index, id_usuario_index, perfil_usuario_index));
+        panel_contenido.setViewportView(new ProductoView(controlador, DSN, user, password, id_empresa_index, id_usuario_index, perfil_usuario_index, alias_usuario_index ));
     }//GEN-LAST:event_menu_productoActionPerformed
 
     private void menu_proveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_proveedorActionPerformed

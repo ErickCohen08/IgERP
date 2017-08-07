@@ -22,7 +22,13 @@ public class ProductoDetalleBE {
     
     String rucProveedor;
     String razonsocialProveedor;
-
+    
+    String fechaCompra;
+    String numeroCompra;
+    String desMoneda;
+    BigDecimal PrecioUnitario;
+    
+    
     public ProductoDetalleBE() {
     }
 
@@ -91,4 +97,37 @@ public class ProductoDetalleBE {
         this.precio = precio;
     }
 
+    public String getFechaCompra() {
+        return fechaCompra;
+    }
+
+    public void setFechaCompra(String fechaCompra) {
+        this.fechaCompra = fechaCompra;
+    }
+
+    public String getNumeroCompra() {
+        return numeroCompra;
+    }
+
+    public void setNumeroCompra(String numeroCompra) {
+        this.numeroCompra = numeroCompra;
+    }
+
+    public String getDesMoneda() {
+        return desMoneda;
+    }
+
+    public void setDesMoneda(String desMoneda) {
+        this.desMoneda = desMoneda;
+    }
+
+    public BigDecimal getPrecioUnitario() {
+        return PrecioUnitario;
+    }
+
+    public void setPrecioUnitario(BigDecimal PrecioUnitario) {
+        this.PrecioUnitario = PrecioUnitario;
+    }
+    
+    
 }

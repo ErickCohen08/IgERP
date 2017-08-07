@@ -6,6 +6,7 @@ import Controller.ProductoBL;
 import Controller.ProductoDetalleBL;
 import Controller.ProveedorBL;
 import Controller.ValidacionBL;
+import database.AccesoDB;
 import entity.DatoComunBE;
 import entity.MonedaBE;
 import entity.ProductoBE;
@@ -16,14 +17,22 @@ import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -39,6 +48,7 @@ public class ProductoView extends javax.swing.JPanel {
     int id_empresa_index;
     int id_usuario_index;
     String perfil_usuario_index = "";
+    String aliasUsuarioIndex;
     
     //Banderas
     DefaultTableModel m;
@@ -58,14 +68,15 @@ public class ProductoView extends javax.swing.JPanel {
     int id_producto_global;
     private Component producto;
     
-    public ProductoView(String controlador, String DSN, String user, String password, int id_empresa, int id_usuario, String perfil_usuario) {
+    public ProductoView(String controlador, String DSN, String user, String password, int id_empresa, int id_usuario, String perfil_usuario, String alias_usuario) {
         controlador_index = controlador;
         user_index = user;
         password_index = password;
         id_empresa_index = id_empresa;
         id_usuario_index = id_usuario;
         perfil_usuario_index = perfil_usuario;
-
+        aliasUsuarioIndex = alias_usuario;
+        
         System.out.println("\n\nconectando con Producto");
         initComponents();
 
@@ -382,7 +393,7 @@ public class ProductoView extends javax.swing.JPanel {
         norte = new javax.swing.JPanel();
         lbl_titulo = new javax.swing.JLabel();
         Centro = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabMaterial = new javax.swing.JTabbedPane();
         jPanel4 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         txt_codigo = new javax.swing.JTextField();
@@ -429,6 +440,7 @@ public class ProductoView extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         tabla_detalle = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
+        jLabel64 = new javax.swing.JLabel();
         sur = new javax.swing.JPanel();
         btn_cancelar = new javax.swing.JButton();
         btn_guardar = new javax.swing.JButton();
@@ -475,6 +487,8 @@ public class ProductoView extends javax.swing.JPanel {
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton1 = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
+        btnImprimirMovimiento = new javax.swing.JButton();
+        spImprimirSalida = new javax.swing.JToolBar.Separator();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         panel_tabla = new javax.swing.JPanel();
@@ -1079,15 +1093,15 @@ public class ProductoView extends javax.swing.JPanel {
 
         Centro.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
-        jTabbedPane1.addFocusListener(new java.awt.event.FocusAdapter() {
+        tabMaterial.setBackground(new java.awt.Color(255, 255, 255));
+        tabMaterial.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
-                jTabbedPane1FocusLost(evt);
+                tabMaterialFocusLost(evt);
             }
         });
-        jTabbedPane1.addKeyListener(new java.awt.event.KeyAdapter() {
+        tabMaterial.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTabbedPane1KeyReleased(evt);
+                tabMaterialKeyReleased(evt);
             }
         });
 
@@ -1452,7 +1466,7 @@ public class ProductoView extends javax.swing.JPanel {
                 .addContainerGap(93, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Datos del Material", jPanel4);
+        tabMaterial.addTab("Datos del Material", jPanel4);
 
         DatosProveedor.setBackground(new java.awt.Color(255, 255, 255));
         DatosProveedor.setLayout(new java.awt.BorderLayout());
@@ -1599,22 +1613,15 @@ public class ProductoView extends javax.swing.JPanel {
 
             },
             new String [] {
-                "RUC", "Proveedor", "Precio"
+                "Número de Compra", "Fecha de Compra", "R.U.C.", "Proveedor", "Moneda", "Precio"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Double.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, true
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
             }
         });
         tabla_detalle.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1630,8 +1637,11 @@ public class ProductoView extends javax.swing.JPanel {
         jScrollPane3.setViewportView(tabla_detalle);
         if (tabla_detalle.getColumnModel().getColumnCount() > 0) {
             tabla_detalle.getColumnModel().getColumn(0).setPreferredWidth(200);
-            tabla_detalle.getColumnModel().getColumn(1).setPreferredWidth(800);
-            tabla_detalle.getColumnModel().getColumn(2).setPreferredWidth(200);
+            tabla_detalle.getColumnModel().getColumn(1).setPreferredWidth(200);
+            tabla_detalle.getColumnModel().getColumn(2).setPreferredWidth(150);
+            tabla_detalle.getColumnModel().getColumn(3).setPreferredWidth(400);
+            tabla_detalle.getColumnModel().getColumn(4).setPreferredWidth(100);
+            tabla_detalle.getColumnModel().getColumn(5).setPreferredWidth(200);
         }
 
         jPanel19.add(jScrollPane3, java.awt.BorderLayout.CENTER);
@@ -1639,34 +1649,40 @@ public class ProductoView extends javax.swing.JPanel {
         jPanel17.add(jPanel19, java.awt.BorderLayout.CENTER);
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel6.setPreferredSize(new java.awt.Dimension(615, 5));
+        jPanel6.setPreferredSize(new java.awt.Dimension(615, 25));
+
+        jLabel64.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        jLabel64.setForeground(new java.awt.Color(204, 0, 0));
+        jLabel64.setText("Los precios mostrados no incluyen I.G.V.");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 732, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addGap(0, 429, Short.MAX_VALUE)
+                .addComponent(jLabel64))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 5, Short.MAX_VALUE)
+            .addComponent(jLabel64)
         );
 
         jPanel17.add(jPanel6, java.awt.BorderLayout.PAGE_END);
 
         DatosProveedor.add(jPanel17, java.awt.BorderLayout.CENTER);
 
-        jTabbedPane1.addTab("Proveedores", DatosProveedor);
+        tabMaterial.addTab("Datos de Compras y Proveedores", DatosProveedor);
 
         javax.swing.GroupLayout CentroLayout = new javax.swing.GroupLayout(Centro);
         Centro.setLayout(CentroLayout);
         CentroLayout.setHorizontalGroup(
             CentroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE)
+            .addComponent(tabMaterial, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE)
         );
         CentroLayout.setVerticalGroup(
             CentroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+            .addComponent(tabMaterial, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
         );
 
         dialog_crear_producto.getContentPane().add(Centro, java.awt.BorderLayout.CENTER);
@@ -2123,6 +2139,20 @@ public class ProductoView extends javax.swing.JPanel {
         jToolBar1.add(jButton1);
         jToolBar1.add(jSeparator5);
 
+        btnImprimirMovimiento.setBackground(new java.awt.Color(255, 255, 255));
+        btnImprimirMovimiento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Salida_Imprimir_24_24.png"))); // NOI18N
+        btnImprimirMovimiento.setText("Movimiento");
+        btnImprimirMovimiento.setFocusable(false);
+        btnImprimirMovimiento.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnImprimirMovimiento.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnImprimirMovimiento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirMovimientoActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnImprimirMovimiento);
+        jToolBar1.add(spImprimirSalida);
+
         jPanel1.add(jToolBar1, java.awt.BorderLayout.CENTER);
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -2135,7 +2165,6 @@ public class ProductoView extends javax.swing.JPanel {
         panel_tabla.setBackground(new java.awt.Color(255, 255, 255));
         panel_tabla.setPreferredSize(new java.awt.Dimension(300, 461));
 
-        tabla_general.setAutoCreateRowSorter(true);
         tabla_general.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -2939,14 +2968,14 @@ public class ProductoView extends javax.swing.JPanel {
         tamaño_de_caja(caja, evt, limite);
     }//GEN-LAST:event_txtCantidadKeyTyped
 
-    private void jTabbedPane1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTabbedPane1KeyReleased
+    private void tabMaterialKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabMaterialKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             crearmodificarProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             CerrarDialogoCrearProducto();
         }
-    }//GEN-LAST:event_jTabbedPane1KeyReleased
+    }//GEN-LAST:event_tabMaterialKeyReleased
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         int fila = tabla_general.getSelectedRow();
@@ -2986,9 +3015,9 @@ public class ProductoView extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tabla_detalleKeyReleased
 
-    private void jTabbedPane1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane1FocusLost
+    private void tabMaterialFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tabMaterialFocusLost
         btn_buscar_proveedor.requestFocus();
-    }//GEN-LAST:event_jTabbedPane1FocusLost
+    }//GEN-LAST:event_tabMaterialFocusLost
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         limpiarCboFiltros = true;
@@ -3011,10 +3040,47 @@ public class ProductoView extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton9KeyReleased
 
+    private void btnImprimirMovimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirMovimientoActionPerformed
+        int fila = tabla_general.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un registro.");
+        } else {
+            try
+            {
+                DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
+                int idProducto = (Integer) tm.getValueAt(fila, 0);
+                
+                String rutaInforme = "reportes\\MaterialMovimiento.jasper";
+                Map parametros = new HashMap();
+                parametros.put("IdMaterial", idProducto);
+                parametros.put("idEmpresa", id_empresa_index);    
+                Connection cn = AccesoDB.getConnection();
+
+                JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);
+                JasperViewer view = new JasperViewer(print, false);
+                view.setTitle("MOVIMIENTO DE MATERIAL");
+                view.setVisible(true);
+                
+            } catch (IllegalAccessException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } catch (InstantiationException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } catch (JRException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnImprimirMovimientoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Centro;
     private javax.swing.JPanel DatosProveedor;
     private javax.swing.JMenuItem Eliminar;
+    private javax.swing.JButton btnImprimirMovimiento;
     private javax.swing.JButton btn_buscar_proveedor;
     private javax.swing.JButton btn_cancelar;
     private javax.swing.JButton btn_cancelar_cliente;
@@ -3091,6 +3157,7 @@ public class ProductoView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel47;
     private javax.swing.JLabel jLabel63;
+    private javax.swing.JLabel jLabel64;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel17;
@@ -3125,7 +3192,6 @@ public class ProductoView extends javax.swing.JPanel {
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JToolBar.Separator jSeparator5;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JLabel lblDescripcion;
@@ -3138,7 +3204,9 @@ public class ProductoView extends javax.swing.JPanel {
     private javax.swing.JPanel norte;
     private javax.swing.JPanel panel_nuevo_detalle;
     private javax.swing.JPanel panel_tabla;
+    private javax.swing.JToolBar.Separator spImprimirSalida;
     private javax.swing.JPanel sur;
+    private javax.swing.JTabbedPane tabMaterial;
     private javax.swing.JTable tablaProveedor;
     private javax.swing.JTable tabla_detalle;
     private javax.swing.JTable tabla_general;
@@ -3269,13 +3337,21 @@ public class ProductoView extends javax.swing.JPanel {
     }
 
     private void mostrarMaterial(int accion, int id_producto) {
-        jTabbedPane1.setSelectedIndex(0);
+        tabMaterial.setSelectedIndex(0);
         limpiar_caja_texto_crear_material();
         
-        if(accion == 0)
+        if(accion == 0){
+            tabMaterial.setEnabledAt(1, false);
             cargarCombos();
-        else
+            activarValores(true);
+            
+        }           
+        else{
+            tabMaterial.setEnabledAt(1, true);
+            panel_nuevo_detalle.setVisible(false);
             modificarMaterial(id_producto);
+            activarValores(false);            
+        }           
         
         dialog_crear_producto.setSize(750, 500);
         dialog_crear_producto.setLocationRelativeTo(producto);
@@ -3341,9 +3417,15 @@ public class ProductoView extends javax.swing.JPanel {
         tabla.setRowCount(0);
         for (ProductoDetalleBE obj : listaProDet) {
             Object[] fila = {
+                /*obj.getRucProveedor(),
+                obj.getRazonsocialProveedor(),
+                obj.getPrecio()*/
+                obj.getNumeroCompra(),
+                obj.getFechaCompra(),
                 obj.getRucProveedor(),
                 obj.getRazonsocialProveedor(),
-                obj.getPrecio()
+                obj.getDesMoneda(),
+                obj.getPrecioUnitario()
                 };
             tabla.addRow(fila);
         }
@@ -3386,7 +3468,7 @@ public class ProductoView extends javax.swing.JPanel {
             
             if(band == 0){
                 objdc.setId_empresa(id_empresa_index);
-                objdc.setUsuarioDes(user_index);
+                objdc.setUsuarioDes(aliasUsuarioIndex);
                 objdc.setCodigoTabla(gCodigoTabla);
                 
                 try {
@@ -3540,7 +3622,7 @@ public class ProductoView extends javax.swing.JPanel {
                 pbe.setDesReferencia_precio(DesReferencia_precio);
             
             pbe.setId_empresa(id_empresa_index);
-            pbe.setUsuarioInserta(user_index);
+            pbe.setUsuarioInserta(aliasUsuarioIndex);
             pbe.setTipoOperacion(crear0_modificar1_producto);
             pbe.setId_producto(id_producto_global);
         }
@@ -3554,9 +3636,9 @@ public class ProductoView extends javax.swing.JPanel {
         if(pbe != null){
             try {
                 
-                int id_producto = objProductoBL.crear(pbe);
+                objProductoBL.crear(pbe);
                 
-                List<ProductoDetalleBE> listaProDet = ObtenerRegistrosProductoDetalle();
+                /*List<ProductoDetalleBE> listaProDet = ObtenerRegistrosProductoDetalle();
                 
                 if(listaProDet != null && !listaProDet.isEmpty()){
                     int i = 0;
@@ -3570,7 +3652,7 @@ public class ProductoView extends javax.swing.JPanel {
                         objProductoDetalleBL.crear(obj);
                         i++;
                     }
-                }
+                }*/
                 
                 CerrarDialogoCrearProducto();
                 JOptionPane.showMessageDialog(null, "Operación exitosa.");
@@ -3588,18 +3670,20 @@ public class ProductoView extends javax.swing.JPanel {
             
             ProductoDetalleBE objDet = new ProductoDetalleBE();
             objDet.setId_producto(id_producto);
+            objDet.setId_empresa(id_empresa_index);
             
             List<ProductoDetalleBE> listaProDet;
             listaProDet = objProductoDetalleBL.Listar(objDet);
             
             if(obj != null){
-                mostrarDatosCajaTexto(obj);
+                mostrarDatosCajaTexto(obj);                
                 tablaProveedorDetalle(listaProDet);
                 MostrarCombo(cboReferencia, 4, true, true, obj.getDesReferencia_precio());
                 MostrarCombo(cboMoneda, 2, true, true, obj.getDesmoneda());
                 MostrarCombo(cboUnidad, 1, true, true, obj.getDesunidad());
                 MostrarCombo(cboAlmacen, 3, true, true, obj.getDesAlmacen());
                 MostrarCombo(cboCategoria, 6, true, true, obj.getDesproductotipo());
+                
             }            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -3663,5 +3747,11 @@ public class ProductoView extends javax.swing.JPanel {
         dialog_buscar_proveedor.setLocationRelativeTo(producto);
         dialog_buscar_proveedor.setModal(true);
         dialog_buscar_proveedor.setVisible(true);
+    }
+
+    private void activarValores(boolean val) {
+        txtCantidad.setEditable(val);
+        txt_precio_unitario.setEditable(val);
+        cboMoneda.setEnabled(val);
     }
 }

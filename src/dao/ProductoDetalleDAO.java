@@ -31,7 +31,7 @@ public class ProductoDetalleDAO implements ICrudService<ProductoDetalleBE>{
     final String INSERT = "{call spProductoDetalle_crear(?,?,?,?,?)}";
     final String UPDATE = "{}";
     final String DELETE = "{call spProductoDetalle_eliminar(?)}}";
-    final String READ = "{}";
+    final String READ = "{call spProductoDetalle_Read(?,?)}";
     
     String sql = "";
     
@@ -102,25 +102,31 @@ public class ProductoDetalleDAO implements ICrudService<ProductoDetalleBE>{
         
         try {
             //abrir conexion a la base de datos
-            cn = AccesoDB.getConnection();
-            sql = "select pr.ruc ruc, pr.razon_social razon_social, pd.precio precio, pd.id_empresa id_empresa, pd.id_usuario id_usuario from TProducto_detalle pd inner join TProveedor pr on pd.id_proveedor = pr.id_proveedor  where id_producto = "+pbe.getId_producto()+"";
-            ps = cn.prepareStatement(sql);
-            rs = ps.executeQuery();
+            cn = AccesoDB.getConnection();        
+            cs = cn.prepareCall(READ);
+            
+            cs.setInt(1,pbe.getId_producto());
+            cs.setInt(2, pbe.getId_empresa());
+            
+            rs=cs.executeQuery();
             
             ProductoDetalleBE pdbe;
             
             while (rs.next()) {
                 pdbe = new ProductoDetalleBE();
-                pdbe.setRucProveedor(rs.getString("ruc"));
-                pdbe.setRazonsocialProveedor(rs.getString("razon_social"));
-                pdbe.setPrecio(rs.getBigDecimal("precio"));
-                pdbe.setId_empresa(rs.getInt("id_empresa"));
-                pdbe.setId_usuario(rs.getInt("id_usuario"));
+                pdbe.setNumeroCompra(rs.getString("numeroCompra"));
+                pdbe.setFechaCompra(rs.getString("fechaCompra"));
+                pdbe.setRazonsocialProveedor(rs.getString("razonsocialProveedor"));
+                pdbe.setRucProveedor(rs.getString("rucProveedor"));
+                pdbe.setDesMoneda(rs.getString("desMoneda"));
+                pdbe.setPrecioUnitario(rs.getBigDecimal("PrecioUnitario"));
                 
                 lista.add(pdbe);
             }
+            
             rs.close();
-            ps.close();
+            cs.close();
+            
         } catch (IllegalAccessException e) {
             throw e;
         } catch (InstantiationException e) {

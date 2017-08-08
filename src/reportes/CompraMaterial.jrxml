@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CompraMaterial" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="36" bottomMargin="36" isSummaryWithPageHeaderAndFooter="true" uuid="998ddb25-aa21-4492-8a87-17123d25425e">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="119"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="309"/>
 	<style name="item" fontName="Arial" fontSize="9">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[new Boolean($F{id_cotizaciondetalle}==Integer.parseInt($F{categ_padre}))]]></conditionExpression>
@@ -30,9 +30,9 @@
 ('COMPRA DE MATERIAL N° ' + RIGHT('0000000000' + dbo.TRIM(com.IdCompra),10))  codigoCompra,
 ISNULL(FORMAT(com.FechaCompra, 'd', 'en-gb'),'') fechaCompra,
 ISNULL(dbo.TRIM(com.NumeroCompra),'') NumeroCompra,
-ISNULL(FORMAT(com.CalculoIgv, '##,###.00'), '0') CalculoIgv,
-ISNULL(FORMAT(com.SubTotal, '##,###.00'),'0') SubTotal,
-ISNULL(FORMAT(com.Total, '##,###.00'),'0') Total,
+ISNULL(com.CalculoIgv, 0) CalculoIgv,
+ISNULL(com.SubTotal, 0) SubTotal,
+ISNULL(com.Total, 0) Total,
 ISNULL(dbo.TRIM(com.TotalLetras),'') TotalLetras,
 
 ISNULL(DBO.TRIM(pro.razon_social), '')		desProveedor,
@@ -40,7 +40,7 @@ ISNULL(DBO.TRIM(pro.ruc), '')				rucProveedor,
 ISNULL(DBO.TRIM(pro.direccion), '')			direccionProveedor,
 ISNULL(DBO.TRIM(dc2.DescripcionCorta), '')	desMoneda,
 ISNULL(DBO.TRIM(dc2.ValorTexto1), '')		simboloMoneda,
-ISNULL(DBO.TRIM(igv.igv), '')				desIgv,
+ISNULL(DBO.TRIM(igv.igv), '')			desIgv,
 ISNULL(DBO.TRIM(obr.Descripcion), '')		desObra,
 ISNULL(DBO.TRIM(dc11.DescripcionCorta), '')	desDocumento,
 ISNULL(DBO.TRIM(dc10.DescripcionCorta), '')	desEstadoAbierto,
@@ -52,7 +52,7 @@ DBO.TRIM(u.nombre) usuarioNombre,
 ISNULL(DBO.TRIM(dc1.ValorTexto1), '') unidadMaterial,
 ISNULL(dcom.Cantidad, 0) cantidad,
 ISNULL(dcom.PrecioUnitario, 0) precioUnitario,
-ISNULL(DBO.TRIM(dcom.PrecioTotal), 0) precioTotal,
+ISNULL(dcom.PrecioTotal, 0) precioTotal,
 
 /*Datos de la empresa*/
 DBO.TRIM(e.razon_social) as empresa,
@@ -88,9 +88,9 @@ com.id_empresa = $P{idEmpresa}]]>
 	<field name="codigoCompra" class="java.lang.String"/>
 	<field name="fechaCompra" class="java.lang.String"/>
 	<field name="NumeroCompra" class="java.lang.String"/>
-	<field name="CalculoIgv" class="java.lang.String"/>
-	<field name="SubTotal" class="java.lang.String"/>
-	<field name="Total" class="java.lang.String"/>
+	<field name="CalculoIgv" class="java.math.BigDecimal"/>
+	<field name="SubTotal" class="java.math.BigDecimal"/>
+	<field name="Total" class="java.math.BigDecimal"/>
 	<field name="TotalLetras" class="java.lang.String"/>
 	<field name="desProveedor" class="java.lang.String"/>
 	<field name="rucProveedor" class="java.lang.String"/>
@@ -107,7 +107,7 @@ com.id_empresa = $P{idEmpresa}]]>
 	<field name="unidadMaterial" class="java.lang.String"/>
 	<field name="cantidad" class="java.math.BigDecimal"/>
 	<field name="precioUnitario" class="java.math.BigDecimal"/>
-	<field name="precioTotal" class="java.lang.String"/>
+	<field name="precioTotal" class="java.math.BigDecimal"/>
 	<field name="empresa" class="java.lang.String"/>
 	<field name="ruc_empresa" class="java.lang.String"/>
 	<field name="direccion_empresa" class="java.lang.String"/>
@@ -333,7 +333,7 @@ com.id_empresa = $P{idEmpresa}]]>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField pattern="EEEEE dd MMMMM yyyy">
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
 				<reportElement uuid="ed818310-ff31-444d-987a-c9e5703eb8c5" x="320" y="24" width="175" height="13" forecolor="#666666"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="8"/>

@@ -282,7 +282,7 @@ dsm.id_empresa = $P{idEmpresa}]]>
 				</textElement>
 				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
-			<textField pattern="EEEEE dd MMMMM yyyy">
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
 				<reportElement uuid="ed818310-ff31-444d-987a-c9e5703eb8c5" x="323" y="23" width="175" height="13" forecolor="#666666"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="8"/>

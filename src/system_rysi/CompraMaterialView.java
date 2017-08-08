@@ -44,6 +44,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
@@ -112,8 +113,6 @@ public class CompraMaterialView extends javax.swing.JPanel {
         mostrar_tabla_general();
         MostrarObjetos(false);        
         
-        Locale locale = new Locale("es","PE");
-        Locale.setDefault(locale);
     }
 
     private void Activar_letras_Mayusculas() {
@@ -4676,7 +4675,8 @@ public class CompraMaterialView extends javax.swing.JPanel {
         String rutaInforme = "reportes\\CompraMaterial.jasper";
         Map parametros = new HashMap();
         parametros.put("idCompra", idSalidaMaterial);
-        parametros.put("idEmpresa", id_empresa_index);    
+        parametros.put("idEmpresa", id_empresa_index);
+        parametros.put(JRParameter.REPORT_LOCALE, Locale.US);
         Connection cn = AccesoDB.getConnection();
             
         JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);

@@ -25,9 +25,6 @@ public class index extends javax.swing.JFrame {
     String nombre_empresa_index;
 
     public index(int id_usuario, String nombre_usuario, String perfil_usuario, int id_empresa, String nombre_empresa, String alias_usuario) {
-        Locale locale = new Locale("es","PE");
-        Locale.setDefault(locale);
-            
         id_empresa_index = id_empresa;
         id_usuario_index = id_usuario;
         perfil_usuario_index = perfil_usuario;

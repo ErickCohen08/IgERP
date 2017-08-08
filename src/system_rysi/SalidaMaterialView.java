@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -41,6 +42,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
@@ -4487,7 +4489,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         String rutaInforme = "reportes\\SalidaMaterial.jasper";
         Map parametros = new HashMap();
         parametros.put("IdSalidaMaterial", idSalidaMaterial);
-        parametros.put("idEmpresa", id_empresa_index);    
+        parametros.put("idEmpresa", id_empresa_index); 
+        parametros.put(JRParameter.REPORT_LOCALE, Locale.US);
         Connection cn = AccesoDB.getConnection();
             
         JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);
@@ -4500,7 +4503,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         String rutaInforme = "reportes\\RetornoMaterial.jasper";
         Map parametros = new HashMap();
         parametros.put("IdSalidaMaterial", idSalidaMaterial);
-        parametros.put("idEmpresa", id_empresa_index);    
+        parametros.put("idEmpresa", id_empresa_index);
+        parametros.put(JRParameter.REPORT_LOCALE, Locale.US);
         Connection cn = AccesoDB.getConnection();
             
         JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);

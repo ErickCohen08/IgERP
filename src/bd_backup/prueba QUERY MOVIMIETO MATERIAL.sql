@@ -3,6 +3,7 @@ SELECT
 kard.IdKardex,
 (DBO.TRIM(prod.descripcion) + ISNULL(' Marca ' + DBO.TRIM(prod.marca), '') + ISNULL(' Modelo ' + DBO.TRIM(prod.modelo), '') )  nombreMaterial,
 prod.cantidad stockActual,
+dc1.DescripcionCorta unidadMaterial,
 
 /*Detalle de movimiento*/
 kard.Cantidad,
@@ -41,9 +42,11 @@ LEFT JOIN TSalida_material	smat	ON (smat.IdSalidaMaterial = kard.IdOperacion and
 LEFT JOIN TPersonal			pers	ON (pers.id_personal = smat.id_personal and pers.id_empresa = smat.id_empresa)
 LEFT JOIN TUsuario			usuk	ON (upper(dbo.trim(usuk.alias)) = upper(kard.UsuarioInserta) and usuk.id_empresa = kard.IdEmpresa)
 LEFT JOIN TEmpresa			empr	ON (empr.id_empresa = kard.IdEmpresa)
+LEFT JOIN TDatoComun		dc1		ON (dc1.IdDatoComun = prod.id_unidad)
+
 WHERE 
 kard.IdEmpresa = 1 AND
-kard.IdProducto =  8815
+kard.IdProducto =  8821
 ORDER BY kard.IdKardex ASC
 
 

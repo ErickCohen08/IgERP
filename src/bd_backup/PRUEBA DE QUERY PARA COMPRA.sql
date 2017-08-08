@@ -3,9 +3,9 @@ SELECT
 ('COMPRA DE MATERIAL N° ' + RIGHT('0000000000' + dbo.TRIM(com.IdCompra),10))  codigoCompra,
 ISNULL(FORMAT(com.FechaCompra, 'd', 'en-gb'),'') fechaCompra,
 ISNULL(dbo.TRIM(com.NumeroCompra),'') NumeroCompra,
-ISNULL(FORMAT(com.CalculoIgv, '##,###.00'), '0') CalculoIgv,
-ISNULL(FORMAT(com.SubTotal, '##,###.00'),'0') SubTotal,
-ISNULL(FORMAT(com.Total, '##,###.00'),'0') Total,
+ISNULL(com.CalculoIgv,0) CalculoIgv,
+ISNULL(com.SubTotal,0) SubTotal,
+ISNULL(com.Total,0) Total,
 ISNULL(dbo.TRIM(com.TotalLetras),'') TotalLetras,
 
 ISNULL(DBO.TRIM(pro.razon_social), '')		desProveedor,
@@ -25,7 +25,7 @@ DBO.TRIM(u.nombre) usuarioNombre,
 ISNULL(DBO.TRIM(dc1.ValorTexto1), '') unidadMaterial,
 ISNULL(dcom.Cantidad, 0) cantidad,
 ISNULL(dcom.PrecioUnitario, 0) precioUnitario,
-ISNULL(DBO.TRIM(dcom.PrecioTotal), 0) precioTotal,
+ISNULL(dcom.PrecioTotal, 0) precioTotal,
 
 /*Datos de la empresa*/
 DBO.TRIM(e.razon_social) as empresa,

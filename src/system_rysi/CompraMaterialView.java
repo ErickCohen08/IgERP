@@ -4510,7 +4510,7 @@ public class CompraMaterialView extends javax.swing.JPanel {
         }
         
         if(ban == 0){
-            if(cantidad != null && cantidad.length() >0 )
+            if(cantidad != null && cantidad.length() >0)
             {
                 smd.setCantidad(new BigDecimal(cantidad));
             }            

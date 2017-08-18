@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -3074,6 +3076,8 @@ public class ProductoView extends javax.swing.JPanel {
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             } catch (JRException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
         }

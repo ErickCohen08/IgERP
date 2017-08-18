@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class prueba {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         try {
             Connection cn = AccesoDB.getConnection();
             System.out.println("Conexion conforme....");

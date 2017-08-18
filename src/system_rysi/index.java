@@ -110,6 +110,18 @@ public class index extends javax.swing.JFrame {
             Cotizacion
             Almacen*/
                     
+        
+        if (perfil_usuario.equals("Almacen y Facturacion")) {
+            menuAdministracion.setVisible(false);
+            menuRegistros.setVisible(true);
+            menuAlmacen.setVisible(true);
+            menuCotizaciones.setVisible(false);
+            menuFactura.setVisible(true);
+            menuGuia.setVisible(true);
+            btn_Factura.setVisible(true);
+            btn_Guias.setVisible(true);
+        }
+                
         if (perfil_usuario.equals("Facturacion")) {
             menuAdministracion.setVisible(false);
             menuRegistros.setVisible(true);
@@ -135,6 +147,8 @@ public class index extends javax.swing.JFrame {
             menuCotizaciones.setVisible(false);
             menuFactura.setVisible(false);
             menuGuia.setVisible(false);
+            btn_Factura.setVisible(false);
+            btn_Guias.setVisible(false);
         }
         
         if (perfil_usuario.equals("Administrador")) {

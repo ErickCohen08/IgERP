@@ -4185,7 +4185,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         }
         
         if(ban == 0){
-            if(cantidad != null && cantidad.length() >0 )
+            if(cantidad != null && cantidad.length() >0)
             {
                 if(Double.parseDouble(cantidad) <= Double.parseDouble(stock)){
                     smd.setCantidadSalida(new BigDecimal(cantidad));

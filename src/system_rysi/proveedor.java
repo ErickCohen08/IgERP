@@ -5,6 +5,7 @@
 package system_rysi;
 
 import Clases.cProveedor;
+import database.AccesoDB;
 import java.awt.Component;
 
 import java.awt.KeyEventDispatcher;
@@ -82,35 +83,18 @@ public class proveedor extends javax.swing.JPanel {
     }
 
     private void conexion() {
-
-        System.out.println("valores recibidos para la conexion");
-        System.out.println("==============================");
-        System.out.println("controlador: " + controlador_index);
-        System.out.println("DNS: " + DSN_index);
-        System.out.println("usuario: " + user_index);
-        System.out.println("contraseña: " + password_index);
+        System.out.println("Iniciando conexion al servidor");
         System.out.println("==============================");
 
-        FileReader fichero;
-        BufferedReader br;
-
         try {
-            Class.forName(controlador_index).newInstance();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
-            conexion = DriverManager.getConnection(DSN_index, user_index, password_index);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar los archivos de conexion", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
+            conexion = AccesoDB.getConnection();            
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al crear el objeto sentencia", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getStackTrace(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
+        
+        System.out.println("==============================");
     }
 
     private void Mostrar_tabla_proveedor() {
@@ -1112,23 +1096,23 @@ public class proveedor extends javax.swing.JPanel {
                 txt_direccion.setText(r.getString("direccion").trim());
                 System.out.println(txt_direccion.getText().trim());
 
-                txt_telefono.setText(r.getString("telefono").trim());
-                System.out.println(txt_telefono.getText().trim());
+                txt_telefono.setText(r.getString("telefono"));
+                System.out.println(txt_telefono.getText());
 
-                txt_celular.setText(r.getString("celular").trim());
-                System.out.println(txt_celular.getText().trim());
+                txt_celular.setText(r.getString("celular"));
+                System.out.println(txt_celular.getText());
 
-                txt_correo.setText(r.getString("correo").trim());
-                System.out.println(txt_correo.getText().trim());
+                txt_correo.setText(r.getString("correo"));
+                System.out.println(txt_correo.getText());
 
-                txt_f_creacion.setText(r.getString("f_creacion").trim());
-                System.out.println(txt_f_creacion.getText().trim());
+                txt_f_creacion.setText(r.getString("f_creacion"));
+                System.out.println(txt_f_creacion.getText());
 
                 txt_f_modificacion.setText(r.getString("f_modificacion"));
-                System.out.println(txt_f_modificacion.getText().trim());
+                System.out.println(txt_f_modificacion.getText());
 
-                txt_usuario.setText(r.getString("nombre_usuario").trim());
-                System.out.println(txt_usuario.getText().trim());
+                txt_usuario.setText(r.getString("nombre_usuario"));
+                System.out.println(txt_usuario.getText());
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio al cargar los datos del Proveedor", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -1450,23 +1434,23 @@ public class proveedor extends javax.swing.JPanel {
                 txt_direccion.setText(r.getString("direccion").trim());
                 System.out.println(txt_direccion.getText().trim());
 
-                txt_telefono.setText(r.getString("telefono").trim());
-                System.out.println(txt_telefono.getText().trim());
+                txt_telefono.setText(r.getString("telefono"));
+                System.out.println(txt_telefono.getText());
 
-                txt_celular.setText(r.getString("celular").trim());
-                System.out.println(txt_celular.getText().trim());
+                txt_celular.setText(r.getString("celular"));
+                System.out.println(txt_celular.getText());
 
-                txt_correo.setText(r.getString("correo").trim());
-                System.out.println(txt_correo.getText().trim());
+                txt_correo.setText(r.getString("correo"));
+                System.out.println(txt_correo.getText());
 
-                txt_f_creacion.setText(r.getString("f_creacion").trim());
-                System.out.println(txt_f_creacion.getText().trim());
+                txt_f_creacion.setText(r.getString("f_creacion"));
+                System.out.println(txt_f_creacion.getText());
 
                 txt_f_modificacion.setText(r.getString("f_modificacion"));
-                System.out.println(txt_f_modificacion.getText().trim());
+                System.out.println(txt_f_modificacion.getText());
 
-                txt_usuario.setText(r.getString("nombre_usuario").trim());
-                System.out.println(txt_usuario.getText().trim());
+                txt_usuario.setText(r.getString("nombre_usuario"));
+                System.out.println(txt_usuario.getText());
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio al cargar los datos del Proveedor", "ERROR", JOptionPane.ERROR_MESSAGE);

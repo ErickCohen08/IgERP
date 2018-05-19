@@ -5,6 +5,7 @@
 package system_rysi;
 
 import Clases.cEmpresatransporte;
+import database.AccesoDB;
 import java.awt.Component;
 
 import java.awt.KeyEventDispatcher;
@@ -69,9 +70,8 @@ public class EmpresaTransporte extends javax.swing.JPanel {
 
         System.out.println("activando la función de letra Mayúsculas");
         Activar_letras_Mayusculas();
-        
-        if(perfil_usuario_index.equals("Solo Lectura"))
-        {
+
+        if (perfil_usuario_index.equals("Solo Lectura")) {
             btn_nuevo.setVisible(false);
             btn_modificar.setVisible(false);
             btn_eliminar.setVisible(false);
@@ -82,35 +82,18 @@ public class EmpresaTransporte extends javax.swing.JPanel {
     }
 
     private void conexion() {
-
-        System.out.println("valores recibidos para la conexion");
-        System.out.println("==============================");
-        System.out.println("controlador: " + controlador_index);
-        System.out.println("DNS: " + DSN_index);
-        System.out.println("usuario: " + user_index);
-        System.out.println("contraseña: " + password_index);
+        System.out.println("Iniciando conexion al servidor");
         System.out.println("==============================");
 
-        FileReader fichero;
-        BufferedReader br;
-
         try {
-            Class.forName(controlador_index).newInstance();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
-            conexion = DriverManager.getConnection(DSN_index, user_index, password_index);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar los archivos de conexion", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
+            conexion = AccesoDB.getConnection();
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al crear el objeto sentencia", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getStackTrace(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
+
+        System.out.println("==============================");
     }
 
     private void Mostrar_tabla_Empresatransporte() {
@@ -1225,7 +1208,6 @@ public class EmpresaTransporte extends javax.swing.JPanel {
                         System.out.println("\n el correo ingresado no es correcto");
                         JOptionPane.showMessageDialog(null, "El correo ingresado no es correcto.\n Por favor ingrese un Correo válido.", "ERROR", JOptionPane.ERROR_MESSAGE);
                     } else {
-
 
                         if (crear0_modificar1 == 0) {
 

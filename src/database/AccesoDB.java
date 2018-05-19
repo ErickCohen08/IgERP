@@ -9,19 +9,7 @@ import java.sql.SQLException;
 
 public final class AccesoDB {
 
-    private static String getData(String archivo) throws Exception{
-        try{
-           FileReader fichero = new FileReader(archivo);
-           BufferedReader br = new BufferedReader (fichero);
-           String text = br.readLine();
-           fichero.close();
-           return text.trim();
-        }catch (IOException e){
-            throw e;
-        }
-    }
-    
-    private AccesoDB() {
+    public AccesoDB() {
     }
 
     public static Connection getConnection() throws SQLException, InstantiationException, IllegalAccessException, Exception {
@@ -29,33 +17,32 @@ public final class AccesoDB {
         try {
             // Parámetros de Connexión
             String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-            String url = "jdbc:sqlserver://"+getData("conexion\\sqlserver.txt")+";databaseName="+getData("conexion\\databaseName.txt")+"";
+            String url = "jdbc:sqlserver://" + getData("conexion\\sqlserver.txt") + ";databaseName=" + getData("conexion\\databaseName.txt") + "";
             String user = getData("conexion\\user.txt");
             String pwd = getData("conexion\\password.txt");
-            
-//            String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-//            String url = "jdbc:sqlserver://172.22.1.20:1433;databaseName=bd_ig-projet";
-//            String user = "sa";
-//            String pwd = "V3ct0r";
 
-//            String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-//            String url = "jdbc:sqlserver://VP000058\\VECTOR;databaseName=bd_ig-projet";
-//            String user = "sa";
-//            String pwd = "vector2016";
-            
-            // cargar driver en memoria
             Class.forName(driver).newInstance();
-            //obtener la conexion a la BD
             cn = DriverManager.getConnection(url, user, pwd);
+            System.out.println("Conexion realizada");
         } catch (SQLException e) {
             throw e;
         } catch (ClassNotFoundException ex) {
             throw new SQLException(ex);
-        } 
-//        catch (InstantiationException | IllegalAccessException e) {
-//            throw new SQLException("No se puede acceder a la base de datos.");
-//        }
+        }
         return cn;
+    }
+
+    private static String getData(String archivo) throws Exception {
+        try {
+            String text;
+            try (FileReader fichero = new FileReader(archivo)) {
+                BufferedReader br = new BufferedReader(fichero);
+                text = br.readLine();
+            }
+            return text.trim();
+        } catch (IOException e) {
+            throw e;
+        }
     }
 
 }

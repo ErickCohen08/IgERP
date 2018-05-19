@@ -1,12 +1,9 @@
 package system_rysi;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import database.AccesoDB;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Locale;
 import javax.swing.JOptionPane;
 
 public class index extends javax.swing.JFrame {
@@ -43,63 +40,17 @@ public class index extends javax.swing.JFrame {
     }
 
     private void conexion() {
-
         System.out.println("Iniciando conexion al servidor");
         System.out.println("==============================");
 
-        FileReader fichero;
-        BufferedReader br;
-
         try {
-            fichero = new FileReader("conexion\\controlador.txt");
-            br = new BufferedReader(fichero);
-            String controlador_file = br.readLine();
-            fichero.close();
-            System.out.println("controlador: " + controlador_file);
-
-            controlador = controlador_file;
-            Class.forName(controlador).newInstance();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
-            fichero = new FileReader("conexion\\dsn.txt");
-            br = new BufferedReader(fichero);
-            String dsn_file = br.readLine();
-            fichero.close();
-            System.out.println("DNS        : " + dsn_file);
-
-            DSN = dsn_file;
-
-            fichero = new FileReader("conexion\\user.txt");
-            br = new BufferedReader(fichero);
-            String user_file = br.readLine();
-            fichero.close();
-            System.out.println("usuario    : " + user_file);
-
-            user = user_file;
-
-            fichero = new FileReader("conexion\\password.txt");
-            br = new BufferedReader(fichero);
-            String password_file = br.readLine();
-            fichero.close();
-            System.out.println("contraseña : " + password_file);
-
-            password = password_file;
-
-            conexion = DriverManager.getConnection(DSN, user, password);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar los archivos de conexion", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
+            conexion = AccesoDB.getConnection();            
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al crear el objeto sentencia", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getStackTrace(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
-
+        
         System.out.println("==============================");
     }
 

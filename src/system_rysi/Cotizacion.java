@@ -18,15 +18,13 @@ import Clases.cBanco_detalles_cotizacion;
 import Clases.cConvertir_Numero_Letra;
 import Clases.cCotizacion_cuentabanco;
 import Clases.cCuentas_Bancos;
+import database.AccesoDB;
 import java.awt.Component;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -139,7 +137,6 @@ public class Cotizacion extends javax.swing.JPanel {
 
 //        System.out.println("activando la función de letra Mayúsculas");
 //        Activar_letras_Mayusculas();
-
         System.out.println("Llenar combo cliente");
         AutoCompleteDecorator.decorate(this.cbo_cliente);
         AutoCompleteDecorator.decorate(this.cbo_formapago);
@@ -160,35 +157,18 @@ public class Cotizacion extends javax.swing.JPanel {
 
     //Utilidades
     private void conexion() {
-
-        System.out.println("valores recibidos para la conexion");
-        System.out.println("==============================");
-        System.out.println("controlador: " + controlador_index);
-        System.out.println("DNS: " + DSN_index);
-        System.out.println("usuario: " + user_index);
-        System.out.println("contraseña: " + password_index);
+        System.out.println("Iniciando conexion al servidor");
         System.out.println("==============================");
 
-        FileReader fichero;
-        BufferedReader br;
-
         try {
-            Class.forName(controlador_index).newInstance();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
-            conexion = DriverManager.getConnection(DSN_index, user_index, password_index);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar los archivos de conexion", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
+            conexion = AccesoDB.getConnection();
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al crear el objeto sentencia", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getStackTrace(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
+
+        System.out.println("==============================");
     }
 
     private void activar_letras_Mayusculas() {
@@ -217,7 +197,6 @@ public class Cotizacion extends javax.swing.JPanel {
             txt_proyecto.setEditable(true);
             txt_ubicacion.setEditable(true);
             txt_duracion.setEditable(true);
-
 
             //Cliente
             cbo_cliente.setEnabled(true);
@@ -254,7 +233,6 @@ public class Cotizacion extends javax.swing.JPanel {
             cbo_igv.setEnabled(true);
             cbo_igv.setEditable(false);
 
-
             //ventana Crear cliente
             txt_razon_social_cliente_crear.setEditable(true);
             txt_ruc_cliente_crear.setEditable(true);
@@ -262,7 +240,6 @@ public class Cotizacion extends javax.swing.JPanel {
             txt_telefono_cliente_crear.setEditable(true);
             txt_celular_cliente_crear.setEditable(true);
             txt_correo_cliente_crear.setEditable(true);
-
 
             //Buscar
             txt_buscar_cliente.setEditable(true);
@@ -299,7 +276,6 @@ public class Cotizacion extends javax.swing.JPanel {
             txt_ruc_cliente.setEditable(false);
             cbo_atencion.setEnabled(false);
 
-
             //Detalle Cotizacion
             cbo_unidadmedida.setEnabled(false);
             txt_cantidad.setEditable(false);
@@ -325,7 +301,6 @@ public class Cotizacion extends javax.swing.JPanel {
             txt_descuento_porcentaje.setEditable(false);
             cbo_igv.setEnabled(false);
 
-
             //ventana Crear cliente
             txt_razon_social_cliente_crear.setEditable(false);
             txt_ruc_cliente_crear.setEditable(false);
@@ -333,7 +308,6 @@ public class Cotizacion extends javax.swing.JPanel {
             txt_telefono_cliente_crear.setEditable(false);
             txt_celular_cliente_crear.setEditable(false);
             txt_correo_cliente_crear.setEditable(false);
-
 
             //Buscar
             txt_buscar_cliente.setEditable(false);
@@ -661,11 +635,9 @@ public class Cotizacion extends javax.swing.JPanel {
             System.out.println("Activar barra de herramientas");
             activar_barra_herramientas("activar");
 
-
             band_edicion = Integer.parseInt(edicion);
             band_aprobado = Integer.parseInt(aprobado);
             band_rechazado = Integer.parseInt(rechazado);
-
 
             if (band_edicion == 1 && band_aprobado == 0 && band_rechazado == 0) {
                 lbl_estado.setVisible(true);
@@ -742,7 +714,6 @@ public class Cotizacion extends javax.swing.JPanel {
             btn_nuevo_detalle.setVisible(true);
             btn_nuevo_moneda.setVisible(true);
             btn_nuevo_detalle.setVisible(true);
-
 
         }
 
@@ -838,7 +809,6 @@ public class Cotizacion extends javax.swing.JPanel {
             columna1.setPreferredWidth(0);
             TableColumn columna2 = tabla_cuenta_banco.getColumn("N° Cuenta");
             columna2.setPreferredWidth(900);
-
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio al cargar la tabla Cotizacion - " + ex, "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -950,7 +920,6 @@ public class Cotizacion extends javax.swing.JPanel {
             columna1.setPreferredWidth(0);
             TableColumn columna2 = tabla_cuentabanco_seleccionar.getColumn("Descripcion");
             columna2.setPreferredWidth(900);
-
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio al cargar la tabla Nro de Cuenta" + ex, "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -1179,7 +1148,6 @@ public class Cotizacion extends javax.swing.JPanel {
         float calculo_igv = sub_total * (igv / 100);
         float total = sub_total + calculo_igv;
 
-
         System.out.println("\nMontos Canculados");
         System.out.println("===================");
         System.out.println("Costo Neto          :" + costo_neto);
@@ -1229,7 +1197,6 @@ public class Cotizacion extends javax.swing.JPanel {
 
 //        String moneda = cbo_moneda.getSelectedItem().toString();
 //        String total_letras = clase_numero_letra.getStringOfNumber(total, moneda);
-
         txt_costoneto.setText("" + costo_neto);
         txt_ganancia_monto.setText("" + ganancia_monto);
         txt_utilidad_monto.setText("" + utilidad_monto);
@@ -1427,7 +1394,6 @@ public class Cotizacion extends javax.swing.JPanel {
         if (clase_cotizacion_detalle.crear(id_cotizacion, categ_padre, item, descripcion, cantidad, id_unidad, precio_unitario, precio_total, id_empresa, id_usuario, no_afecta_total)) {
             System.out.println("\nEl Detalle de Cotizacion se logró registrar exitosamente!");
 
-
             //Obtenemos cual fue el ultimo id de cotizacion detalle creado
             int id_cotizaciondetalle = cotizacion_detalle_id_ultimo();
             System.out.println("\nEl ultimo id_cotizaciondetalle es: " + id_cotizaciondetalle);
@@ -1437,13 +1403,11 @@ public class Cotizacion extends javax.swing.JPanel {
                 categ_padre = Integer.toString(id_cotizaciondetalle);
                 System.out.println("\nLa categoria padre es " + categ_padre);
 
-
                 System.out.println("Llamamos a la funcion que modificara a la categoria padre del ultimo cotizacion detalle creado");
                 clase_cotizacion_detalle.modificar_categoriapadre(id_cotizaciondetalle, categ_padre, id_usuario);
 
                 System.out.println("Llamamos a la funcion que nos dira cual fue el ultimo item de categoria padre generado");
                 item = ultimo_item_categoriapadre(id_cotizacion);
-
 
                 System.out.println("Aumentamos el valor de item en 1");
                 item = item + 1;
@@ -1533,13 +1497,11 @@ public class Cotizacion extends javax.swing.JPanel {
                 categ_padre = Integer.toString(id_cotizaciondetalle);
                 System.out.println("\nLa categoria padre es " + categ_padre);
 
-
                 System.out.println("Llamamos a la funcion que modificara a la categoria padre del ultimo cotizacion detalle creado");
                 clase_cotizacion_detalle.modificar_categoriapadre(id_cotizaciondetalle, categ_padre, id_usuario);
 
                 System.out.println("Llamamos a la funcion que nos dira cual fue el ultimo item de categoria padre generado");
                 item = ultimo_item_categoriapadre(id_cotizacion);
-
 
                 System.out.println("Aumentamos el valor de item en 1");
                 item = item + 1;
@@ -1662,7 +1624,6 @@ public class Cotizacion extends javax.swing.JPanel {
                 id_cuentabanco = Integer.parseInt(r.getString("id_cuentabanco"));
                 System.out.println("El ultimo id_cuentabanco generado es " + id_cuentabanco);
             }
-
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio al Extraer el ultimo Id de Cuenta Banco", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -2299,7 +2260,6 @@ public class Cotizacion extends javax.swing.JPanel {
         //0         1
         //1         0
         //1         1
-
         int band = 0;
         String codigo_busqueda;
         codigo_busqueda = obtener_codigobusqueda();
@@ -2354,16 +2314,16 @@ public class Cotizacion extends javax.swing.JPanel {
                         + "convert(varchar, co.fecha, 103) as fecha \n"
                         + "from TCotizacion co, TCliente cl, TMoneda mo, TTipoCotizacion ti, TFormaPago fp\n"
                         + "where\n"
-                        + "(co.proyecto like '%"+bus_txt+"%' or \n"
-                        + "co.ubicacion like '%"+bus_txt+"%' or\n"
-                        + "co.tiempo_duracion like '%"+bus_txt+"%' or\n"
-                        + "co.atencion like '%"+bus_txt+"%' or\n"
-                        + "co.numero like '%"+bus_txt+"%' or\n"
-                        + "co.fecha like '%"+bus_txt+"%' or\n"
-                        + "cl.ruc like '%"+bus_txt+"%' or\n"
-                        + "mo.nombre like '%"+bus_txt+"%' or\n"
-                        + "ti.descripcion like '%"+bus_txt+"%' or\n"
-                        + "fp.descripcion like '%"+bus_txt+"%'\n"
+                        + "(co.proyecto like '%" + bus_txt + "%' or \n"
+                        + "co.ubicacion like '%" + bus_txt + "%' or\n"
+                        + "co.tiempo_duracion like '%" + bus_txt + "%' or\n"
+                        + "co.atencion like '%" + bus_txt + "%' or\n"
+                        + "co.numero like '%" + bus_txt + "%' or\n"
+                        + "co.fecha like '%" + bus_txt + "%' or\n"
+                        + "cl.ruc like '%" + bus_txt + "%' or\n"
+                        + "mo.nombre like '%" + bus_txt + "%' or\n"
+                        + "ti.descripcion like '%" + bus_txt + "%' or\n"
+                        + "fp.descripcion like '%" + bus_txt + "%'\n"
                         + ")\n"
                         + "and \n"
                         + "co.id_moneda = mo.id_moneda and \n"
@@ -2386,16 +2346,16 @@ public class Cotizacion extends javax.swing.JPanel {
                         + "convert(varchar, co.fecha, 103) as fecha \n"
                         + "from TCotizacion co, TCliente cl, TMoneda mo, TTipoCotizacion ti, TFormaPago fp\n"
                         + "where\n"
-                        + "(co.proyecto like '%"+bus_txt+"%' or \n"
-                        + "co.ubicacion like '%"+bus_txt+"%' or\n"
-                        + "co.tiempo_duracion like '%"+bus_txt+"%' or\n"
-                        + "co.atencion like '%"+bus_txt+"%' or\n"
-                        + "co.numero like '%"+bus_txt+"%' or\n"
-                        + "co.fecha like '%"+bus_txt+"%' or\n"
-                        + "cl.ruc like '%"+bus_txt+"%' or\n"
-                        + "mo.nombre like '%"+bus_txt+"%' or\n"
-                        + "ti.descripcion like '%"+bus_txt+"%' or\n"
-                        + "fp.descripcion like '%"+bus_txt+"%'\n"
+                        + "(co.proyecto like '%" + bus_txt + "%' or \n"
+                        + "co.ubicacion like '%" + bus_txt + "%' or\n"
+                        + "co.tiempo_duracion like '%" + bus_txt + "%' or\n"
+                        + "co.atencion like '%" + bus_txt + "%' or\n"
+                        + "co.numero like '%" + bus_txt + "%' or\n"
+                        + "co.fecha like '%" + bus_txt + "%' or\n"
+                        + "cl.ruc like '%" + bus_txt + "%' or\n"
+                        + "mo.nombre like '%" + bus_txt + "%' or\n"
+                        + "ti.descripcion like '%" + bus_txt + "%' or\n"
+                        + "fp.descripcion like '%" + bus_txt + "%'\n"
                         + ")\n"
                         + "and \n"
                         + "co.id_moneda = mo.id_moneda and \n"
@@ -5235,7 +5195,6 @@ public class Cotizacion extends javax.swing.JPanel {
         }
 
 
-
     }//GEN-LAST:event_btn_guardar_detalleActionPerformed
 
     private void btn_nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevoActionPerformed
@@ -5246,7 +5205,6 @@ public class Cotizacion extends javax.swing.JPanel {
         crear0_modificar1_cotizacion = 0;
         numero_inicial_global = "";
         inicializar_id_global();
-
 
         if (clase_cotizacion.crear(id_empresa_index, id_usuario_index)) {
             System.out.println("\nLa Cotización se logró registrar exitosamente!");
@@ -5667,7 +5625,6 @@ public class Cotizacion extends javax.swing.JPanel {
                         clase_cotizacion_detalle.eliminar(id_cotizaciondetalle);
                     }
 
-
                     r = sentencia.executeQuery("select id_cotizacion_cuentabanco from TCotizacion_cuentabanco where id_cotizacion = '" + id_cotizacion + "'");
                     while (r.next()) {
                         id_cotizacion_cuentabanco = Integer.parseInt(r.getString("id_cotizacion_cuentabanco"));
@@ -5801,7 +5758,6 @@ public class Cotizacion extends javax.swing.JPanel {
             ubicacion = txt_ubicacion.getText().trim();
         }
 
-
         String tiempo_duracion = "";
         if (txt_duracion.getText().length() < 1) {
             band = 4;
@@ -5858,7 +5814,6 @@ public class Cotizacion extends javax.swing.JPanel {
         int id_empresa = id_empresa_index;
         int id_usuario = id_usuario_index;
         int id_tipocotizacion = 0;
-
 
         int cantidad_veces;
         if (cbo_tipo_cotizacion.getSelectedItem().toString().trim().length() < 1) {
@@ -6781,7 +6736,6 @@ public class Cotizacion extends javax.swing.JPanel {
         String rechazado_area = txt_area_responsable_rechazar.getText().trim();
         String rechazado_motivo = txt_motivo_rechazo.getText().trim();
         int rechazado_id_usuario = id_usuario_index;
-
 
         if (clase_cotizacion.rechazar(id_cotizacion, rechazado, rechazado_fecha, rechazado_persona, rechazado_area, rechazado_motivo, rechazado_id_usuario)) {
             txt_rechazado_por.setText("");

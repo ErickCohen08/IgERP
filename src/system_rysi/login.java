@@ -1,6 +1,7 @@
 package system_rysi;
 
 //import de.javasoft.plaf.synthetica.SyntheticaBlueMoonLookAndFeel;
+import database.AccesoDB;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.HeadlessException;
 import java.awt.KeyEventDispatcher;
@@ -90,78 +91,17 @@ public final class login extends javax.swing.JFrame {
     }
 
     private void conexion() {
-
         System.out.println("Iniciando conexion al servidor");
         System.out.println("==============================");
 
-        FileReader fichero;
-        BufferedReader br;
-
         try {
-            fichero = new FileReader("conexion\\controlador.txt");
-            br = new BufferedReader(fichero);
-            String controlador_file = br.readLine();
-            fichero.close();
-            System.out.println("controlador: " + controlador_file);
-
-            controlador = controlador_file;
-            Class.forName(controlador).newInstance();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        } catch (ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        } catch (InstantiationException e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        } catch (IllegalAccessException e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        }
-
-        try {
-            fichero = new FileReader("conexion\\dsn.txt");
-            br = new BufferedReader(fichero);
-            String dsn_file = br.readLine();
-            fichero.close();
-            System.out.println("DNS        : " + dsn_file);
-
-            DSN = dsn_file;
-
-            fichero = new FileReader("conexion\\user.txt");
-            br = new BufferedReader(fichero);
-            String user_file = br.readLine();
-            fichero.close();
-            System.out.println("usuario    : " + user_file);
-
-            user = user_file;
-
-            fichero = new FileReader("conexion\\password.txt");
-            br = new BufferedReader(fichero);
-            String password_file = br.readLine();
-            fichero.close();
-            System.out.println("contraseña : " + password_file);
-
-            password = password_file;
-
-            conexion = DriverManager.getConnection(DSN, user, password);
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar los archivos de conexion", "ERROR", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar los archivos de conexion", "ERROR", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        }
-
-        try {
+            conexion = AccesoDB.getConnection();            
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al crear el objeto sentencia", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getStackTrace(), "ERROR", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
-
+        
         System.out.println("==============================");
     }
 

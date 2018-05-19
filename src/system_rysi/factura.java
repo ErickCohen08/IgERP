@@ -11,6 +11,7 @@ import Clases.cIGV;
 import Clases.cDocumentos;
 import Clases.cFactura;
 import Clases.cFactura_Detalle;
+import database.AccesoDB;
 
 //Otros
 import java.awt.Component;
@@ -144,35 +145,18 @@ public class factura extends javax.swing.JPanel {
 
     //Utilidades
     private void conexion() {
-
-        System.out.println("valores recibidos para la conexion");
-        System.out.println("==============================");
-        System.out.println("controlador: " + controlador_index);
-        System.out.println("DNS: " + DSN_index);
-        System.out.println("usuario: " + user_index);
-        System.out.println("contraseña: " + password_index);
+        System.out.println("Iniciando conexion al servidor");
         System.out.println("==============================");
 
-        FileReader fichero;
-        BufferedReader br;
-
         try {
-            Class.forName(controlador_index).newInstance();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
-            conexion = DriverManager.getConnection(DSN_index, user_index, password_index);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar los archivos de conexion", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
+            conexion = AccesoDB.getConnection();            
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al crear el objeto sentencia", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getStackTrace(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
+        
+        System.out.println("==============================");
     }
 
     private void tamaño_de_caja(JTextField caja, KeyEvent evt, int limite) {

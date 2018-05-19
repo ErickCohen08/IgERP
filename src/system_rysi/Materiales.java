@@ -11,6 +11,7 @@ import Clases.cProducto_detalle;
 import Clases.cProducto_tipo;
 import Clases.cProveedor;
 import Clases.cUnidad_medida;
+import database.AccesoDB;
 
 //Otros
 import java.awt.Component;
@@ -146,35 +147,18 @@ public class Materiales extends javax.swing.JPanel {
 
     //Utilidades
     private void conexion() {
-
-        System.out.println("valores recibidos para la conexion");
-        System.out.println("==============================");
-        System.out.println("controlador: " + controlador_index);
-        System.out.println("DNS: " + DSN_index);
-        System.out.println("usuario: " + user_index);
-        System.out.println("contraseña: " + password_index);
+        System.out.println("Iniciando conexion al servidor");
         System.out.println("==============================");
 
-        FileReader fichero;
-        BufferedReader br;
-
         try {
-            Class.forName(controlador_index).newInstance();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar el controlador", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
-            conexion = DriverManager.getConnection(DSN_index, user_index, password_index);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al cargar los archivos de conexion", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-        try {
+            conexion = AccesoDB.getConnection();
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio al crear el objeto sentencia", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getStackTrace(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
+
+        System.out.println("==============================");
     }
 
     private void Activar_letras_Mayusculas() {
@@ -219,7 +203,6 @@ public class Materiales extends javax.swing.JPanel {
 
             txt_referencia_precio.setEditable(true);
             txt_descripcion_coloquial.setEditable(true);
-
 
             //Detalle
             cbo_proveedor.setEditable(true);
@@ -404,7 +387,6 @@ public class Materiales extends javax.swing.JPanel {
         System.out.println("Limpiar cajas de texto");
         limpiar_caja_texto();
 
-
         System.out.println("el id_producto seleccionado es: " + id_producto);
         id_producto_global = id_producto;
 
@@ -530,20 +512,17 @@ public class Materiales extends javax.swing.JPanel {
             float precio_promedio1 = (float) precio_decimal.doubleValue();
             txt_unidad_precio_unitario.setText("" + precio_promedio1);
 
-
             float precio_manoobra1 = Float.parseFloat(precio_manoobra);
             BigDecimal precio_manoobra1_decimal = new BigDecimal(precio_manoobra1);
             precio_manoobra1_decimal = precio_manoobra1_decimal.setScale(2, BigDecimal.ROUND_HALF_UP);
             float precio_manoobra2 = (float) precio_manoobra1_decimal.doubleValue();
             txt_unidad_precio_manoobra.setText("" + precio_manoobra2);
 
-
             float precio_material1 = Float.parseFloat(precio_material);
             BigDecimal precio_material1_decimal = new BigDecimal(precio_material1);
             precio_material1_decimal = precio_material1_decimal.setScale(2, BigDecimal.ROUND_HALF_UP);
             float precio_material2 = (float) precio_material1_decimal.doubleValue();
             txt_unidad_precio_material.setText("" + precio_material2);
-
 
             float precio_equipo1 = Float.parseFloat(precio_equipo);
             BigDecimal precio_equipo1_decimal = new BigDecimal(precio_equipo1);
@@ -1343,7 +1322,6 @@ public class Materiales extends javax.swing.JPanel {
         //100
         //110
         //111
-
         int band = 0;
         String codigo_busqueda = "";
         codigo_busqueda = obtener_codigobusqueda();
@@ -1453,7 +1431,7 @@ public class Materiales extends javax.swing.JPanel {
                         + ")  and \n"
                         + "(p.id_productotipo = pt.id_productotipo and pt.descripcion = '" + bus_tipo + "')\n"
                         + "and \n"
-                        + "(pd.id_producto = p.id_producto and pd.id_proveedor = pro.id_proveedor and pro.razon_social = '"+bus_proveedor+"')\n"
+                        + "(pd.id_producto = p.id_producto and pd.id_proveedor = pro.id_proveedor and pro.razon_social = '" + bus_proveedor + "')\n"
                         + "and p.guardado = '1'\n"
                         + "group by p.id_producto, p.descripcion\n"
                         + "order by p.descripcion asc";
@@ -3810,7 +3788,6 @@ public class Materiales extends javax.swing.JPanel {
         int id_usuario = id_usuario_index;
         int band;
 
-
         if (txt_crear_moneda_check_moneda_local.isSelected() == true) {
             moneda_local = "1";
         } else {
@@ -3824,7 +3801,6 @@ public class Materiales extends javax.swing.JPanel {
         System.out.println("Moneda Local: " + moneda_local);
         System.out.println("id_empresa:   " + id_empresa);
         System.out.println("id_usuario:   " + id_usuario);
-
 
         if (txt_crear_moneda_nombre.getText().length() == 0 || txt_crear_moneda_simbolo.getText().length() == 0) {
             band = 2;
@@ -3973,7 +3949,6 @@ public class Materiales extends javax.swing.JPanel {
         int id_producto = id_producto_global;
         String codigo = txt_codigo.getText().trim();
 
-
         String descripcion = "";
         if (txt_descripcion.getText().trim().length() < 1) {
             band = 2;
@@ -4054,8 +4029,6 @@ public class Materiales extends javax.swing.JPanel {
 
         String referencia_precio = txt_referencia_precio.getText().trim();
         String descripcion_coloquial = txt_descripcion_coloquial.getText().trim();
-
-
 
         switch (band) {
 //            case 1:
@@ -4159,7 +4132,6 @@ public class Materiales extends javax.swing.JPanel {
                 mostrar_combo_moneda_proveedor();
             }
 
-
             System.out.println("cambiando el titulo");
             lbl_titulo.setText("Modificar Material");
 
@@ -4214,15 +4186,12 @@ public class Materiales extends javax.swing.JPanel {
                         operaciones_postModificacion();
                         mostrar_tabla_producto("");
 
-
                     } else {
                         JOptionPane.showMessageDialog(null, "Ocurrio al CANCELAR la creacion del MATERIAL.\n Por favor intentelo nuevamente", "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "Ocurrio al cargar los datos del MATERIAL", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-
-
 
             }
         }

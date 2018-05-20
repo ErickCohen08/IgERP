@@ -66,11 +66,7 @@ public class IgvDAO implements ICrudService<IgvBE>{
             }
             rs.close();
             stm.close(); 
-        } catch (SQLException e) {            
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();

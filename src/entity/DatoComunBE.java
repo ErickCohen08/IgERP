@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package entity;
 
 import java.util.Date;
@@ -13,7 +12,7 @@ import java.util.Date;
  * @author ERCO
  */
 public class DatoComunBE {
-    
+
     int IdDatoComun;
     int CodigoTabla;
     int CodigoFila;
@@ -27,11 +26,12 @@ public class DatoComunBE {
     Date FechaModifica;
     String Estado;
     int id_empresa;
-    
+
     String usuarioDes;
-    
+    String idDatoComunDescripcionCorta;
+
     public DatoComunBE() {
-        
+
     }
 
     public DatoComunBE(int CodigoTabla, int CodigoFila, String DescripcionCorta, String DescripcionLarga, String ValorTexto1, String ValorTexto2, String UsuarioInserta, String Estado) {
@@ -85,9 +85,6 @@ public class DatoComunBE {
         this.Estado = Estado;
     }
 
-    
-
-    
     public int getIdDatoComun() {
         return IdDatoComun;
     }
@@ -200,9 +197,12 @@ public class DatoComunBE {
         this.usuarioDes = usuarioDes;
     }
 
-    
-    
-    
-    
-    
+    public String getIdDatoComunDescripcionCorta() {
+        return idDatoComunDescripcionCorta;
+    }
+
+    public void setIdDatoComunDescripcionCorta(String idDatoComunDescripcionCorta) {
+        this.idDatoComunDescripcionCorta = idDatoComunDescripcionCorta;
+    }
+
 }

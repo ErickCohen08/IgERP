@@ -155,6 +155,12 @@ public final class login extends javax.swing.JFrame {
 
         txt_alias.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         txt_alias.setForeground(new java.awt.Color(0, 0, 153));
+        txt_alias.setText("erco");
+        txt_alias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_aliasActionPerformed(evt);
+            }
+        });
         txt_alias.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_aliasKeyReleased(evt);
@@ -170,6 +176,8 @@ public final class login extends javax.swing.JFrame {
         });
 
         txt_contrasena.setForeground(new java.awt.Color(0, 51, 153));
+        txt_contrasena.setText("erco.123");
+        txt_contrasena.setToolTipText("");
         txt_contrasena.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_contrasenaKeyReleased(evt);
@@ -433,6 +441,10 @@ public final class login extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_cbo_nombre_empresaKeyReleased
+
+    private void txt_aliasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_aliasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_aliasActionPerformed
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override

@@ -64,11 +64,7 @@ public class SalidaMaterialDAO {
             rs.close();
             cs.close(); 
             
-        } catch (SQLException e) {
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();
@@ -88,11 +84,7 @@ public class SalidaMaterialDAO {
             respuesta = cs.executeUpdate();
             cs.close();
             
-        } catch (SQLException e) {
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();
@@ -113,11 +105,7 @@ public class SalidaMaterialDAO {
             respuesta = cs.executeUpdate();
             cs.close();
             
-        } catch (SQLException e) {
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();
@@ -138,11 +126,7 @@ public class SalidaMaterialDAO {
             respuesta = cs.executeUpdate();
             cs.close();
             
-        } catch (SQLException e) {
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();
@@ -187,11 +171,7 @@ public class SalidaMaterialDAO {
             
             rs.close();
             cs.close(); 
-        } catch (SQLException e) {            
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();
@@ -227,11 +207,7 @@ public class SalidaMaterialDAO {
             
             rs.close();
             cs.close(); 
-        } catch (SQLException e) {            
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();
@@ -254,11 +230,7 @@ public class SalidaMaterialDAO {
             respuesta = cs.executeUpdate();
             cs.close();
             
-        } catch (SQLException e) {
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();

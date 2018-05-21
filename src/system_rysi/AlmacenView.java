@@ -2,7 +2,6 @@ package system_rysi;
 
 import Controller.DatoComunBL;
 import Util.Constantes;
-import entity.CompraMaterialBE;
 import entity.DatoComunBE;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
@@ -22,11 +21,8 @@ public class AlmacenView extends javax.swing.JPanel {
     private final String perfil_usuario_index;
     private final String aliasUsuarioIndex;
 
-    //Banderas
-    private DefaultTableModel m;
-
     //New
-    private DatoComunBL objDatoComunBL = new DatoComunBL();
+    private final DatoComunBL objDatoComunBL = new DatoComunBL();
 
     //variables globales
     private int crear0_modificar1_almacen = 0;
@@ -176,7 +172,7 @@ public class AlmacenView extends javax.swing.JPanel {
         Centro.setBackground(new java.awt.Color(255, 255, 255));
 
         txtCodigo.setEditable(false);
-        txtCodigo.setBackground(new java.awt.Color(255, 255, 255));
+        txtCodigo.setBackground(new java.awt.Color(204, 204, 204));
         txtCodigo.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtCodigo.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         txtCodigo.setToolTipText("Ingrese un Codigo para este Material");
@@ -198,7 +194,6 @@ public class AlmacenView extends javax.swing.JPanel {
         jLabel13.setForeground(new java.awt.Color(0, 51, 153));
         jLabel13.setText("Nombre:*");
 
-        txtNombre.setBackground(new java.awt.Color(255, 255, 255));
         txtNombre.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtNombre.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         txtNombre.setToolTipText("Ingrese un Codigo para este Material");
@@ -216,7 +211,6 @@ public class AlmacenView extends javax.swing.JPanel {
         jLabel14.setForeground(new java.awt.Color(0, 51, 153));
         jLabel14.setText("Direccion/Ubicación:");
 
-        txtDireccion.setBackground(new java.awt.Color(255, 255, 255));
         txtDireccion.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtDireccion.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         txtDireccion.setToolTipText("Ingrese un Codigo para este Material");
@@ -433,8 +427,8 @@ public class AlmacenView extends javax.swing.JPanel {
         if (tabla_general.getColumnModel().getColumnCount() > 0) {
             tabla_general.getColumnModel().getColumn(0).setResizable(false);
             tabla_general.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tabla_general.getColumnModel().getColumn(1).setPreferredWidth(500);
-            tabla_general.getColumnModel().getColumn(2).setPreferredWidth(500);
+            tabla_general.getColumnModel().getColumn(1).setPreferredWidth(1000);
+            tabla_general.getColumnModel().getColumn(2).setPreferredWidth(1000);
         }
 
         javax.swing.GroupLayout panel_tablaLayout = new javax.swing.GroupLayout(panel_tabla);

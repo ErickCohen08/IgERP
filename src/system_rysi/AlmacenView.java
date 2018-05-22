@@ -698,11 +698,9 @@ public class AlmacenView extends javax.swing.JPanel {
                         JOptionPane.showMessageDialog(null, "No se pudo actualizar el registro.");
                     }
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "No se pudo obtener los datos del formulario.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                CerrarDialogoCrearAlmacen();
+                mostrar_tabla_general();
             }
-            CerrarDialogoCrearAlmacen();
-            mostrar_tabla_general();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }

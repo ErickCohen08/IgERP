@@ -185,4 +185,42 @@ public class StandDAO implements ICrudService<StandBE> {
         cn.close();
         return obj;
     }
+
+    public List<StandBE> readByAlmacen(int id) throws Exception {
+        List<StandBE> lista = new ArrayList();
+
+        sqlB = new StringBuilder();
+        sqlB.setLength(0);
+        sqlB.append("SELECT ");
+        sqlB.append("ST.IdStand, ");
+        sqlB.append("ST.IdAlmacen, ");
+        sqlB.append("ST.Nombre, ");
+        sqlB.append("ST.UsuarioInserta, ");
+        sqlB.append("ST.FechaInserta, ");
+        sqlB.append("ST.UsuarioModifica, ");
+        sqlB.append("ST.FechaModifica, ");
+        sqlB.append("ST.id_empresa, ");
+        sqlB.append("dc.DescripcionCorta as nombreAlmacen ");
+        sqlB.append("FROM TStand ST ");
+        sqlB.append("INNER JOIN TDatoComun DC ");
+        sqlB.append("ON DC.IdDatoComun = ST.IdAlmacen ");
+        sqlB.append("WHERE ST.IdAlmacen = ? ");
+        sqlB.append("ORDER BY DC.DescripcionCorta ASC, Nombre ASC ");
+
+        cn = AccesoDB.getConnection();
+        ps = cn.prepareStatement(sqlB.toString());
+        ps.clearParameters();
+        ps.setInt(1, id);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            lista.add(cargaReadBE(rs));
+        }
+
+        rs.close();
+        ps.close();
+        cn.close();
+
+        return lista;
+    }
 }

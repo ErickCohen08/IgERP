@@ -1,8 +1,10 @@
 package system_rysi;
 
 import Controller.DatoComunBL;
+import Controller.NivelBL;
 import Controller.StandBL;
 import entity.DatoComunBE;
+import entity.NivelBE;
 import entity.StandBE;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
@@ -18,7 +20,7 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  *
  * @author ErC
  */
-public class StandView extends javax.swing.JPanel {
+public class NivelView extends javax.swing.JPanel {
 
     //datos de conexion
     private final int id_empresa_index;
@@ -26,6 +28,7 @@ public class StandView extends javax.swing.JPanel {
     private final String aliasUsuarioIndex;
 
     //New
+    private final NivelBL objNivelBL = new NivelBL();
     private final StandBL objStandBL = new StandBL();
     private final DatoComunBL objDatoComunBL = new DatoComunBL();
 
@@ -35,12 +38,12 @@ public class StandView extends javax.swing.JPanel {
     private int id_producto_global;
     private Component producto;
 
-    public StandView(int id_empresa, String perfil_usuario, String alias_usuario) {
+    public NivelView(int id_empresa, String perfil_usuario, String alias_usuario) {
         id_empresa_index = id_empresa;
         perfil_usuario_index = perfil_usuario;
         aliasUsuarioIndex = alias_usuario;
 
-        System.out.println("\n\nconectando con Producto");
+        System.out.println("\n\nconectando con Nivel");
         initComponents();
 
         if (perfil_usuario_index.equals("Solo Lectura")) {
@@ -50,7 +53,7 @@ public class StandView extends javax.swing.JPanel {
         }
 
         System.out.println("Mostrar Tabla Stand");
-        mostrarTablaProducto();
+        mostrarTablaNivel();
         MostrarObjetos(false);
     }
 
@@ -61,12 +64,12 @@ public class StandView extends javax.swing.JPanel {
     }
 
     //Mostrar tablas
-    private void mostrarTablaProducto() {
+    private void mostrarTablaNivel() {
         try {
-            List<StandBE> lStand = objStandBL.read(null);
-            if (lStand != null) {
-                tablaStand(lStand);
-                lblTotal.setText("Total: " + lStand.size() + " registros.");
+            List<NivelBE> list = objNivelBL.read(null);
+            if (list != null) {
+                tablaNivel(list);
+                lblTotal.setText("Total: " + list.size() + " registros.");
             } else {
                 lblTotal.setText("No se encontraron resultados");
             }
@@ -75,14 +78,15 @@ public class StandView extends javax.swing.JPanel {
         }
     }
 
-    private void tablaStand(List<StandBE> list) {
+    private void tablaNivel(List<NivelBE> list) {
         try {
             DefaultTableModel tabla = (DefaultTableModel) tabla_general.getModel();
             tabla.setRowCount(0);
-            for (StandBE obj : list) {
+            for (NivelBE obj : list) {
                 Object[] fila = {
-                    obj.getIdStand(),
+                    obj.getIdNivel(),
                     obj.getNombreAlmacen(),
+                    obj.getNombreStand(),
                     obj.getNombre()
                 };
                 tabla.addRow(fila);
@@ -115,6 +119,8 @@ public class StandView extends javax.swing.JPanel {
         txtNombre = new javax.swing.JTextField();
         jLabel46 = new javax.swing.JLabel();
         cboAlmacen = new javax.swing.JComboBox();
+        jLabel47 = new javax.swing.JLabel();
+        cboStand = new javax.swing.JComboBox();
         sur = new javax.swing.JPanel();
         btn_cancelar = new javax.swing.JButton();
         btn_guardar = new javax.swing.JButton();
@@ -145,8 +151,8 @@ public class StandView extends javax.swing.JPanel {
         lbl_titulo.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
         lbl_titulo.setForeground(new java.awt.Color(255, 255, 255));
         lbl_titulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbl_titulo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/stand.png"))); // NOI18N
-        lbl_titulo.setText("Stand");
+        lbl_titulo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nivel.png"))); // NOI18N
+        lbl_titulo.setText("Nivel");
 
         javax.swing.GroupLayout norteLayout = new javax.swing.GroupLayout(norte);
         norte.setLayout(norteLayout);
@@ -183,7 +189,7 @@ public class StandView extends javax.swing.JPanel {
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 51, 153));
-        jLabel11.setText("Nombre:*");
+        jLabel11.setText("Nivel:*");
 
         txtNombre.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtNombre.setToolTipText("Ingrese el Nombre del Material");
@@ -200,7 +206,7 @@ public class StandView extends javax.swing.JPanel {
         jLabel46.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel46.setForeground(new java.awt.Color(0, 51, 153));
         jLabel46.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel46.setText("Almacen:");
+        jLabel46.setText("Almacen:*");
 
         cboAlmacen.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         cboAlmacen.setToolTipText("Seleccione el Tipo o Familia al que pertenece el Material.");
@@ -215,23 +221,43 @@ public class StandView extends javax.swing.JPanel {
             }
         });
 
+        jLabel47.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel47.setForeground(new java.awt.Color(0, 51, 153));
+        jLabel47.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel47.setText("Stand:*");
+
+        cboStand.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        cboStand.setToolTipText("Seleccione el Tipo o Familia al que pertenece el Material.");
+        cboStand.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboStandItemStateChanged(evt);
+            }
+        });
+        cboStand.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboStandActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout centroLayout = new javax.swing.GroupLayout(centro);
         centro.setLayout(centroLayout);
         centroLayout.setHorizontalGroup(
             centroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(centroLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(centroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel46, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(centroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel46, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(centroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(centroLayout.createSequentialGroup()
                         .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 243, Short.MAX_VALUE))
                     .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cboAlmacen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cboAlmacen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cboStand, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         centroLayout.setVerticalGroup(
@@ -247,9 +273,13 @@ public class StandView extends javax.swing.JPanel {
                     .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(centroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(65, Short.MAX_VALUE))
+                    .addComponent(jLabel47, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboStand, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(centroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
 
         dialogCrearStand.getContentPane().add(centro, java.awt.BorderLayout.CENTER);
@@ -316,8 +346,8 @@ public class StandView extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/stand.png"))); // NOI18N
-        jLabel1.setText("Stand");
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/nivel.png"))); // NOI18N
+        jLabel1.setText("Nivel");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -395,14 +425,14 @@ public class StandView extends javax.swing.JPanel {
 
             },
             new String [] {
-                "IdStand", "Almacen", "Stand"
+                "IdNivel", "Almacen", "Stand", "Nnivel"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, true
+                false, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -429,6 +459,7 @@ public class StandView extends javax.swing.JPanel {
             tabla_general.getColumnModel().getColumn(0).setPreferredWidth(0);
             tabla_general.getColumnModel().getColumn(1).setPreferredWidth(1000);
             tabla_general.getColumnModel().getColumn(2).setPreferredWidth(1000);
+            tabla_general.getColumnModel().getColumn(3).setPreferredWidth(1000);
         }
 
         javax.swing.GroupLayout panel_tablaLayout = new javax.swing.GroupLayout(panel_tabla);
@@ -482,11 +513,11 @@ public class StandView extends javax.swing.JPanel {
     }//GEN-LAST:event_btn_nuevoActionPerformed
 
     private void btn_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelarActionPerformed
-        CerrarDialogoCrearProducto();
+        CerrarDialogoCrearNivel();
     }//GEN-LAST:event_btn_cancelarActionPerformed
 
     private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
-        crearmodificarProducto();
+        crearmodificarNivel();
     }//GEN-LAST:event_btn_guardarActionPerformed
 
     private void tabla_generalMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_generalMouseReleased
@@ -540,13 +571,15 @@ public class StandView extends javax.swing.JPanel {
                 DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
                 int id = (Integer) tm.getValueAt(fila, 0);
 
-                StandBE obj = new StandBE();
-                obj.setIdStand(id);
+                NivelBE obj = new NivelBE();
+                obj.setIdNivel(id);
 
                 try {
-                    if (objStandBL.delete(obj) > 0) {
-                        mostrarTablaProducto();
+                    if (objNivelBL.delete(obj) > 0) {
+                        mostrarTablaNivel();
                         JOptionPane.showMessageDialog(null, "Registro eliminado con éxito.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No se pudo eliminar el registro seleccionado.");
                     }
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
@@ -568,7 +601,7 @@ public class StandView extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCodigoKeyTyped
 
     private void cboAlmacenItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboAlmacenItemStateChanged
-        // TODO add your handling code here:
+        MostrarComboStand(cboStand, true, false, null, getCodigoCombo(cboAlmacen.getSelectedItem().toString().trim()));
     }//GEN-LAST:event_cboAlmacenItemStateChanged
 
     private void cboAlmacenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAlmacenActionPerformed
@@ -577,39 +610,47 @@ public class StandView extends javax.swing.JPanel {
 
     private void btn_cancelarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btn_cancelarKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            CerrarDialogoCrearProducto();
+            CerrarDialogoCrearNivel();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProducto();
+            CerrarDialogoCrearNivel();
         }
     }//GEN-LAST:event_btn_cancelarKeyReleased
 
     private void btn_guardarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btn_guardarKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            crearmodificarProducto();
+            crearmodificarNivel();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProducto();
+            CerrarDialogoCrearNivel();
         }
     }//GEN-LAST:event_btn_guardarKeyReleased
 
     private void txtCodigoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            crearmodificarProducto();
+            crearmodificarNivel();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProducto();
+            CerrarDialogoCrearNivel();
         }
     }//GEN-LAST:event_txtCodigoKeyReleased
 
     private void txtNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            crearmodificarProducto();
+            crearmodificarNivel();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProducto();
+            CerrarDialogoCrearNivel();
         }
     }//GEN-LAST:event_txtNombreKeyReleased
+
+    private void cboStandItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboStandItemStateChanged
+
+    }//GEN-LAST:event_cboStandItemStateChanged
+
+    private void cboStandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboStandActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboStandActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_cancelar;
@@ -618,12 +659,14 @@ public class StandView extends javax.swing.JPanel {
     private javax.swing.JButton btn_modificar;
     private javax.swing.JButton btn_nuevo;
     private javax.swing.JComboBox cboAlmacen;
+    private javax.swing.JComboBox cboStand;
     private javax.swing.JPanel centro;
     private javax.swing.JDialog dialogCrearStand;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel46;
+    private javax.swing.JLabel jLabel47;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
@@ -692,6 +735,7 @@ public class StandView extends javax.swing.JPanel {
         limpiar_caja_texto_crear_material();
 
         if (accion == 0) {
+            incializarCombo(cboStand);
             cargarCombos();
 
         } else {
@@ -709,15 +753,55 @@ public class StandView extends javax.swing.JPanel {
         MostrarCombo(cboAlmacen, 3, true, false, null);
     }
 
-    private void CerrarDialogoCrearProducto() {
+    private void MostrarComboStand(JComboBox cbo, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault, int idAlmacen) {
+        try {
+            List<StandBE> list = objStandBL.readByAlmacen(idAlmacen);
+
+            if (!list.isEmpty()) {
+                DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
+
+                if (Autocompletado) {
+                    AutoCompleteDecorator.decorate(cbo);
+                }
+
+                if (MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())) {
+                    cboModel.addElement("");
+                }
+
+                if (cadenaDefault != null && cadenaDefault.length() > 0) {
+                    cboModel.addElement(cadenaDefault);
+                }
+
+                String valor;
+
+                for (StandBE obj : list) {
+                    valor = insertarCeros(obj.getIdStand()) + "|" + obj.getNombre();
+
+                    if (cadenaDefault != null) {
+                        if (!valor.equals(cadenaDefault)) {
+                            cboModel.addElement(valor);
+                        }
+                    } else {
+                        cboModel.addElement(valor);
+                    }
+                }
+
+                cbo.setModel(cboModel);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    private void CerrarDialogoCrearNivel() {
         crear0_modificar1_producto = 0;
         id_producto_global = 0;
         MostrarObjetos(true);
         dialogCrearStand.dispose();
     }
 
-    private StandBE capturarValorStand() {
-        StandBE pbe = null;
+    private NivelBE capturarValorNivel() {
+        NivelBE pbe = null;
 
         int codigo = 0;
         if (txtCodigo.getText().trim().length() > 0) {
@@ -725,12 +809,18 @@ public class StandView extends javax.swing.JPanel {
         }
 
         String nombre = txtNombre.getText().trim();
-        int idAlmacen = getCodigoAlamcen(cboAlmacen.getSelectedItem().toString().trim());
-
         int band = 0;
-        if (idAlmacen == 0) {
+
+        if (cboAlmacen.getSelectedItem().toString().trim().length() == 0) {
             JOptionPane.showMessageDialog(null, "Por favor seleccione un almacén.");
             band++;
+        }
+
+        if (band == 0) {
+            if (cboStand.getSelectedItem().toString().trim().length() == 0) {
+                JOptionPane.showMessageDialog(null, "Por favor seleccione un stand.");
+                band++;
+            }
         }
 
         if (band == 0) {
@@ -741,9 +831,9 @@ public class StandView extends javax.swing.JPanel {
         }
 
         if (band == 0) {
-            pbe = new StandBE();
-            pbe.setIdStand(codigo);
-            pbe.setIdAlmacen(idAlmacen);
+            pbe = new NivelBE();
+            pbe.setIdNivel(codigo);
+            pbe.setIdStand(getCodigoCombo(cboStand.getSelectedItem().toString().trim()));
             pbe.setNombre(nombre);
             pbe.setIdEmpresa(id_empresa_index);
             pbe.setUsuarioDes(aliasUsuarioIndex);
@@ -752,49 +842,49 @@ public class StandView extends javax.swing.JPanel {
         return pbe;
     }
 
-    private void crearmodificarProducto() {
+    private void crearmodificarNivel() {
         try {
-            StandBE obj = capturarValorStand();
+            NivelBE obj = capturarValorNivel();
 
             if (obj != null) {
                 if (crear0_modificar1_producto == 0) {
-                    if (objStandBL.create(obj) > 0) {
+                    if (objNivelBL.create(obj) > 0) {
                         JOptionPane.showMessageDialog(null, "Registro exitoso.");
                     } else {
                         JOptionPane.showMessageDialog(null, "No se pudo registrar la operacion.");
                     }
                 } else {
-                    if (objStandBL.update(obj) > 0) {
+                    if (objNivelBL.update(obj) > 0) {
                         JOptionPane.showMessageDialog(null, "Actualización exitosa.");
                     } else {
                         JOptionPane.showMessageDialog(null, "No se pudo actualizar el registro.");
                     }
                 }
-
-                CerrarDialogoCrearProducto();
-                mostrarTablaProducto();
+                CerrarDialogoCrearNivel();
+                mostrarTablaNivel();
             }
-
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void modificarMaterial(int id_producto) {
+    private void modificarMaterial(int id) {
         try {
-            StandBE obj = objStandBL.readId(id_producto);
+            NivelBE obj = objNivelBL.readId(id);
 
             if (obj != null) {
                 mostrarDatosCajaTexto(obj);
-                MostrarCombo(cboAlmacen, 3, true, false, obj.getIdAlmacen() + "|" + obj.getNombreAlmacen());
+                incializarCombo(cboStand);
+                MostrarCombo(cboAlmacen, 3, false, false, obj.getIdAlmacen() + "|" + obj.getNombreAlmacen());
+                MostrarComboStand(cboStand, false, false, insertarCeros(obj.getIdStand()) + "|" + obj.getNombreStand(), getCodigoCombo(cboAlmacen.getSelectedItem().toString().trim()));
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void mostrarDatosCajaTexto(StandBE obj) {
-        txtCodigo.setText(insertarCeros(obj.getIdStand()));
+    private void mostrarDatosCajaTexto(NivelBE obj) {
+        txtCodigo.setText(insertarCeros(obj.getIdNivel()));
 
         if (obj.getNombre() != null && obj.getNombre().length() > 0) {
             txtNombre.setText(obj.getNombre());
@@ -805,9 +895,9 @@ public class StandView extends javax.swing.JPanel {
         btn_guardar.setVisible(b);
     }
 
-    private int getCodigoAlamcen(String almacen) {
-        int codigoAlmacen = Integer.parseInt(almacen.split("[|]")[0]);
-        return codigoAlmacen;
+    private int getCodigoCombo(String valueCombo) {
+        int codigo = Integer.parseInt(valueCombo.split("[|]")[0]);
+        return codigo;
     }
 
     private String insertarCeros(int idSalidaMaterial) {
@@ -819,4 +909,5 @@ public class StandView extends javax.swing.JPanel {
 
         return valor;
     }
+
 }

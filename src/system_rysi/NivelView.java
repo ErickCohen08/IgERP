@@ -601,6 +601,7 @@ public class NivelView extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCodigoKeyTyped
 
     private void cboAlmacenItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboAlmacenItemStateChanged
+        incializarCombo(cboStand);
         MostrarComboStand(cboStand, true, false, null, getCodigoCombo(cboAlmacen.getSelectedItem().toString().trim()));
     }//GEN-LAST:event_cboAlmacenItemStateChanged
 

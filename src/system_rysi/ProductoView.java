@@ -2,16 +2,20 @@ package system_rysi;
 
 import Controller.DatoComunBL;
 import Controller.MonedaBL;
+import Controller.NivelBL;
 import Controller.ProductoBL;
 import Controller.ProductoDetalleBL;
 import Controller.ProveedorBL;
+import Controller.StandBL;
 import Controller.ValidacionBL;
 import database.AccesoDB;
 import entity.DatoComunBE;
 import entity.MonedaBE;
+import entity.NivelBE;
 import entity.ProductoBE;
 import entity.ProductoDetalleBE;
 import entity.ProveedorBE;
+import entity.StandBE;
 import java.awt.Component;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -24,8 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -53,10 +55,10 @@ public class ProductoView extends javax.swing.JPanel {
     int id_usuario_index;
     String perfil_usuario_index = "";
     String aliasUsuarioIndex;
-    
+
     //Banderas
     DefaultTableModel m;
-    
+
     //New
     ProductoBL objProductoBL = new ProductoBL();
     MonedaBL objMonedaBL = new MonedaBL();
@@ -64,14 +66,16 @@ public class ProductoView extends javax.swing.JPanel {
     ProveedorBL objProveedorBL = new ProveedorBL();
     ValidacionBL objValidacionBL = new ValidacionBL();
     ProductoDetalleBL objProductoDetalleBL = new ProductoDetalleBL();
-    
+    private final StandBL objStandBL = new StandBL();
+    private final NivelBL objNivelBL = new NivelBL();
+
     //variables globales
     boolean limpiarCboFiltros = true;
     int gCodigoTabla = 0;
     int crear0_modificar1_producto = 0;
     int id_producto_global;
     private Component producto;
-    
+
     public ProductoView(String controlador, String DSN, String user, String password, int id_empresa, int id_usuario, String perfil_usuario, String alias_usuario) {
         controlador_index = controlador;
         user_index = user;
@@ -80,7 +84,7 @@ public class ProductoView extends javax.swing.JPanel {
         id_usuario_index = id_usuario;
         perfil_usuario_index = perfil_usuario;
         aliasUsuarioIndex = alias_usuario;
-        
+
         System.out.println("\n\nconectando con Producto");
         initComponents();
 
@@ -111,7 +115,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void ingresar_solo_numeros(JTextField caja, KeyEvent evt) {
         int k = (int) evt.getKeyChar();
-        
+
         if (k >= 97 && k <= 122 || k >= 65 && k <= 90) {
             evt.setKeyChar((char) KeyEvent.VK_CLEAR);
             JOptionPane.showMessageDialog(null, "No puede ingresar letras", "Error", JOptionPane.ERROR_MESSAGE);
@@ -140,12 +144,12 @@ public class ProductoView extends javax.swing.JPanel {
     //Mostrar tablas
     private void mostrar_tabla_producto() {
         ProductoBE pbe = ObtenerFiltrosBusqueda();
-        
+
         try {
             List<ProductoBE> lProductos = objProductoBL.ProductoListar(pbe);
             if (lProductos != null) {
                 tablaProductos(lProductos);
-                lblTotal.setText("Total: "+lProductos.size()+" registros.");
+                lblTotal.setText("Total: " + lProductos.size() + " registros.");
             } else {
                 lblTotal.setText("No se encontraron resultados");
             }
@@ -155,38 +159,38 @@ public class ProductoView extends javax.swing.JPanel {
     }
 
     private void tablaProductos(List<ProductoBE> list) {
-        
+
         try {
             DefaultTableModel tabla = (DefaultTableModel) tabla_general.getModel();
             tabla.setRowCount(0);
             for (ProductoBE obj : list) {
                 Object[] fila = {
-                    obj.getId_producto(), 
+                    obj.getId_producto(),
                     obj.getFila(),
-                    obj.getCodigo(), 
-                    obj.getDescripcion(), 
-                    obj.getDesunidad(), 
+                    obj.getCodigo(),
+                    obj.getDescripcion(),
+                    obj.getDesunidad(),
                     obj.getCantidad().doubleValue(),
                     obj.getDesmoneda(),
                     obj.getPrecio_promedio().doubleValue(),
                     obj.getMarca(),
-                    obj.getModelo(),
-                    };
+                    obj.getModelo(),};
                 tabla.addRow(fila);
             }
 
             tabla_general.setRowHeight(35);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-        }        
+        }
     }
-    
+
     private void mostrar_tabla_proveedor() {
         String buscar = null;
-        
-        if(txt_buscar_proveedor.getText() != null && txt_buscar_proveedor.getText().trim().length()>0)
+
+        if (txt_buscar_proveedor.getText() != null && txt_buscar_proveedor.getText().trim().length() > 0) {
             buscar = txt_buscar_proveedor.getText().trim();
-        
+        }
+
         try {
             List<ProveedorBE> list = objProveedorBL.ProveedorBuscar(buscar);
             if (list != null) {
@@ -213,12 +217,12 @@ public class ProductoView extends javax.swing.JPanel {
         txtCantidad.setText("");
     }
 
-    private void limpiar_caja_texto_datocomun(){
+    private void limpiar_caja_texto_datocomun() {
         txtDescripcionCorta.setText("");
         txtValor1.setText("");
         gCodigoTabla = 0;
     }
-    
+
     private void limpiar_caja_texto_crear_proveedor() {
         txt_buscar_proveedor.setText("");
         txt_razon_social_proveedor_crear.setText("");
@@ -243,53 +247,55 @@ public class ProductoView extends javax.swing.JPanel {
         String telefono = txt_telefono_proveedor_crear.getText().trim();
         String celular = txt_celular_proveedor_crear.getText().trim();
         String correo = txt_correo_proveedor_crear.getText().trim();
-        
+
         ProveedorBE pbe = new ProveedorBE();
         int ban = 0;
-        
-        if(ban == 0){
-            if(razon_social != null && razon_social.length() > 0 )
+
+        if (ban == 0) {
+            if (razon_social != null && razon_social.length() > 0) {
                 pbe.setRazon_social(razon_social);
-            else
-            {
+            } else {
                 JOptionPane.showMessageDialog(null, "El campo Razon Social es obligatorio");
                 ban++;
-            } 
+            }
         }
-        
-        if(ban == 0){
-            if(ruc != null && ruc.length() >0 )
+
+        if (ban == 0) {
+            if (ruc != null && ruc.length() > 0) {
                 pbe.setRuc(ruc);
-            else
-            {
-                JOptionPane.showMessageDialog(null, "El campo R.U.C. es obligatorio"); 
+            } else {
+                JOptionPane.showMessageDialog(null, "El campo R.U.C. es obligatorio");
                 ban++;
-            }                
+            }
         }
-        
-        if(ban == 0){
-            if(direccion != null && direccion.length() >0 )
+
+        if (ban == 0) {
+            if (direccion != null && direccion.length() > 0) {
                 pbe.setDireccion(direccion);
-        
-            if(telefono != null && telefono.length() >0 )
+            }
+
+            if (telefono != null && telefono.length() > 0) {
                 pbe.setTelefono(telefono);
+            }
 
-            if(celular != null && celular.length() >0 )
+            if (celular != null && celular.length() > 0) {
                 pbe.setCelular(celular);
+            }
 
-            if(correo != null && correo.length() >0 )
+            if (correo != null && correo.length() > 0) {
                 pbe.setCorreo(correo);
+            }
 
             pbe.setId_empresa(id_empresa_index);
             pbe.setId_usuario(id_usuario_index);
 
             try {
                 int id_proveedor = objProveedorBL.crear(pbe);
-                txtProveedor.setText(razon_social); 
-                lblrucProveedor.setText(String.valueOf(id_proveedor)); 
-                
+                txtProveedor.setText(razon_social);
+                lblrucProveedor.setText(String.valueOf(id_proveedor));
+
                 CerrarDialogoCrearProveedor();
-                
+
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
             }
@@ -300,40 +306,38 @@ public class ProductoView extends javax.swing.JPanel {
         String razonSocialProveedor = txtProveedor.getText().trim();
         String rucProveedor = lblrucProveedor.getText().trim();
         String precio = txt_precio.getText().trim();
-        
+
         ProductoDetalleBE pdbe = new ProductoDetalleBE();
-        
+
         int ban = 0;
-        
-        if(ban == 0){
-            if(rucProveedor != null && rucProveedor.length() > 0 )
+
+        if (ban == 0) {
+            if (rucProveedor != null && rucProveedor.length() > 0) {
                 pdbe.setRucProveedor(rucProveedor);
-            else
-            {
+            } else {
                 JOptionPane.showMessageDialog(null, "Seleccione un proveedor");
                 ban++;
-            } 
+            }
         }
-        
-        if(ban == 0){
-            if(precio != null && precio.length() >0 )
+
+        if (ban == 0) {
+            if (precio != null && precio.length() > 0) {
                 pdbe.setPrecio(new BigDecimal(precio));
-            else
-            {
-                JOptionPane.showMessageDialog(null, "El campo precio es obligatorio."); 
+            } else {
+                JOptionPane.showMessageDialog(null, "El campo precio es obligatorio.");
                 ban++;
-            }                
+            }
         }
-        
-        if(ban == 0){
+
+        if (ban == 0) {
             pdbe.setId_empresa(id_empresa_index);
             pdbe.setId_usuario(id_usuario_index);
             pdbe.setRazonsocialProveedor(razonSocialProveedor);
             pdbe.setRucProveedor(rucProveedor);
-            
+
             List<ProductoDetalleBE> listaProDet = ObtenerRegistrosProductoDetalle();
             listaProDet.add(pdbe);
-            
+
             limpiar_caja_texto_crear_detalle_producto();
             tablaProveedorDetalle(listaProDet);
         }
@@ -429,9 +433,9 @@ public class ProductoView extends javax.swing.JPanel {
         jLabel47 = new javax.swing.JLabel();
         txtCantidad = new javax.swing.JTextField();
         jLabel48 = new javax.swing.JLabel();
-        cboAlmacen1 = new javax.swing.JComboBox();
+        cboStand = new javax.swing.JComboBox();
         jLabel49 = new javax.swing.JLabel();
-        cboAlmacen2 = new javax.swing.JComboBox();
+        cboNivel = new javax.swing.JComboBox();
         DatosProveedor = new javax.swing.JPanel();
         panel_nuevo_detalle = new javax.swing.JPanel();
         btn_guardar_detalle = new javax.swing.JButton();
@@ -1364,16 +1368,16 @@ public class ProductoView extends javax.swing.JPanel {
         jLabel48.setForeground(new java.awt.Color(0, 51, 153));
         jLabel48.setText("Stand:");
 
-        cboAlmacen1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        cboAlmacen1.setToolTipText("Seleccione el Tipo o Familia al que pertenece el Material.");
-        cboAlmacen1.addItemListener(new java.awt.event.ItemListener() {
+        cboStand.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        cboStand.setToolTipText("Seleccione el Tipo o Familia al que pertenece el Material.");
+        cboStand.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cboAlmacen1ItemStateChanged(evt);
+                cboStandItemStateChanged(evt);
             }
         });
-        cboAlmacen1.addActionListener(new java.awt.event.ActionListener() {
+        cboStand.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboAlmacen1ActionPerformed(evt);
+                cboStandActionPerformed(evt);
             }
         });
 
@@ -1382,16 +1386,16 @@ public class ProductoView extends javax.swing.JPanel {
         jLabel49.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel49.setText("Nivel:");
 
-        cboAlmacen2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        cboAlmacen2.setToolTipText("Seleccione el Tipo o Familia al que pertenece el Material.");
-        cboAlmacen2.addItemListener(new java.awt.event.ItemListener() {
+        cboNivel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        cboNivel.setToolTipText("Seleccione el Tipo o Familia al que pertenece el Material.");
+        cboNivel.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cboAlmacen2ItemStateChanged(evt);
+                cboNivelItemStateChanged(evt);
             }
         });
-        cboAlmacen2.addActionListener(new java.awt.event.ActionListener() {
+        cboNivel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboAlmacen2ActionPerformed(evt);
+                cboNivelActionPerformed(evt);
             }
         });
 
@@ -1423,7 +1427,7 @@ public class ProductoView extends javax.swing.JPanel {
                             .addComponent(txt_codigo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cboMoneda, javax.swing.GroupLayout.Alignment.LEADING, 0, 213, Short.MAX_VALUE)
                             .addComponent(txt_peso, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cboAlmacen2, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(cboNivel, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1439,7 +1443,7 @@ public class ProductoView extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btn_nueva_unidad, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(txt_modelo)
-                            .addComponent(cboAlmacen1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cboStand, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(cboReferencia, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1496,12 +1500,12 @@ public class ProductoView extends javax.swing.JPanel {
                     .addComponent(cboAlmacen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel46, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel48, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboAlmacen1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboStand, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel49, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cboAlmacen2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cboNivel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cboReferencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btn_nuevo_referencia, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -2312,7 +2316,7 @@ public class ProductoView extends javax.swing.JPanel {
         crear0_modificar1_producto = 0;
         id_producto_global = 0;
         MostrarObjetos(true);
-        mostrarMaterial(crear0_modificar1_producto, 0);         
+        mostrarMaterial(crear0_modificar1_producto, 0);
     }//GEN-LAST:event_btn_nuevoActionPerformed
 
     private void btn_cancelar_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelar_clienteActionPerformed
@@ -2361,12 +2365,12 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_proveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoBuscarProveedor();            
+            cerrarDialogoBuscarProveedor();
         }
     }//GEN-LAST:event_txt_buscar_proveedorKeyReleased
 
     private void btn_cliente_cancelar_busquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cliente_cancelar_busquedaActionPerformed
-        cerrarDialogoBuscarProveedor();                
+        cerrarDialogoBuscarProveedor();
     }//GEN-LAST:event_btn_cliente_cancelar_busquedaActionPerformed
 
     private void btn_cliente_seleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cliente_seleccionarActionPerformed
@@ -2376,9 +2380,9 @@ public class ProductoView extends javax.swing.JPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         txt_buscar_proveedor.setText("");
         dialog_buscar_proveedor.dispose();
-        
+
         limpiar_caja_texto_crear_proveedor();
-        
+
         dialog_crear_proveedor.setSize(429, 350);
         dialog_crear_proveedor.setLocationRelativeTo(producto);
         dialog_crear_proveedor.setModal(true);
@@ -2390,7 +2394,7 @@ public class ProductoView extends javax.swing.JPanel {
             SeleccionProveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoBuscarProveedor();            
+            cerrarDialogoBuscarProveedor();
         }
     }//GEN-LAST:event_tablaProveedorKeyPressed
 
@@ -2409,13 +2413,13 @@ public class ProductoView extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de eliminar este registro?", "Eliminar", JOptionPane.YES_NO_OPTION);
-            
+
             if (respuesta == JOptionPane.YES_OPTION) {
                 DefaultTableModel tm = (DefaultTableModel) tabla_detalle.getModel();
-                
+
                 List<ProductoDetalleBE> listaProDet = ObtenerRegistrosProductoDetalle();
                 listaProDet.remove(fila);
-                tablaProveedorDetalle(listaProDet);                
+                tablaProveedorDetalle(listaProDet);
             }
         }
     }//GEN-LAST:event_EliminarActionPerformed
@@ -2426,24 +2430,24 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void tabla_generalMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_generalMouseReleased
         /*if (band_index == 0) {
-            int fila;
-            int id_producto;
-            fila = tabla_general.getSelectedRow();
-            m = (DefaultTableModel) tabla_general.getModel();
-            id_producto = Integer.parseInt((String) m.getValueAt(fila, 0));
-            mostrar_datos_producto(id_producto);
-        }*/
+         int fila;
+         int id_producto;
+         fila = tabla_general.getSelectedRow();
+         m = (DefaultTableModel) tabla_general.getModel();
+         id_producto = Integer.parseInt((String) m.getValueAt(fila, 0));
+         mostrar_datos_producto(id_producto);
+         }*/
     }//GEN-LAST:event_tabla_generalMouseReleased
 
     private void tabla_generalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabla_generalKeyReleased
         /*if (band_index == 0) {
-            int fila;
-            int id_producto;
-            fila = tabla_general.getSelectedRow();
-            m = (DefaultTableModel) tabla_general.getModel();
-            id_producto = Integer.parseInt((String) m.getValueAt(fila, 0));
-            mostrar_datos_producto(id_producto);
-        }*/
+         int fila;
+         int id_producto;
+         fila = tabla_general.getSelectedRow();
+         m = (DefaultTableModel) tabla_general.getModel();
+         id_producto = Integer.parseInt((String) m.getValueAt(fila, 0));
+         mostrar_datos_producto(id_producto);
+         }*/
     }//GEN-LAST:event_tabla_generalKeyReleased
 
     private void btn_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modificarActionPerformed
@@ -2455,11 +2459,11 @@ public class ProductoView extends javax.swing.JPanel {
         } else {
             DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
             int id_producto = (Integer) tm.getValueAt(fila, 0);
-                
+
             crear0_modificar1_producto = 1;
             id_producto_global = id_producto;
             MostrarObjetos(true);
-            mostrarMaterial(crear0_modificar1_producto, id_producto);            
+            mostrarMaterial(crear0_modificar1_producto, id_producto);
         }
     }//GEN-LAST:event_btn_modificarActionPerformed
 
@@ -2470,17 +2474,16 @@ public class ProductoView extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de eliminar este registro?", "Eliminar", JOptionPane.YES_NO_OPTION);
-            
+
             if (respuesta == JOptionPane.YES_OPTION) {
                 DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
                 int id_producto = (Integer) tm.getValueAt(fila, 0);
-                
+
                 ProductoBE obj = new ProductoBE();
                 obj.setId_producto(id_producto);
 
-                try
-                {
-                    if(objProductoBL.ProductoEliminar(obj) > 0){
+                try {
+                    if (objProductoBL.ProductoEliminar(obj) > 0) {
                         mostrar_tabla_producto();
                         JOptionPane.showMessageDialog(null, "Registro eliminado con éxito.");
                     }
@@ -2492,11 +2495,11 @@ public class ProductoView extends javax.swing.JPanel {
     }//GEN-LAST:event_btn_eliminarActionPerformed
 
     private void btn_cancelar_crear_empresatransporte1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelar_crear_empresatransporte1ActionPerformed
-        cerrarDialogoCrearDatoComun();        
+        cerrarDialogoCrearDatoComun();
     }//GEN-LAST:event_btn_cancelar_crear_empresatransporte1ActionPerformed
 
     private void btn_guardar_empresatransporte1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardar_empresatransporte1ActionPerformed
-        crearDatoComun();        
+        crearDatoComun();
     }//GEN-LAST:event_btn_guardar_empresatransporte1ActionPerformed
 
     private void txtDescripcionCortaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionCortaKeyTyped
@@ -2520,7 +2523,7 @@ public class ProductoView extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(limpiarCboFiltros){
+        if (limpiarCboFiltros) {
             MostrarCombo(cbo_referencia_bus, 4, true, true, null);
             MostrarCombo(cboMoneda_bus, 2, true, true, null);
             MostrarCombo(cboUnidad_bus, 1, true, true, null);
@@ -2528,7 +2531,7 @@ public class ProductoView extends javax.swing.JPanel {
             MostrarCombo(cboCategoria_bus, 6, true, true, null);
             limpiarCboFiltros = false;
         }
-        
+
         dialog_filtrar_producto.setSize(800, 400);
         dialog_filtrar_producto.setLocationRelativeTo(producto);
         dialog_filtrar_producto.setModal(true);
@@ -2538,7 +2541,7 @@ public class ProductoView extends javax.swing.JPanel {
     private void tabla_detalleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_detalleMouseClicked
         if (evt.getButton() == 3) {
             mantenimiento_tabla_detalle_factura.show(tabla_detalle, evt.getX(), evt.getY());
-        }        
+        }
     }//GEN-LAST:event_tabla_detalleMouseClicked
 
     private void btn_nuevo_proveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevo_proveedorActionPerformed
@@ -2570,7 +2573,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void btn_nuevo_referenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevo_referenciaActionPerformed
         limpiar_caja_texto_datocomun();
-        mostrarVentanaCrearDC(4,"Crear Referencia", "Descripción", true, "", false);
+        mostrarVentanaCrearDC(4, "Crear Referencia", "Descripción", true, "", false);
     }//GEN-LAST:event_btn_nuevo_referenciaActionPerformed
 
     private void cboReferenciaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboReferenciaItemStateChanged
@@ -2579,7 +2582,7 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void btn_nuevo_categoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevo_categoriaActionPerformed
         limpiar_caja_texto_datocomun();
-        mostrarVentanaCrearDC(6,"Crear Categoría", "Descripción", true, "", false);
+        mostrarVentanaCrearDC(6, "Crear Categoría", "Descripción", true, "", false);
     }//GEN-LAST:event_btn_nuevo_categoriaActionPerformed
 
     private void cboCategoriaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboCategoriaItemStateChanged
@@ -2595,11 +2598,11 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void btn_nueva_unidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nueva_unidadActionPerformed
         limpiar_caja_texto_datocomun();
-        mostrarVentanaCrearDC(1,"Crear Unidad de Medida", "Nombre", true, "Código", true);
+        mostrarVentanaCrearDC(1, "Crear Unidad de Medida", "Nombre", true, "Código", true);
     }//GEN-LAST:event_btn_nueva_unidadActionPerformed
 
     private void cboUnidadItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboUnidadItemStateChanged
-        
+
     }//GEN-LAST:event_cboUnidadItemStateChanged
 
     private void txt_modeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_modeloKeyTyped
@@ -2656,7 +2659,11 @@ public class ProductoView extends javax.swing.JPanel {
     }//GEN-LAST:event_cboCategoriaActionPerformed
 
     private void cboAlmacenItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboAlmacenItemStateChanged
-        // TODO add your handling code here:
+        incializarCombo(cboStand);
+        incializarCombo(cboNivel);
+        if (cboAlmacen.getSelectedItem() != null && cboAlmacen.getSelectedItem().toString().length() > 0) {
+            MostrarComboStand(cboStand, true, false, null, getCodigoCombo(cboAlmacen.getSelectedItem().toString().trim()));
+        }
     }//GEN-LAST:event_cboAlmacenItemStateChanged
 
     private void cboAlmacenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAlmacenActionPerformed
@@ -2676,7 +2683,7 @@ public class ProductoView extends javax.swing.JPanel {
             crear_proveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProveedor(); 
+            CerrarDialogoCrearProveedor();
         }
     }//GEN-LAST:event_txt_razon_social_proveedor_crearKeyReleased
 
@@ -2685,7 +2692,7 @@ public class ProductoView extends javax.swing.JPanel {
             crear_proveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProveedor(); 
+            CerrarDialogoCrearProveedor();
         }
     }//GEN-LAST:event_txt_ruc_proveedor_crearKeyReleased
 
@@ -2694,7 +2701,7 @@ public class ProductoView extends javax.swing.JPanel {
             crear_proveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProveedor(); 
+            CerrarDialogoCrearProveedor();
         }
     }//GEN-LAST:event_txt_direccion_proveedor_crearKeyReleased
 
@@ -2703,7 +2710,7 @@ public class ProductoView extends javax.swing.JPanel {
             crear_proveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProveedor(); 
+            CerrarDialogoCrearProveedor();
         }
     }//GEN-LAST:event_txt_telefono_proveedor_crearKeyReleased
 
@@ -2712,7 +2719,7 @@ public class ProductoView extends javax.swing.JPanel {
             crear_proveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProveedor(); 
+            CerrarDialogoCrearProveedor();
         }
     }//GEN-LAST:event_txt_celular_proveedor_crearKeyReleased
 
@@ -2721,7 +2728,7 @@ public class ProductoView extends javax.swing.JPanel {
             crear_proveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProveedor(); 
+            CerrarDialogoCrearProveedor();
         }
     }//GEN-LAST:event_txt_correo_proveedor_crearKeyReleased
 
@@ -2730,8 +2737,8 @@ public class ProductoView extends javax.swing.JPanel {
             crearDatoComun();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoCrearDatoComun(); 
-        }        
+            cerrarDialogoCrearDatoComun();
+        }
     }//GEN-LAST:event_txtDescripcionCortaKeyReleased
 
     private void txtValor1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValor1KeyReleased
@@ -2739,7 +2746,7 @@ public class ProductoView extends javax.swing.JPanel {
             crearDatoComun();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoCrearDatoComun(); 
+            cerrarDialogoCrearDatoComun();
         }
     }//GEN-LAST:event_txtValor1KeyReleased
 
@@ -2756,9 +2763,9 @@ public class ProductoView extends javax.swing.JPanel {
     }//GEN-LAST:event_lblrucProveedorKeyReleased
 
     private void tablaProveedorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaProveedorMouseClicked
-       if (evt.getClickCount() == 2) {
-           SeleccionProveedor();
-       }
+        if (evt.getClickCount() == 2) {
+            SeleccionProveedor();
+        }
     }//GEN-LAST:event_tablaProveedorMouseClicked
 
     private void btn_guardar_empresatransporte1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btn_guardar_empresatransporte1KeyReleased
@@ -2766,7 +2773,7 @@ public class ProductoView extends javax.swing.JPanel {
             crearDatoComun();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoCrearDatoComun(); 
+            cerrarDialogoCrearDatoComun();
         }
     }//GEN-LAST:event_btn_guardar_empresatransporte1KeyReleased
 
@@ -2775,7 +2782,7 @@ public class ProductoView extends javax.swing.JPanel {
             cerrarDialogoCrearDatoComun();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoCrearDatoComun(); 
+            cerrarDialogoCrearDatoComun();
         }
     }//GEN-LAST:event_btn_cancelar_crear_empresatransporte1KeyReleased
 
@@ -2784,7 +2791,7 @@ public class ProductoView extends javax.swing.JPanel {
             SeleccionProveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoBuscarProveedor();            
+            cerrarDialogoBuscarProveedor();
         }
     }//GEN-LAST:event_btn_cliente_seleccionarKeyReleased
 
@@ -2793,7 +2800,7 @@ public class ProductoView extends javax.swing.JPanel {
             cerrarDialogoBuscarProveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoBuscarProveedor();            
+            cerrarDialogoBuscarProveedor();
         }
     }//GEN-LAST:event_btn_cliente_cancelar_busquedaKeyReleased
 
@@ -2802,7 +2809,7 @@ public class ProductoView extends javax.swing.JPanel {
             crear_proveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProveedor(); 
+            CerrarDialogoCrearProveedor();
         }
     }//GEN-LAST:event_btn_crea_clienteKeyReleased
 
@@ -2811,7 +2818,7 @@ public class ProductoView extends javax.swing.JPanel {
             CerrarDialogoCrearProveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearProveedor(); 
+            CerrarDialogoCrearProveedor();
         }
     }//GEN-LAST:event_btn_cancelar_clienteKeyReleased
 
@@ -2820,7 +2827,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_txtCodigo_busKeyReleased
 
@@ -2829,7 +2836,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_txtDescripcion_busKeyReleased
 
@@ -2838,7 +2845,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_txtModelo_busKeyReleased
 
@@ -2847,7 +2854,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_txtMarca_busKeyReleased
 
@@ -2856,7 +2863,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_cbo_referencia_busKeyReleased
 
@@ -2865,7 +2872,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_txtNombreComun_busKeyReleased
 
@@ -2874,7 +2881,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_cboMoneda_busKeyReleased
 
@@ -2883,7 +2890,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_cboUnidad_busKeyReleased
 
@@ -2892,7 +2899,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_cboAlmacen_busKeyReleased
 
@@ -2901,7 +2908,7 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_cboCategoria_busKeyReleased
 
@@ -2910,25 +2917,25 @@ public class ProductoView extends javax.swing.JPanel {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_jButton8KeyReleased
 
     private void jButton7KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton7KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_jButton7KeyReleased
 
     private void cbo_referencia_busKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbo_referencia_busKeyPressed
-       if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             mostrar_tabla_producto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_producto.dispose(); 
+            dialog_filtrar_producto.dispose();
         }
     }//GEN-LAST:event_cbo_referencia_busKeyPressed
 
@@ -3037,11 +3044,11 @@ public class ProductoView extends javax.swing.JPanel {
         } else {
             DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
             int id_producto = (Integer) tm.getValueAt(fila, 0);
-                
+
             crear0_modificar1_producto = 1;
             id_producto_global = id_producto;
             MostrarObjetos(false);
-            mostrarMaterial(crear0_modificar1_producto, id_producto);            
+            mostrarMaterial(crear0_modificar1_producto, id_producto);
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
@@ -3055,7 +3062,7 @@ public class ProductoView extends javax.swing.JPanel {
     }//GEN-LAST:event_txt_precioKeyPressed
 
     private void btn_guardar_detalleKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btn_guardar_detalleKeyReleased
-        
+
     }//GEN-LAST:event_btn_guardar_detalleKeyReleased
 
     private void tabla_detalleKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabla_detalleKeyReleased
@@ -3078,13 +3085,13 @@ public class ProductoView extends javax.swing.JPanel {
         txtModelo_bus.setText("");
         txtMarca_bus.setText("");
         txtNombreComun_bus.setText("");
-        
+
         incializarCombo(cbo_referencia_bus);
         incializarCombo(cboMoneda_bus);
         incializarCombo(cboUnidad_bus);
         incializarCombo(cboAlmacen_bus);
         incializarCombo(cboCategoria_bus);
-        
+
         mostrar_tabla_producto();
     }//GEN-LAST:event_jButton9ActionPerformed
 
@@ -3098,15 +3105,14 @@ public class ProductoView extends javax.swing.JPanel {
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
-            try
-            {
+            try {
                 DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
                 int idProducto = (Integer) tm.getValueAt(fila, 0);
-                
+
                 String rutaInforme = "reportes\\MaterialMovimiento.jasper";
                 Map parametros = new HashMap();
                 parametros.put("IdMaterial", idProducto);
-                parametros.put("idEmpresa", id_empresa_index); 
+                parametros.put("idEmpresa", id_empresa_index);
                 parametros.put(JRParameter.REPORT_LOCALE, Locale.US);
                 Connection cn = AccesoDB.getConnection();
 
@@ -3114,7 +3120,7 @@ public class ProductoView extends javax.swing.JPanel {
                 JasperViewer view = new JasperViewer(print, false);
                 view.setTitle("MOVIMIENTO DE MATERIAL");
                 view.setVisible(true);
-                
+
             } catch (IllegalAccessException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             } catch (InstantiationException e) {
@@ -3131,21 +3137,25 @@ public class ProductoView extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnImprimirMovimientoActionPerformed
 
-    private void cboAlmacen1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboAlmacen1ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cboAlmacen1ItemStateChanged
+    private void cboStandItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboStandItemStateChanged
+        incializarCombo(cboNivel);
+        
+        if (cboStand.getSelectedItem() != null && cboStand.getSelectedItem().toString().length() > 0) {
+            MostrarComboNivel(cboNivel, true, false, null, getCodigoCombo(cboStand.getSelectedItem().toString().trim()));
+        }
+    }//GEN-LAST:event_cboStandItemStateChanged
 
-    private void cboAlmacen1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAlmacen1ActionPerformed
+    private void cboStandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboStandActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cboAlmacen1ActionPerformed
+    }//GEN-LAST:event_cboStandActionPerformed
 
-    private void cboAlmacen2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboAlmacen2ItemStateChanged
+    private void cboNivelItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboNivelItemStateChanged
         // TODO add your handling code here:
-    }//GEN-LAST:event_cboAlmacen2ItemStateChanged
+    }//GEN-LAST:event_cboNivelItemStateChanged
 
-    private void cboAlmacen2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAlmacen2ActionPerformed
+    private void cboNivelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboNivelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cboAlmacen2ActionPerformed
+    }//GEN-LAST:event_cboNivelActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Centro;
@@ -3171,14 +3181,14 @@ public class ProductoView extends javax.swing.JPanel {
     private javax.swing.JButton btn_nuevo_proveedor;
     private javax.swing.JButton btn_nuevo_referencia;
     private javax.swing.JComboBox cboAlmacen;
-    private javax.swing.JComboBox cboAlmacen1;
-    private javax.swing.JComboBox cboAlmacen2;
     private javax.swing.JComboBox cboAlmacen_bus;
     private javax.swing.JComboBox cboCategoria;
     private javax.swing.JComboBox cboCategoria_bus;
     private javax.swing.JComboBox cboMoneda;
     private javax.swing.JComboBox cboMoneda_bus;
+    private javax.swing.JComboBox cboNivel;
     private javax.swing.JComboBox cboReferencia;
+    private javax.swing.JComboBox cboStand;
     private javax.swing.JComboBox cboUnidad;
     private javax.swing.JComboBox cboUnidad_bus;
     private javax.swing.JComboBox cbo_referencia_bus;
@@ -3313,23 +3323,23 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void MostrarComboMoneda(JComboBox cbo) {
         MonedaBE pbe = new MonedaBE();
-        
+
         try {
             List<MonedaBE> lmoneda = objMonedaBL.MonedaListar(pbe);
             if (lmoneda != null && !lmoneda.isEmpty()) {
                 AutoCompleteDecorator.decorate(cbo);
                 DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
                 //cboModel.addElement("");
-                
+
                 for (MonedaBE monedaBE : lmoneda) {
-                    cboModel.addElement(monedaBE.getNombre());                    
+                    cboModel.addElement(monedaBE.getNombre());
                 }
-                
+
                 cbo.setModel(cboModel);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
-        }   
+        }
     }
 
     private void MostrarCombo(JComboBox cbo, int CodigoTabla, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault) {
@@ -3337,72 +3347,85 @@ public class ProductoView extends javax.swing.JPanel {
             List<DatoComunBE> list = objDatoComunBL.ReadDetalle(CodigoTabla);
             if (!list.isEmpty()) {
                 DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
-                
-                if(Autocompletado)
+
+                if (Autocompletado) {
                     AutoCompleteDecorator.decorate(cbo);
-                
-                if(MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())){
+                }
+
+                if (MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())) {
                     cboModel.addElement("");
                 }
-                
-                if(cadenaDefault != null && cadenaDefault.length() > 0)
+
+                if (cadenaDefault != null && cadenaDefault.length() > 0) {
                     cboModel.addElement(cadenaDefault);
-                
-                String DescripcionCorta; 
-                String codigoFila; 
-                
+                }
+
+                String DescripcionCorta;
+                String codigoFila;
+
                 for (DatoComunBE obj : list) {
                     DescripcionCorta = obj.getDescripcionCorta();
                     codigoFila = String.valueOf(obj.getCodigoFila());
-                    
-                    if(cadenaDefault != null){
-                        if(!DescripcionCorta.equals(cadenaDefault))
+
+                    if (cadenaDefault != null) {
+                        if (!DescripcionCorta.equals(cadenaDefault)) {
                             cboModel.addElement(DescripcionCorta);
-                    }else{
+                        }
+                    } else {
                         cboModel.addElement(DescripcionCorta);
-                    }                    
+                    }
                 }
-                
+
                 cbo.setModel(cboModel);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
-        } 
+        }
     }
 
     private ProductoBE ObtenerFiltrosBusqueda() {
         ProductoBE pbe = new ProductoBE();
-        
-        if(txtCodigo_bus.getText().trim().length() > 0)
+
+        if (txtCodigo_bus.getText().trim().length() > 0) {
             pbe.setCodigo(txtCodigo_bus.getText().trim());
-        
-        if(txtDescripcion_bus.getText().trim().length() > 0)
+        }
+
+        if (txtDescripcion_bus.getText().trim().length() > 0) {
             pbe.setDescripcion(txtDescripcion_bus.getText().trim());
-        
-        if(txtModelo_bus.getText().trim().length() > 0)
+        }
+
+        if (txtModelo_bus.getText().trim().length() > 0) {
             pbe.setModelo(txtModelo_bus.getText().trim());
-        
-        if(txtMarca_bus.getText().trim().length() > 0)
+        }
+
+        if (txtMarca_bus.getText().trim().length() > 0) {
             pbe.setMarca(txtMarca_bus.getText().trim());
-        
-        if(txtNombreComun_bus.getText().trim().length() > 0)
+        }
+
+        if (txtNombreComun_bus.getText().trim().length() > 0) {
             pbe.setDescripcion_coloquial(txtNombreComun_bus.getText().trim());
-        
-        if(cbo_referencia_bus.getSelectedItem()!= null && cbo_referencia_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cbo_referencia_bus.getSelectedItem() != null && cbo_referencia_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesReferencia_precio(cbo_referencia_bus.getSelectedItem().toString().trim());
-        
-        if(cboMoneda_bus.getSelectedItem()!= null && cboMoneda_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cboMoneda_bus.getSelectedItem() != null && cboMoneda_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesmoneda(cboMoneda_bus.getSelectedItem().toString().trim());
-        
-        if(cboUnidad_bus.getSelectedItem()!= null && cboUnidad_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cboUnidad_bus.getSelectedItem() != null && cboUnidad_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesunidad(cboUnidad_bus.getSelectedItem().toString().trim());
-        
-        if(cboAlmacen_bus.getSelectedItem()!= null && cboAlmacen_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cboAlmacen_bus.getSelectedItem() != null && cboAlmacen_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesAlmacen(cboAlmacen_bus.getSelectedItem().toString().trim());
-        
-        if(cboCategoria_bus.getSelectedItem()!= null && cboCategoria_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cboCategoria_bus.getSelectedItem() != null && cboCategoria_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesproductotipo(cboCategoria_bus.getSelectedItem().toString().trim());
-        
+        }
+
         return pbe;
     }
 
@@ -3414,58 +3437,98 @@ public class ProductoView extends javax.swing.JPanel {
     private void mostrarMaterial(int accion, int id_producto) {
         tabMaterial.setSelectedIndex(0);
         limpiar_caja_texto_crear_material();
-        
-        if(accion == 0){
+
+        if (accion == 0) {
             tabMaterial.setEnabledAt(1, false);
             cargarCombos();
             activarValores(true);
-            
-        }           
-        else{
+
+        } else {
             tabMaterial.setEnabledAt(1, true);
             panel_nuevo_detalle.setVisible(false);
             modificarMaterial(id_producto);
-            activarValores(false);            
-        }           
-        
+            activarValores(false);
+        }
+
         dialog_crear_producto.setSize(750, 500);
         dialog_crear_producto.setLocationRelativeTo(producto);
         dialog_crear_producto.setModal(true);
         dialog_crear_producto.setVisible(true);
-        
+
     }
 
     private void cargarCombos() {
+        incializarCombo(cboStand);
+        incializarCombo(cboNivel);
         MostrarCombo(cboReferencia, 4, true, true, null);
         MostrarCombo(cboMoneda, 2, true, true, null);
         MostrarCombo(cboUnidad, 1, true, true, null);
-        MostrarCombo(cboAlmacen, 3, true, true, null);
-        MostrarCombo(cboCategoria, 6, true, true, null);        
+        MostrarComboAlmacen(cboAlmacen, 3, true, false, null);
+        MostrarCombo(cboCategoria, 6, true, true, null);
+    }
+
+    private void MostrarComboAlmacen(JComboBox cbo, int CodigoTabla, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault) {
+        try {
+            List<DatoComunBE> list = objDatoComunBL.ReadDetalle(CodigoTabla);
+            if (!list.isEmpty()) {
+                DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
+
+                if (Autocompletado) {
+                    AutoCompleteDecorator.decorate(cbo);
+                }
+
+                if (MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())) {
+                    cboModel.addElement("");
+                }
+
+                if (cadenaDefault != null && cadenaDefault.length() > 0) {
+                    cboModel.addElement(cadenaDefault);
+                }
+
+                String DescripcionCorta;
+
+                for (DatoComunBE obj : list) {
+                    DescripcionCorta = obj.getIdDatoComun() + "|" + obj.getDescripcionCorta();
+
+                    if (cadenaDefault != null) {
+                        if (!DescripcionCorta.equals(cadenaDefault)) {
+                            cboModel.addElement(DescripcionCorta);
+                        }
+                    } else {
+                        cboModel.addElement(DescripcionCorta);
+                    }
+                }
+
+                cbo.setModel(cboModel);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
     private void mostrarVentanaCrearDC(int codTabla, String titulo, String labelDescripcion, boolean mostrarLblDescripcion, String labelValor, boolean mostrarLblValor) {
         gCodigoTabla = codTabla;
-        
+
         lblTituloDatoComun.setText(titulo);
         lblDescripcion.setText(labelDescripcion);
         lblValor.setText(labelValor);
-        
-        if(mostrarLblDescripcion){
+
+        if (mostrarLblDescripcion) {
             lblDescripcion.setVisible(true);
             txtDescripcionCorta.setVisible(true);
-        }else{
+        } else {
             lblDescripcion.setVisible(false);
             txtDescripcionCorta.setVisible(false);
         }
-        
-        if(mostrarLblValor){
+
+        if (mostrarLblValor) {
             lblValor.setVisible(true);
             txtValor1.setVisible(true);
-        }else{
+        } else {
             lblValor.setVisible(false);
             txtValor1.setVisible(false);
         }
-        
+
         dialog_crear_datoComun.setSize(430, 300);
         dialog_crear_datoComun.setLocationRelativeTo(producto);
         dialog_crear_datoComun.setModal(true);
@@ -3477,13 +3540,13 @@ public class ProductoView extends javax.swing.JPanel {
         tabla.setRowCount(0);
         for (ProveedorBE obj : list) {
             Object[] fila = {
-                obj.getId_provedor(), 
+                obj.getId_provedor(),
                 obj.getRuc(),
                 obj.getRazon_social()
-                };
+            };
             tabla.addRow(fila);
         }
-        
+
         tablaProveedor.setRowHeight(35);
     }
 
@@ -3493,89 +3556,86 @@ public class ProductoView extends javax.swing.JPanel {
         for (ProductoDetalleBE obj : listaProDet) {
             Object[] fila = {
                 /*obj.getRucProveedor(),
-                obj.getRazonsocialProveedor(),
-                obj.getPrecio()*/
+                 obj.getRazonsocialProveedor(),
+                 obj.getPrecio()*/
                 obj.getNumeroCompra(),
                 obj.getFechaCompra(),
                 obj.getRucProveedor(),
                 obj.getRazonsocialProveedor(),
                 obj.getDesMoneda(),
                 obj.getPrecioUnitario()
-                };
+            };
             tabla.addRow(fila);
         }
-        
+
         tabla_detalle.setRowHeight(35);
     }
 
     private void crearDatoComun() {
-        
-        if(gCodigoTabla != 0){
+
+        if (gCodigoTabla != 0) {
             String descripcion = txtDescripcionCorta.getText().trim();
             String valor = txtValor1.getText().trim();
             int band = 0;
-            
-            DatoComunBE objdc  = new DatoComunBE();
-            
-            if(band == 0)
-            {
-                if(txtDescripcionCorta.isVisible()){
-                    if(descripcion != null && descripcion.length()>0)
+
+            DatoComunBE objdc = new DatoComunBE();
+
+            if (band == 0) {
+                if (txtDescripcionCorta.isVisible()) {
+                    if (descripcion != null && descripcion.length() > 0) {
                         objdc.setDescripcionCorta(descripcion);
-                    else{
-                        JOptionPane.showMessageDialog(null, "Ingrese el valor de todos los campos.");    
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Ingrese el valor de todos los campos.");
                         band++;
                     }
-                }   
+                }
             }
-            
-            if(band == 0)
-            {
-                if(txtValor1.isVisible()){
-                    if(valor != null && valor.length()>0)
+
+            if (band == 0) {
+                if (txtValor1.isVisible()) {
+                    if (valor != null && valor.length() > 0) {
                         objdc.setValorTexto1(valor);
-                    else{
-                        JOptionPane.showMessageDialog(null, "Ingrese el valor de todos los campos.");    
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Ingrese el valor de todos los campos.");
                         band++;
                     }
-                }   
+                }
             }
-            
-            if(band == 0){
+
+            if (band == 0) {
                 objdc.setId_empresa(id_empresa_index);
                 objdc.setUsuarioDes(aliasUsuarioIndex);
                 objdc.setCodigoTabla(gCodigoTabla);
-                
+
                 try {
-                 
+
                     int resp = objDatoComunBL.crear(objdc);
-                    
+
                     switch (gCodigoTabla) {
                         //Unidad
                         case 1:
                             MostrarCombo(cboUnidad, 1, false, true, descripcion);
                             break;
-                        
+
                         //Referencia
                         case 4:
                             MostrarCombo(cboReferencia, 4, false, true, descripcion);
                             break;
-                            
+
                         //Categoria
                         case 6:
                             MostrarCombo(cboCategoria, 6, false, true, descripcion);
                             break;
                     }
-                
-                    cerrarDialogoCrearDatoComun();  
-                    
+
+                    cerrarDialogoCrearDatoComun();
+
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            
-            
-        }else{
+
+        } else {
             JOptionPane.showMessageDialog(null, "No se enconró el codigo de tabla");
         }
     }
@@ -3583,19 +3643,19 @@ public class ProductoView extends javax.swing.JPanel {
     private void SeleccionProveedor() {
         int fila;
         fila = tablaProveedor.getSelectedRow();
-        
+
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un registro");
         } else {
             m = (DefaultTableModel) tablaProveedor.getModel();
-            
+
             int id_proveedor = (Integer) m.getValueAt(fila, 0);
             String ruc = (String) m.getValueAt(fila, 1);
             String razon_social = (String) m.getValueAt(fila, 2);
-            
+
             lblrucProveedor.setText(ruc);
             txtProveedor.setText(razon_social);
-            
+
             cerrarDialogoBuscarProveedor();
         }
     }
@@ -3620,194 +3680,221 @@ public class ProductoView extends javax.swing.JPanel {
         gCodigoTabla = 0;
         crear0_modificar1_producto = 0;
         id_producto_global = 0;
-        
+
         DefaultTableModel tablaDetalle = (DefaultTableModel) tabla_detalle.getModel();
         tablaDetalle.setRowCount(0);
-        
+
         MostrarObjetos(true);
         dialog_crear_producto.dispose();
     }
 
     private ProductoBE capturarValorProducto() {
-        
+
         ProductoBE pbe = null;
-        
-        String codigo = txt_codigo.getText().trim();
         String descripcion = txt_descripcion.getText().trim();
-        String modelo = txt_modelo.getText().trim();
-        String marca = txt_marca.getText().trim();
-        String descripcion_coloquial = txt_descripcion_coloquial.getText().trim();
-        String peso = txt_peso.getText().trim();
-        String precio_promedio = txt_precio_unitario.getText().trim();
-        String cantidad = txtCantidad.getText().trim();
-        
-        String Desmoneda = cboMoneda.getSelectedItem().toString().trim();
-        String Desunidad = cboUnidad.getSelectedItem().toString().trim();
-        String Desproductotipo = cboCategoria.getSelectedItem().toString().trim();
-        String DesAlmacen = cboAlmacen.getSelectedItem().toString().trim();
-        String DesReferencia_precio = cboReferencia.getSelectedItem().toString().trim();
-        
+
         int band = 0;
-        
-        if(descripcion.length() == 0){
+
+        if (descripcion.length() == 0) {
             JOptionPane.showMessageDialog(null, "El campo Nombre es obligarotio");
             band++;
         }
-        
-        if(band == 0){
+
+        if (band == 0) {
+            String codigo = txt_codigo.getText().trim();
+            String modelo = txt_modelo.getText().trim();
+            String marca = txt_marca.getText().trim();
+            String descripcion_coloquial = txt_descripcion_coloquial.getText().trim();
+            String peso = txt_peso.getText().trim();
+            String precio_promedio = txt_precio_unitario.getText().trim();
+            String cantidad = txtCantidad.getText().trim();
+
+            String Desmoneda = cboMoneda.getSelectedItem().toString().trim();
+            String Desunidad = cboUnidad.getSelectedItem().toString().trim();
+            String Desproductotipo = cboCategoria.getSelectedItem().toString().trim();
+            String DesAlmacen = cboAlmacen.getSelectedItem().toString().trim();
+            String DesReferencia_precio = cboReferencia.getSelectedItem().toString().trim();
+
             pbe = new ProductoBE();
-            
-            if(descripcion.length() > 0)
+
+            if (descripcion.length() > 0) {
                 pbe.setDescripcion(descripcion);
-            
-            if(codigo.length() > 0)
+            }
+
+            if (codigo.length() > 0) {
                 pbe.setCodigo(codigo);
-            
-            if(modelo.length() > 0)
+            }
+
+            if (modelo.length() > 0) {
                 pbe.setModelo(modelo);
-            
-            if(marca.length() > 0)
+            }
+
+            if (marca.length() > 0) {
                 pbe.setMarca(marca);
-            
-            if(descripcion_coloquial.length() > 0)
+            }
+
+            if (descripcion_coloquial.length() > 0) {
                 pbe.setDescripcion_coloquial(descripcion_coloquial);
-            
-            if(peso.length() > 0)
+            }
+
+            if (peso.length() > 0) {
                 pbe.setPeso(new BigDecimal(peso));
-            
-            if(precio_promedio.length() > 0)
+            }
+
+            if (precio_promedio.length() > 0) {
                 pbe.setPrecio_promedio(new BigDecimal(precio_promedio));
-            
-            if(cantidad.length() > 0)
+            }
+
+            if (cantidad.length() > 0) {
                 pbe.setCantidad(new BigDecimal(cantidad));
-            
-            if(Desmoneda.length() > 0)
+            }
+
+            if (Desmoneda.length() > 0) {
                 pbe.setDesmoneda(Desmoneda);
-            
-            if(Desunidad.length() > 0)
+            }
+
+            if (Desunidad.length() > 0) {
                 pbe.setDesunidad(Desunidad);
-            
-            if(Desproductotipo.length() > 0)
+            }
+
+            if (Desproductotipo.length() > 0) {
                 pbe.setDesproductotipo(Desproductotipo);
-            
-            if(DesAlmacen.length() > 0)
-                pbe.setDesAlmacen(DesAlmacen);
-            
-            if(DesReferencia_precio.length() > 0)
+            }
+
+            if (DesAlmacen.length() > 0) {
+                pbe.setId_Almacen(getCodigoCombo(cboAlmacen.getSelectedItem().toString().trim()));
+            }
+
+            if (cboStand.getSelectedItem() != null && cboStand.getSelectedItem().toString().trim().length() > 0) {
+                pbe.setIdStand(getCodigoCombo(cboStand.getSelectedItem().toString().trim()));
+            }
+
+            if (cboNivel.getSelectedItem() != null && cboNivel.getSelectedItem().toString().trim().length() > 0) {
+                pbe.setIdNivel(getCodigoCombo(cboNivel.getSelectedItem().toString().trim()));
+            }
+
+            if (DesReferencia_precio.length() > 0) {
                 pbe.setDesReferencia_precio(DesReferencia_precio);
-            
+            }
+
             pbe.setId_empresa(id_empresa_index);
             pbe.setUsuarioInserta(aliasUsuarioIndex);
             pbe.setTipoOperacion(crear0_modificar1_producto);
             pbe.setId_producto(id_producto_global);
         }
-        
+
         return pbe;
     }
 
     private void crearmodificarProducto() {
         ProductoBE pbe = capturarValorProducto();
-        
-        if(pbe != null){
+
+        if (pbe != null) {
             try {
-                
+
                 objProductoBL.crear(pbe);
-                
+
                 /*List<ProductoDetalleBE> listaProDet = ObtenerRegistrosProductoDetalle();
                 
-                if(listaProDet != null && !listaProDet.isEmpty()){
-                    int i = 0;
+                 if(listaProDet != null && !listaProDet.isEmpty()){
+                 int i = 0;
                     
-                    for (ProductoDetalleBE obj : listaProDet) {
-                        obj.setId_producto(id_producto);
+                 for (ProductoDetalleBE obj : listaProDet) {
+                 obj.setId_producto(id_producto);
                         
-                        if(i == 0)
-                            objProductoDetalleBL.Eliminar(obj);
+                 if(i == 0)
+                 objProductoDetalleBL.Eliminar(obj);
                         
-                        objProductoDetalleBL.crear(obj);
-                        i++;
-                    }
-                }*/
-                
+                 objProductoDetalleBL.crear(obj);
+                 i++;
+                 }
+                 }*/
                 CerrarDialogoCrearProducto();
                 JOptionPane.showMessageDialog(null, "Operación exitosa.");
                 mostrar_tabla_producto();
-                
+
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-            }    
+                JOptionPane.showMessageDialog(null, ex.getStackTrace(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
     private void modificarMaterial(int id_producto) {
         try {
             ProductoBE obj = objProductoBL.GetData(id_producto);
-            
+
             ProductoDetalleBE objDet = new ProductoDetalleBE();
             objDet.setId_producto(id_producto);
             objDet.setId_empresa(id_empresa_index);
-            
+
             List<ProductoDetalleBE> listaProDet;
             listaProDet = objProductoDetalleBL.Listar(objDet);
-            
-            if(obj != null){
-                mostrarDatosCajaTexto(obj);                
+
+            if (obj != null) {
+                mostrarDatosCajaTexto(obj);
                 tablaProveedorDetalle(listaProDet);
+                incializarCombo(cboStand);
+                incializarCombo(cboNivel);
                 MostrarCombo(cboReferencia, 4, true, true, obj.getDesReferencia_precio());
                 MostrarCombo(cboMoneda, 2, true, true, obj.getDesmoneda());
                 MostrarCombo(cboUnidad, 1, true, true, obj.getDesunidad());
                 MostrarCombo(cboAlmacen, 3, true, true, obj.getDesAlmacen());
                 MostrarCombo(cboCategoria, 6, true, true, obj.getDesproductotipo());
-                
-            }            
+
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void mostrarDatosCajaTexto(ProductoBE obj) {
-        if(obj.getCodigo() != null && obj.getCodigo().length() > 0)
+        if (obj.getCodigo() != null && obj.getCodigo().length() > 0) {
             txt_codigo.setText(obj.getCodigo());
-        
-        if(obj.getDescripcion()!= null && obj.getDescripcion().length() > 0)
+        }
+
+        if (obj.getDescripcion() != null && obj.getDescripcion().length() > 0) {
             txt_descripcion.setText(obj.getDescripcion());
-        
-        if(obj.getDescripcion_coloquial()!= null && obj.getDescripcion_coloquial().length() > 0)
+        }
+
+        if (obj.getDescripcion_coloquial() != null && obj.getDescripcion_coloquial().length() > 0) {
             txt_descripcion_coloquial.setText(obj.getDescripcion_coloquial());
-        
+        }
+
         txt_precio_unitario.setText(String.valueOf(obj.getPrecio_promedio()));
-        
-        if(obj.getMarca()!= null && obj.getMarca().length() > 0)
+
+        if (obj.getMarca() != null && obj.getMarca().length() > 0) {
             txt_marca.setText(obj.getMarca());
-        
-        if(obj.getModelo()!= null && obj.getModelo().length() > 0)
+        }
+
+        if (obj.getModelo() != null && obj.getModelo().length() > 0) {
             txt_modelo.setText(obj.getModelo());
-        
+        }
+
         txt_peso.setText(String.valueOf(obj.getPeso()));
         txtCantidad.setText(String.valueOf(obj.getCantidad()));
     }
 
     private List<ProductoDetalleBE> ObtenerRegistrosProductoDetalle() {
         List<ProductoDetalleBE> list = new ArrayList();
-        int filas =  tabla_detalle.getRowCount();
+        int filas = tabla_detalle.getRowCount();
 
-        if(filas > 0){
+        if (filas > 0) {
             ProductoDetalleBE obj;
             DefaultTableModel tm = (DefaultTableModel) tabla_detalle.getModel();
-            
-            for(int i = 0; i < filas; i++){
+
+            for (int i = 0; i < filas; i++) {
                 obj = new ProductoDetalleBE();
-                obj.setRucProveedor((String) tm.getValueAt(i, 0)); 
-                obj.setRazonsocialProveedor((String) tm.getValueAt(i, 1)); 
-                obj.setPrecio((BigDecimal) tm.getValueAt(i, 2)); 
+                obj.setRucProveedor((String) tm.getValueAt(i, 0));
+                obj.setRazonsocialProveedor((String) tm.getValueAt(i, 1));
+                obj.setPrecio((BigDecimal) tm.getValueAt(i, 2));
                 obj.setId_empresa(id_empresa_index);
                 obj.setId_usuario(id_usuario_index);
-                list.add(obj);                
+                list.add(obj);
             }
         }
-            
+
         return list;
-        
+
     }
 
     private void MostrarObjetos(boolean b) {
@@ -3828,5 +3915,100 @@ public class ProductoView extends javax.swing.JPanel {
         txtCantidad.setEditable(val);
         txt_precio_unitario.setEditable(val);
         cboMoneda.setEnabled(val);
+    }
+
+    private void MostrarComboStand(JComboBox cbo, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault, int idAlmacen) {
+        try {
+            List<StandBE> list = objStandBL.readByAlmacen(idAlmacen);
+
+            if (!list.isEmpty()) {
+                DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
+
+                if (Autocompletado) {
+                    AutoCompleteDecorator.decorate(cbo);
+                }
+
+                if (MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())) {
+                    cboModel.addElement("");
+                }
+
+                if (cadenaDefault != null && cadenaDefault.length() > 0) {
+                    cboModel.addElement(cadenaDefault);
+                }
+
+                String valor;
+
+                for (StandBE obj : list) {
+                    valor = insertarCeros(obj.getIdStand()) + "|" + obj.getNombre();
+
+                    if (cadenaDefault != null) {
+                        if (!valor.equals(cadenaDefault)) {
+                            cboModel.addElement(valor);
+                        }
+                    } else {
+                        cboModel.addElement(valor);
+                    }
+                }
+
+                cbo.setModel(cboModel);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    private int getCodigoCombo(String valueCombo) {
+        int codigo = Integer.parseInt(valueCombo.split("[|]")[0]);
+        return codigo;
+    }
+
+    private String insertarCeros(int idSalidaMaterial) {
+        String valor = String.valueOf(idSalidaMaterial);
+
+        while (valor.length() <= 4) {
+            valor = "0" + valor;
+        }
+
+        return valor;
+    }
+
+    private void MostrarComboNivel(JComboBox cbo, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault, int idStand) {
+        try {
+            List<NivelBE> list = objNivelBL.readByStand(idStand);
+
+            if (!list.isEmpty()) {
+                DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
+
+                if (Autocompletado) {
+                    AutoCompleteDecorator.decorate(cbo);
+                }
+
+                if (MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())) {
+                    cboModel.addElement("");
+                }
+
+                if (cadenaDefault != null && cadenaDefault.length() > 0) {
+                    cboModel.addElement(cadenaDefault);
+                }
+
+                String valor;
+
+                for (NivelBE obj : list) {
+                    valor = insertarCeros(obj.getIdStand()) + "|" + obj.getNombre();
+
+                    if (cadenaDefault != null) {
+                        if (!valor.equals(cadenaDefault)) {
+                            cboModel.addElement(valor);
+                        }
+                    } else {
+                        cboModel.addElement(valor);
+                    }
+                }
+
+                cbo.setModel(cboModel);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 }

@@ -41,4 +41,8 @@ public class NivelBL {
     public NivelBE readId(int id) throws Exception{
         return dao.readId(id);
     }
+    
+    public List<NivelBE> readByStand(int id) throws Exception {
+        return dao.readByStand(id);
+    }
 }

@@ -104,7 +104,7 @@ public class NivelDAO implements ICrudService<NivelBE> {
 
         sqlB = new StringBuilder();
         sqlB.setLength(0);
-        sqlB.append("SELECT "); 
+        sqlB.append("SELECT ");
         sqlB.append("NV.IdNivel, ");
         sqlB.append("NV.IdStand, ");
         sqlB.append("NV.Nombre, ");
@@ -157,7 +157,7 @@ public class NivelDAO implements ICrudService<NivelBE> {
     public NivelBE readId(int id) throws Exception {
         sqlB = new StringBuilder();
         sqlB.setLength(0);
-        sqlB.append("SELECT "); 
+        sqlB.append("SELECT ");
         sqlB.append("NV.IdNivel, ");
         sqlB.append("NV.IdStand, ");
         sqlB.append("NV.Nombre, ");
@@ -190,5 +190,45 @@ public class NivelDAO implements ICrudService<NivelBE> {
         ps.close();
         cn.close();
         return obj;
+    }
+
+    public List<NivelBE> readByStand(int id) throws Exception {
+        List<NivelBE> lista = new ArrayList();
+
+        sqlB = new StringBuilder();
+        sqlB.setLength(0);
+        sqlB.append("SELECT ");
+        sqlB.append("NV.IdNivel, ");
+        sqlB.append("NV.IdStand, ");
+        sqlB.append("NV.Nombre, ");
+        sqlB.append("NV.UsuarioInserta, ");
+        sqlB.append("NV.FechaInserta, ");
+        sqlB.append("NV.UsuarioModifica, ");
+        sqlB.append("NV.FechaModifica, ");
+        sqlB.append("NV.id_empresa, ");
+        sqlB.append("ST.Nombre as nombreStand, ");
+        sqlB.append("DC.DescripcionCorta as nombreAlmacen, ");
+        sqlB.append("ST.IdAlmacen as IdAlmacen ");
+        sqlB.append("FROM TNivel NV ");
+        sqlB.append("INNER JOIN TStand ST ON ST.IdStand = NV.IdStand ");
+        sqlB.append("INNER JOIN TDatoComun DC ON DC.IdDatoComun = ST.IdAlmacen ");
+        sqlB.append("WHERE ST.IdStand = ? ");
+        sqlB.append("ORDER BY DC.DescripcionCorta, ST.Nombre ASC, NV.Nombre ASC ");
+
+        cn = AccesoDB.getConnection();
+        ps = cn.prepareStatement(sqlB.toString());
+        ps.clearParameters();
+        ps.setInt(1, id);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            lista.add(cargaReadBE(rs));
+        }
+
+        rs.close();
+        ps.close();
+        cn.close();
+
+        return lista;
     }
 }

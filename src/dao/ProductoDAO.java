@@ -28,7 +28,7 @@ public class ProductoDAO implements ICrudService<ProductoBE>{
     ResultSet rs = null;
     CallableStatement cs = null;
     PreparedStatement ps = null;
-    final String INSERT = "{call usp_Producto_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+    final String INSERT = "{call usp_Producto_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
     final String UPDATE = "{call usp_Producto(?,?,?,?,?)}";
     final String DELETE = "{call usp_Producto_Delete(?)}";
     final String READ = "{call usp_Producto_Read(?,?,?,?,?,?,?,?,?,?,?,?)}";
@@ -57,13 +57,15 @@ public class ProductoDAO implements ICrudService<ProductoBE>{
             cs.setString(9,o.getDesmoneda());
             cs.setString(10,o.getDesunidad());
             cs.setString(11,o.getDesproductotipo());
-            cs.setString(12,o.getDesAlmacen());
+            cs.setInt(12,o.getId_Almacen());
             cs.setString(13,o.getDesReferencia_precio());
             
             cs.setInt(14,o.getId_empresa());
             cs.setString(15,o.getUsuarioInserta());
             cs.setInt(16, o.getTipoOperacion());
             cs.setInt(17, o.getId_producto());
+            cs.setInt(18, o.getIdStand());
+            cs.setInt(19, o.getIdNivel());
             
             rs=cs.executeQuery();
             
@@ -74,14 +76,7 @@ public class ProductoDAO implements ICrudService<ProductoBE>{
             rs.close();
             cs.close(); 
             
-            
-            //guardamos el detalle
-            
-        } catch (SQLException e) {
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();

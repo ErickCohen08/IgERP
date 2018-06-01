@@ -1044,7 +1044,7 @@
                                           <Component id="txt_codigo" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
                                           <Component id="cboMoneda" alignment="0" pref="213" max="32767" attributes="0"/>
                                           <Component id="txt_peso" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="cboAlmacen2" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="cboNivel" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -1063,7 +1063,7 @@
                                               <Component id="btn_nueva_unidad" min="-2" pref="26" max="-2" attributes="0"/>
                                           </Group>
                                           <Component id="txt_modelo" max="32767" attributes="0"/>
-                                          <Component id="cboAlmacen1" max="32767" attributes="0"/>
+                                          <Component id="cboStand" max="32767" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="cboReferencia" max="32767" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
@@ -1138,13 +1138,13 @@
                                   <Component id="cboAlmacen" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel46" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
                                   <Component id="jLabel48" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
-                                  <Component id="cboAlmacen1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cboStand" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jLabel49" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
-                                      <Component id="cboAlmacen2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="cboNivel" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel23" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
                                       <Component id="cboReferencia" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
@@ -1543,7 +1543,7 @@
                         <Property name="text" type="java.lang.String" value="Stand:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JComboBox" name="cboAlmacen1">
+                    <Component class="javax.swing.JComboBox" name="cboStand">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Tahoma" size="12" style="0"/>
@@ -1554,8 +1554,8 @@
                         <Property name="toolTipText" type="java.lang.String" value="Seleccione el Tipo o Familia al que pertenece el Material."/>
                       </Properties>
                       <Events>
-                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cboAlmacen1ItemStateChanged"/>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboAlmacen1ActionPerformed"/>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cboStandItemStateChanged"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboStandActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel49">
@@ -1570,7 +1570,7 @@
                         <Property name="text" type="java.lang.String" value="Nivel:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JComboBox" name="cboAlmacen2">
+                    <Component class="javax.swing.JComboBox" name="cboNivel">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Tahoma" size="12" style="0"/>
@@ -1581,8 +1581,8 @@
                         <Property name="toolTipText" type="java.lang.String" value="Seleccione el Tipo o Familia al que pertenece el Material."/>
                       </Properties>
                       <Events>
-                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cboAlmacen2ItemStateChanged"/>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboAlmacen2ActionPerformed"/>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cboNivelItemStateChanged"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboNivelActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>

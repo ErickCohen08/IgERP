@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package entity;
 
 import java.math.BigDecimal;
@@ -15,7 +14,7 @@ import java.util.List;
  * @author ERCO
  */
 public class ProductoBE {
-    
+
     int id_producto;
     String codigo;
     String descripcion;
@@ -27,26 +26,28 @@ public class ProductoBE {
     BigDecimal peso;
     BigDecimal precio_promedio;
     BigDecimal cantidad;
-    
-    int	id_moneda;
+
+    int id_moneda;
     int id_unidad;
     int id_productotipo;
     int id_empresa;
-    int id_Almacen;
+    Integer id_Almacen;
+    Integer idStand;
+    Integer idNivel;
     int id_Referencia_precio;
-    
+
     String UsuarioInserta;
     Date FechaInserta;
     String UsuarioModifica;
     Date FechaModifica;
-    
+
     String Desmoneda;
     String Desunidad;
     String Desproductotipo;
     String Desempresa;
     String DesAlmacen;
     String DesReferencia_precio;
-    
+
     int Fila;
     int TipoOperacion;
     List<ProductoDetalleBE> listaDetalleProducto;
@@ -69,8 +70,30 @@ public class ProductoBE {
         this.DesReferencia_precio = DesReferencia_precio;
     }
 
-    
-    
+    public Integer getId_Almacen() {
+        return id_Almacen;
+    }
+
+    public void setId_Almacen(Integer id_Almacen) {
+        this.id_Almacen = id_Almacen;
+    }
+
+    public Integer getIdStand() {
+        return idStand;
+    }
+
+    public void setIdStand(Integer idStand) {
+        this.idStand = idStand;
+    }
+
+    public Integer getIdNivel() {
+        return idNivel;
+    }
+
+    public void setIdNivel(Integer idNivel) {
+        this.idNivel = idNivel;
+    }
+
     public int getId_producto() {
         return id_producto;
     }
@@ -183,14 +206,6 @@ public class ProductoBE {
         this.cantidad = cantidad;
     }
 
-    public int getId_Almacen() {
-        return id_Almacen;
-    }
-
-    public void setId_Almacen(int id_Almacen) {
-        this.id_Almacen = id_Almacen;
-    }
-
     public int getId_Referencia_precio() {
         return id_Referencia_precio;
     }
@@ -285,7 +300,7 @@ public class ProductoBE {
 
     public void setFila(int Fila) {
         this.Fila = Fila;
-    }    
+    }
 
     public int getEstado() {
         return estado;

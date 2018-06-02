@@ -31,9 +31,9 @@ public class ProductoBE {
     int id_unidad;
     int id_productotipo;
     int id_empresa;
-    Integer id_Almacen;
-    Integer idStand;
-    Integer idNivel;
+    int id_Almacen;
+    int idStand;
+    int idNivel;
     int id_Referencia_precio;
 
     String UsuarioInserta;
@@ -47,7 +47,9 @@ public class ProductoBE {
     String Desempresa;
     String DesAlmacen;
     String DesReferencia_precio;
-
+    String DesStand;
+    String DesNivel;
+            
     int Fila;
     int TipoOperacion;
     List<ProductoDetalleBE> listaDetalleProducto;
@@ -70,30 +72,48 @@ public class ProductoBE {
         this.DesReferencia_precio = DesReferencia_precio;
     }
 
-    public Integer getId_Almacen() {
+    public String getDesStand() {
+        return DesStand;
+    }
+
+    public void setDesStand(String DesStand) {
+        this.DesStand = DesStand;
+    }
+
+    public String getDesNivel() {
+        return DesNivel;
+    }
+
+    public void setDesNivel(String DesNivel) {
+        this.DesNivel = DesNivel;
+    }
+
+    
+    public int getId_Almacen() {
         return id_Almacen;
     }
 
-    public void setId_Almacen(Integer id_Almacen) {
+    public void setId_Almacen(int id_Almacen) {
         this.id_Almacen = id_Almacen;
     }
 
-    public Integer getIdStand() {
+    public int getIdStand() {
         return idStand;
     }
 
-    public void setIdStand(Integer idStand) {
+    public void setIdStand(int idStand) {
         this.idStand = idStand;
     }
 
-    public Integer getIdNivel() {
+    public int getIdNivel() {
         return idNivel;
     }
 
-    public void setIdNivel(Integer idNivel) {
+    public void setIdNivel(int idNivel) {
         this.idNivel = idNivel;
     }
 
+    
     public int getId_producto() {
         return id_producto;
     }

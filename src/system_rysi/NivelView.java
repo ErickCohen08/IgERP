@@ -812,13 +812,13 @@ public class NivelView extends javax.swing.JPanel {
         String nombre = txtNombre.getText().trim();
         int band = 0;
 
-        if (cboAlmacen.getSelectedItem().toString().trim().length() == 0) {
+        if (cboAlmacen.getSelectedItem()!= null && cboAlmacen.getSelectedItem().toString().trim().length() == 0) {
             JOptionPane.showMessageDialog(null, "Por favor seleccione un almacén.");
             band++;
         }
 
         if (band == 0) {
-            if (cboStand.getSelectedItem().toString().trim().length() == 0) {
+            if (cboStand.getSelectedItem()!= null && cboStand.getSelectedItem().toString().trim().length() == 0) {
                 JOptionPane.showMessageDialog(null, "Por favor seleccione un stand.");
                 band++;
             }

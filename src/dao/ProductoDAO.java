@@ -196,15 +196,16 @@ public class ProductoDAO implements ICrudService<ProductoBE>{
                 obj.setDesReferencia_precio(rs.getString("DesReferencia_precio"));
                 obj.setDesproductotipo(rs.getString("Desproductotipo"));
                 obj.setCantidad(rs.getBigDecimal("cantidad"));
+                obj.setId_Almacen(rs.getInt("id_Almacen"));
+                obj.setIdStand(rs.getInt("IdStand"));
+                obj.setIdNivel(rs.getInt("IdNivel"));
+                obj.setDesStand(rs.getString("DesStand"));
+                obj.setDesNivel(rs.getString("DesNivel"));
             }
             
             rs.close();
             cs.close(); 
-        } catch (SQLException e) {            
-            throw e;
-        } catch (InstantiationException e) {
-            throw e;
-        } catch (IllegalAccessException e) {
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw e;
         } finally {
             cn.close();

@@ -1341,11 +1341,6 @@ public class ProductoView extends javax.swing.JPanel {
                 cboAlmacenItemStateChanged(evt);
             }
         });
-        cboAlmacen.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboAlmacenActionPerformed(evt);
-            }
-        });
 
         jLabel47.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel47.setForeground(new java.awt.Color(0, 51, 153));
@@ -1375,11 +1370,6 @@ public class ProductoView extends javax.swing.JPanel {
                 cboStandItemStateChanged(evt);
             }
         });
-        cboStand.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboStandActionPerformed(evt);
-            }
-        });
 
         jLabel49.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel49.setForeground(new java.awt.Color(0, 51, 153));
@@ -1391,11 +1381,6 @@ public class ProductoView extends javax.swing.JPanel {
         cboNivel.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cboNivelItemStateChanged(evt);
-            }
-        });
-        cboNivel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboNivelActionPerformed(evt);
             }
         });
 
@@ -1443,9 +1428,10 @@ public class ProductoView extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btn_nueva_unidad, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(txt_modelo)
-                            .addComponent(cboStand, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(cboReferencia, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(cboStand, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cboReferencia, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btn_nuevo_referencia, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel4Layout.createSequentialGroup()
@@ -2666,10 +2652,6 @@ public class ProductoView extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_cboAlmacenItemStateChanged
 
-    private void cboAlmacenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAlmacenActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cboAlmacenActionPerformed
-
     private void cboUnidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboUnidadActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cboUnidadActionPerformed
@@ -3139,23 +3121,15 @@ public class ProductoView extends javax.swing.JPanel {
 
     private void cboStandItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboStandItemStateChanged
         incializarCombo(cboNivel);
-        
+
         if (cboStand.getSelectedItem() != null && cboStand.getSelectedItem().toString().length() > 0) {
             MostrarComboNivel(cboNivel, true, false, null, getCodigoCombo(cboStand.getSelectedItem().toString().trim()));
         }
     }//GEN-LAST:event_cboStandItemStateChanged
 
-    private void cboStandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboStandActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cboStandActionPerformed
-
     private void cboNivelItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboNivelItemStateChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_cboNivelItemStateChanged
-
-    private void cboNivelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboNivelActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cboNivelActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Centro;
@@ -3712,7 +3686,6 @@ public class ProductoView extends javax.swing.JPanel {
             String Desmoneda = cboMoneda.getSelectedItem().toString().trim();
             String Desunidad = cboUnidad.getSelectedItem().toString().trim();
             String Desproductotipo = cboCategoria.getSelectedItem().toString().trim();
-            String DesAlmacen = cboAlmacen.getSelectedItem().toString().trim();
             String DesReferencia_precio = cboReferencia.getSelectedItem().toString().trim();
 
             pbe = new ProductoBE();
@@ -3761,7 +3734,7 @@ public class ProductoView extends javax.swing.JPanel {
                 pbe.setDesproductotipo(Desproductotipo);
             }
 
-            if (DesAlmacen.length() > 0) {
+            if (cboAlmacen.getSelectedItem() != null && cboAlmacen.getSelectedItem().toString().trim().length() > 0) {
                 pbe.setId_Almacen(getCodigoCombo(cboAlmacen.getSelectedItem().toString().trim()));
             }
 
@@ -3814,7 +3787,7 @@ public class ProductoView extends javax.swing.JPanel {
                 mostrar_tabla_producto();
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getStackTrace(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -3838,9 +3811,24 @@ public class ProductoView extends javax.swing.JPanel {
                 MostrarCombo(cboReferencia, 4, true, true, obj.getDesReferencia_precio());
                 MostrarCombo(cboMoneda, 2, true, true, obj.getDesmoneda());
                 MostrarCombo(cboUnidad, 1, true, true, obj.getDesunidad());
-                MostrarCombo(cboAlmacen, 3, true, true, obj.getDesAlmacen());
                 MostrarCombo(cboCategoria, 6, true, true, obj.getDesproductotipo());
 
+                MostrarComboAlmacen(cboAlmacen, 3, true, false, obj.getId_Almacen() + "|" + obj.getDesAlmacen());
+
+                if (obj.getId_Almacen() != 0) {
+                    if (obj.getIdStand() != 0) {
+                        MostrarComboStand(cboStand, false, false, insertarCeros(obj.getIdStand()) + "|" + obj.getDesStand(), obj.getId_Almacen());
+                    } else {
+                        MostrarComboStand(cboStand, true, false, null, obj.getId_Almacen());
+                    }
+                }
+                if (obj.getId_Almacen() != 0 && obj.getIdStand() != 0) {
+                    if (obj.getIdNivel() != 0) {
+                        MostrarComboNivel(cboNivel, false, false, insertarCeros(obj.getIdNivel()) + "|" + obj.getDesNivel(), obj.getIdStand());
+                    } else {
+                        MostrarComboNivel(cboNivel, true, false, null, obj.getIdStand());
+                    }
+                }
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -3994,7 +3982,7 @@ public class ProductoView extends javax.swing.JPanel {
                 String valor;
 
                 for (NivelBE obj : list) {
-                    valor = insertarCeros(obj.getIdStand()) + "|" + obj.getNombre();
+                    valor = insertarCeros(obj.getIdNivel()) + "|" + obj.getNombre();
 
                     if (cadenaDefault != null) {
                         if (!valor.equals(cadenaDefault)) {

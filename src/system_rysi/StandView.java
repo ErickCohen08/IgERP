@@ -6,6 +6,7 @@ import entity.DatoComunBE;
 import entity.StandBE;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;

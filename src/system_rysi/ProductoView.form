@@ -1063,9 +1063,11 @@
                                               <Component id="btn_nueva_unidad" min="-2" pref="26" max="-2" attributes="0"/>
                                           </Group>
                                           <Component id="txt_modelo" max="32767" attributes="0"/>
-                                          <Component id="cboStand" max="32767" attributes="0"/>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <Component id="cboReferencia" max="32767" attributes="0"/>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Group type="103" groupAlignment="1" attributes="0">
+                                                  <Component id="cboStand" alignment="0" max="32767" attributes="0"/>
+                                                  <Component id="cboReferencia" max="32767" attributes="0"/>
+                                              </Group>
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="btn_nuevo_referencia" min="-2" pref="26" max="-2" attributes="0"/>
                                           </Group>
@@ -1504,7 +1506,6 @@
                       </Properties>
                       <Events>
                         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cboAlmacenItemStateChanged"/>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboAlmacenActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel47">
@@ -1555,7 +1556,6 @@
                       </Properties>
                       <Events>
                         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cboStandItemStateChanged"/>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboStandActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel49">
@@ -1582,7 +1582,6 @@
                       </Properties>
                       <Events>
                         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cboNivelItemStateChanged"/>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboNivelActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>

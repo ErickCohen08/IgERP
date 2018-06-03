@@ -1,8 +1,0 @@
-IG-PROJET es un poderoso sistema de Facturacion. Proporciona un soporte completo en los registros de Facturas y Planillas que se manejan en la empresa IG-PROJET S.A.C. ademas del manteniento de los registros de:
-1.- Clientes.
-2.- Transportes.
-3.- Empresas.
-4.- Conductores
-y entre otros mantenimiento de registros.
-
-

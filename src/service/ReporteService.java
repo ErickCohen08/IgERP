@@ -6,7 +6,6 @@
 package service;
 
 import entity.ReporteSalidaMaterialBE;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,5 +14,6 @@ import java.util.List;
  */
 public interface ReporteService {
 
-    List<ReporteSalidaMaterialBE> salidaMateriales(Date desde, Date hasta) throws Exception;
+    List<ReporteSalidaMaterialBE> salidaMaterialesEntreFechas(String desde, String hasta, int empresa) throws Exception;
+    List<ReporteSalidaMaterialBE> salidaMaterialesAll(int empresa) throws Exception;
 }

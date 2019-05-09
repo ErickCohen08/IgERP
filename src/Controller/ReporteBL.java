@@ -7,7 +7,6 @@ package Controller;
 
 import dao.ReporteDAO;
 import entity.ReporteSalidaMaterialBE;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,9 +21,12 @@ public class ReporteBL {
         dao = new ReporteDAO();
     }
 
-    public List<ReporteSalidaMaterialBE> salidaMateriales(Date desde, Date hasta) throws Exception {
-        return dao.salidaMateriales(desde, hasta);
+    public List<ReporteSalidaMaterialBE> salidaMaterialesEntreFechas(String desde, String hasta, int empresa) throws Exception {
+        return dao.salidaMaterialesEntreFechas(desde, hasta, empresa);
     }
-    
-    
+
+    public List<ReporteSalidaMaterialBE> salidaMaterialesAll(int empresa) throws Exception {
+        return dao.salidaMaterialesAll(empresa);
+    }
+
 }

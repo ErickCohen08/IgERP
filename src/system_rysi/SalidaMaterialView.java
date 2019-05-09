@@ -8,6 +8,7 @@ import Controller.PersonalBL;
 import Controller.ProductoBL;
 import Controller.ProductoDetalleBL;
 import Controller.ProveedorBL;
+import Controller.ReporteBL;
 import Controller.SalidaMaterialBL;
 import Controller.SalidaMaterialDetalleBL;
 import Controller.ValidacionBL;
@@ -20,15 +21,19 @@ import entity.PersonalBE;
 import entity.ProductoBE;
 import entity.ProductoDetalleBE;
 import entity.ProveedorBE;
+import entity.ReporteSalidaMaterialBE;
 import entity.SalidaMaterialBE;
 import entity.SalidaMaterialDetalleBE;
 import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.HeadlessException;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.sql.Connection;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +51,14 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -62,10 +75,10 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     int id_usuario_index;
     String perfil_usuario_index = "";
     String aliasUsuarioIndex;
-    
+
     //Banderas
     DefaultTableModel m;
-    
+
     //New
     ProductoBL objProductoBL = new ProductoBL();
     MonedaBL objMonedaBL = new MonedaBL();
@@ -78,14 +91,14 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     PersonalBL objPersonalBL = new PersonalBL();
     ObrasBL objObrasBL = new ObrasBL();
     ClienteBL objClienteBL = new ClienteBL();
-    
-    
+    ReporteBL objReporteBL = new ReporteBL();
+
     //variables globales
     boolean limpiarCboFiltros = true;
     int crear0_modificar1_producto = 0;
     int id_salidamaterial_global;
     private Component ventana;
-    
+
     public SalidaMaterialView(String controlador, String DSN, String user, String password, int id_empresa, int id_usuario, String perfil_usuario, String alias_usuario) {
         controlador_index = controlador;
         user_index = user;
@@ -94,7 +107,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         id_usuario_index = id_usuario;
         perfil_usuario_index = perfil_usuario;
         aliasUsuarioIndex = alias_usuario;
-        
+
         System.out.println("\n\nconectando con Salida de materiales");
         initComponents();
 
@@ -106,7 +119,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
         System.out.println("Mostrar Tabla Salida de materiales");
         mostrar_tabla_general();
-        MostrarObjetos(false);        
+        MostrarObjetos(false);
     }
 
     private void Activar_letras_Mayusculas() {
@@ -154,16 +167,16 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     //Mostrar tablas
     private void mostrar_tabla_general() {
         SalidaMaterialBE pbe = ObtenerFiltrosBusqueda();
-        
+
         try {
             List<SalidaMaterialBE> list = objSalidaMaterialBL.read(pbe);
             if (list != null) {
                 tablaGeneral(list);
-                lblTotal.setText("Total: "+list.size()+" registros.");
+                lblTotal.setText("Total: " + list.size() + " registros.");
             } else {
                 lblTotal.setText("No se encontraron resultados");
             }
-            
+
             MotrarBotonesControl(false, false, false, false, false);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -171,35 +184,36 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }
 
     private void tablaGeneral(List<SalidaMaterialBE> list) {
-        
+
         try {
             DefaultTableModel tabla = (DefaultTableModel) tabla_general.getModel();
             tabla.setRowCount(0);
             for (SalidaMaterialBE obj : list) {
                 Object[] fila = {
                     obj.getFila(),
-                    insertarCeros(obj.getIdSalidaMaterial()), 
-                    obj.getFechaSalida(), 
-                    obj.getDesPersonal(), 
-                    obj.getDesObra(), 
+                    insertarCeros(obj.getIdSalidaMaterial()),
+                    obj.getFechaSalida(),
+                    obj.getDesPersonal(),
+                    obj.getDesObra(),
                     obj.getDireccion(),
                     obj.getDesEstadoAbierto()
-                    };
+                };
                 tabla.addRow(fila);
             }
 
             tabla_general.setRowHeight(35);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-        }        
+        }
     }
-    
+
     private void mostrar_tabla_proveedor() {
         String buscar = null;
-        
-        if(txt_buscar_proveedor.getText() != null && txt_buscar_proveedor.getText().trim().length()>0)
+
+        if (txt_buscar_proveedor.getText() != null && txt_buscar_proveedor.getText().trim().length() > 0) {
             buscar = txt_buscar_proveedor.getText().trim();
-        
+        }
+
         try {
             List<ProveedorBE> list = objProveedorBL.ProveedorBuscar(buscar);
             if (list != null) {
@@ -225,55 +239,48 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         txt_nombre_obra.setText("");
     }
 
-    private void limpiar_caja_texto_crear_detalle_producto() {
-        txt_cantidad.setText("");
-        txtProducto.setText("");
-        txtUnidad.setText("");
-    }
-
     //Creaciones
     private void crear_obra() {
         String nombre = txt_nombre_obra.getText().trim();
         String direccion = txt_direccion_obra.getText().trim();
         String cliente = cboCliente.getSelectedItem().toString().trim();
-        
+
         ObrasBE pbe = new ObrasBE();
         int ban = 0;
-        
-        if(ban == 0){
-            if(nombre != null && nombre.length() > 0 )
+
+        if (ban == 0) {
+            if (nombre != null && nombre.length() > 0) {
                 pbe.setDescripcion(nombre);
-            else
-            {
+            } else {
                 JOptionPane.showMessageDialog(null, "El campo Nombre de la Obra es obligatorio");
                 ban++;
-            } 
+            }
         }
-        
-        if(ban == 0){
-            if(cliente != null && cliente.length() >0 )
+
+        if (ban == 0) {
+            if (cliente != null && cliente.length() > 0) {
                 pbe.setDesCliente(cliente);
-            else
-            {
-                JOptionPane.showMessageDialog(null, "El campo Cliente es obligatorio"); 
+            } else {
+                JOptionPane.showMessageDialog(null, "El campo Cliente es obligatorio");
                 ban++;
-            }                
+            }
         }
-        
-        if(ban == 0){
-            if(direccion != null && direccion.length() >0 )
+
+        if (ban == 0) {
+            if (direccion != null && direccion.length() > 0) {
                 pbe.setDireccion(direccion);
-        
+            }
+
             pbe.setId_empresa(id_empresa_index);
             pbe.setUsuarioInserta(aliasUsuarioIndex);
 
             try {
                 int respuesta = objObrasBL.create(pbe);
-                
+
                 MostrarComboObras(cboObra, true, true, nombre);
                 txtDireccion.setText(direccion);
                 CerrarDialogoCrearObras();
-                
+
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
             }
@@ -439,6 +446,22 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         sur1 = new javax.swing.JPanel();
         btn_cancelar1 = new javax.swing.JButton();
         btn_guardar1 = new javax.swing.JButton();
+        dialogoReporteSalidaMaterial = new javax.swing.JDialog();
+        panel_norte = new javax.swing.JPanel();
+        jLabel50 = new javax.swing.JLabel();
+        panel_cuerpo = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        panel_seleccione_cliente = new javax.swing.JPanel();
+        reporteTodos = new javax.swing.JRadioButton();
+        reporteEntreFechas = new javax.swing.JRadioButton();
+        lb_fecha1 = new javax.swing.JLabel();
+        txt_fecha_inicio = new org.jdesktop.swingx.JXDatePicker();
+        lb_fecha2 = new javax.swing.JLabel();
+        txt_fecha_fin = new org.jdesktop.swingx.JXDatePicker();
+        jPanel12 = new javax.swing.JPanel();
+        btn_generar_reporte = new javax.swing.JButton();
+        btn_cancelar_reporte = new javax.swing.JButton();
+        seleccionarFecha = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -457,6 +480,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         spRetorno = new javax.swing.JToolBar.Separator();
         btnImprimirRetorno = new javax.swing.JButton();
         spImprimirEntrega = new javax.swing.JToolBar.Separator();
+        jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         panel_tabla = new javax.swing.JPanel();
@@ -2173,6 +2197,173 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
         dialogoRetornoMaterial.getContentPane().add(sur1, java.awt.BorderLayout.SOUTH);
 
+        panel_norte.setBackground(new java.awt.Color(0, 110, 204));
+
+        jLabel50.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        jLabel50.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel50.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel50.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/reporte_usuario.png"))); // NOI18N
+        jLabel50.setText("Reporte de Salida de Materiales");
+
+        javax.swing.GroupLayout panel_norteLayout = new javax.swing.GroupLayout(panel_norte);
+        panel_norte.setLayout(panel_norteLayout);
+        panel_norteLayout.setHorizontalGroup(
+            panel_norteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel50, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
+        );
+        panel_norteLayout.setVerticalGroup(
+            panel_norteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel50, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+        );
+
+        dialogoReporteSalidaMaterial.getContentPane().add(panel_norte, java.awt.BorderLayout.PAGE_START);
+
+        panel_cuerpo.setLayout(new java.awt.BorderLayout());
+
+        jPanel10.setBackground(new java.awt.Color(255, 255, 255));
+
+        panel_seleccione_cliente.setBackground(new java.awt.Color(255, 255, 255));
+        panel_seleccione_cliente.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Filtrar por fechas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 110, 204)));
+
+        reporteTodos.setBackground(new java.awt.Color(255, 255, 255));
+        seleccionarFecha.add(reporteTodos);
+        reporteTodos.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        reporteTodos.setForeground(new java.awt.Color(0, 51, 153));
+        reporteTodos.setSelected(true);
+        reporteTodos.setText("Todo");
+        reporteTodos.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                reporteTodosItemStateChanged(evt);
+            }
+        });
+
+        reporteEntreFechas.setBackground(new java.awt.Color(255, 255, 255));
+        seleccionarFecha.add(reporteEntreFechas);
+        reporteEntreFechas.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        reporteEntreFechas.setForeground(new java.awt.Color(0, 51, 153));
+        reporteEntreFechas.setText("Seleccione");
+        reporteEntreFechas.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                reporteEntreFechasItemStateChanged(evt);
+            }
+        });
+
+        lb_fecha1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lb_fecha1.setForeground(new java.awt.Color(0, 51, 153));
+        lb_fecha1.setText("Fecha inicio:");
+
+        txt_fecha_inicio.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                txt_fecha_inicioMousePressed(evt);
+            }
+        });
+
+        lb_fecha2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lb_fecha2.setForeground(new java.awt.Color(0, 51, 153));
+        lb_fecha2.setText("Fecha fin:");
+
+        javax.swing.GroupLayout panel_seleccione_clienteLayout = new javax.swing.GroupLayout(panel_seleccione_cliente);
+        panel_seleccione_cliente.setLayout(panel_seleccione_clienteLayout);
+        panel_seleccione_clienteLayout.setHorizontalGroup(
+            panel_seleccione_clienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_seleccione_clienteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(reporteTodos)
+                .addGap(18, 18, 18)
+                .addComponent(reporteEntreFechas, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panel_seleccione_clienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(panel_seleccione_clienteLayout.createSequentialGroup()
+                        .addComponent(lb_fecha1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_fecha_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panel_seleccione_clienteLayout.createSequentialGroup()
+                        .addComponent(lb_fecha2, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_fecha_fin, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panel_seleccione_clienteLayout.setVerticalGroup(
+            panel_seleccione_clienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_seleccione_clienteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panel_seleccione_clienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panel_seleccione_clienteLayout.createSequentialGroup()
+                        .addGroup(panel_seleccione_clienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lb_fecha1)
+                            .addComponent(txt_fecha_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                        .addGroup(panel_seleccione_clienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lb_fecha2)
+                            .addComponent(txt_fecha_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(panel_seleccione_clienteLayout.createSequentialGroup()
+                        .addGroup(panel_seleccione_clienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(reporteTodos)
+                            .addComponent(reporteEntreFechas))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panel_seleccione_cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panel_seleccione_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(44, Short.MAX_VALUE))
+        );
+
+        panel_cuerpo.add(jPanel10, java.awt.BorderLayout.CENTER);
+
+        jPanel12.setPreferredSize(new java.awt.Dimension(600, 40));
+
+        btn_generar_reporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/generar_reporte_32_32.png"))); // NOI18N
+        btn_generar_reporte.setText("Generar");
+        btn_generar_reporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_generar_reporteActionPerformed(evt);
+            }
+        });
+
+        btn_cancelar_reporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/cancelar_32_32.png"))); // NOI18N
+        btn_cancelar_reporte.setText("Cancelar");
+        btn_cancelar_reporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cancelar_reporteActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+                .addGap(0, 208, Short.MAX_VALUE)
+                .addComponent(btn_generar_reporte)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_cancelar_reporte))
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_cancelar_reporte)
+                    .addComponent(btn_generar_reporte))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        panel_cuerpo.add(jPanel12, java.awt.BorderLayout.SOUTH);
+
+        dialogoReporteSalidaMaterial.getContentPane().add(panel_cuerpo, java.awt.BorderLayout.CENTER);
+
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
@@ -2303,6 +2494,19 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         jToolBar1.add(btnImprimirRetorno);
         jToolBar1.add(spImprimirEntrega);
 
+        jButton1.setBackground(new java.awt.Color(255, 255, 255));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/documentos_24_24.png"))); // NOI18N
+        jButton1.setText("Reporte de Salidas");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
+
         jPanel1.add(jToolBar1, java.awt.BorderLayout.CENTER);
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -2399,7 +2603,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         crear0_modificar1_producto = 0;
         id_salidamaterial_global = 0;
         MostrarObjetos(true);
-        mostrarSalidaMaterial(crear0_modificar1_producto, 0);         
+        mostrarSalidaMaterial(crear0_modificar1_producto, 0);
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btn_cancelar_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelar_clienteActionPerformed
@@ -2417,12 +2621,12 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             mostrar_tabla_proveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoBuscarProveedor();            
+            cerrarDialogoBuscarProveedor();
         }
     }//GEN-LAST:event_txt_buscar_proveedorKeyReleased
 
     private void btn_cliente_cancelar_busquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cliente_cancelar_busquedaActionPerformed
-        cerrarDialogoBuscarProveedor();                
+        cerrarDialogoBuscarProveedor();
     }//GEN-LAST:event_btn_cliente_cancelar_busquedaActionPerformed
 
     private void btn_cliente_seleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cliente_seleccionarActionPerformed
@@ -2432,9 +2636,9 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         txt_buscar_proveedor.setText("");
         dialog_buscar_proveedor.dispose();
-        
+
         limpiar_caja_texto_crear_obra();
-        
+
         dialog_crear_obra.setSize(429, 350);
         dialog_crear_obra.setLocationRelativeTo(ventana);
         dialog_crear_obra.setModal(true);
@@ -2446,7 +2650,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             SeleccionProveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoBuscarProveedor();            
+            cerrarDialogoBuscarProveedor();
         }
     }//GEN-LAST:event_tablaProveedorKeyPressed
 
@@ -2465,7 +2669,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
             DefaultTableModel tabla = (DefaultTableModel) tabla_detalle_salida_material.getModel();
-            tabla.removeRow(fila);            
+            tabla.removeRow(fila);
         }
     }//GEN-LAST:event_EliminarActionPerformed
 
@@ -2481,15 +2685,15 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         } else {
             int band = 0;
             DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
-                
-            if(band == 0){                
+
+            if (band == 0) {
                 int id_salida = Integer.parseInt((String) tm.getValueAt(fila, 1));
 
                 crear0_modificar1_producto = 1;
                 id_salidamaterial_global = id_salida;
                 MostrarObjetos(true);
                 mostrarSalidaMaterial(crear0_modificar1_producto, id_salida);
-            }                        
+            }
         }
     }//GEN-LAST:event_btnModificarActionPerformed
 
@@ -2500,19 +2704,18 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de eliminar este registro?", "Eliminar", JOptionPane.YES_NO_OPTION);
-            
+
             if (respuesta == JOptionPane.YES_OPTION) {
                 DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
-                
+
                 SalidaMaterialBE obj = new SalidaMaterialBE();
                 obj.setIdSalidaMaterial(Integer.parseInt((String) tm.getValueAt(fila, 1)));
                 obj.setId_empresa(id_empresa_index);
 
-                try
-                {
+                try {
                     objSalidaMaterialBL.delete(obj);
                     mostrar_tabla_general();
-                    JOptionPane.showMessageDialog(null, "Registro eliminado con éxito.");                    
+                    JOptionPane.showMessageDialog(null, "Registro eliminado con éxito.");
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
                 }
@@ -2529,13 +2732,13 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
-        if(limpiarCboFiltros){
+        if (limpiarCboFiltros) {
             MostrarComboPersonal(cboResponsable_bus, true, true, null);
             MostrarComboObras(cboObra_bus, true, true, null);
             MostrarCombo(cbo_estado_bus, 9, true, true, null);
             limpiarCboFiltros = false;
         }
-        
+
         dialog_filtrar_salida.setSize(690, 354);
         dialog_filtrar_salida.setLocationRelativeTo(ventana);
         dialog_filtrar_salida.setModal(true);
@@ -2551,14 +2754,14 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             crear_obra();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearObras(); 
+            CerrarDialogoCrearObras();
         }
     }//GEN-LAST:event_txt_nombre_obraKeyReleased
 
     private void tablaProveedorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaProveedorMouseClicked
-       if (evt.getClickCount() == 2) {
-           SeleccionProveedor();
-       }
+        if (evt.getClickCount() == 2) {
+            SeleccionProveedor();
+        }
     }//GEN-LAST:event_tablaProveedorMouseClicked
 
     private void btn_cliente_seleccionarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btn_cliente_seleccionarKeyReleased
@@ -2566,7 +2769,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             SeleccionProveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoBuscarProveedor();            
+            cerrarDialogoBuscarProveedor();
         }
     }//GEN-LAST:event_btn_cliente_seleccionarKeyReleased
 
@@ -2575,7 +2778,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             cerrarDialogoBuscarProveedor();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            cerrarDialogoBuscarProveedor();            
+            cerrarDialogoBuscarProveedor();
         }
     }//GEN-LAST:event_btn_cliente_cancelar_busquedaKeyReleased
 
@@ -2584,7 +2787,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             crear_obra();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearObras(); 
+            CerrarDialogoCrearObras();
         }
     }//GEN-LAST:event_btn_crea_clienteKeyReleased
 
@@ -2593,7 +2796,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             CerrarDialogoCrearObras();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearObras(); 
+            CerrarDialogoCrearObras();
         }
     }//GEN-LAST:event_btn_cancelar_clienteKeyReleased
 
@@ -2602,7 +2805,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             filtrarProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
     }//GEN-LAST:event_txtCodigo_busKeyReleased
 
@@ -2611,7 +2814,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             filtrarProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
     }//GEN-LAST:event_cboObra_busKeyReleased
 
@@ -2620,7 +2823,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             filtrarProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
     }//GEN-LAST:event_txtDireccion_busKeyReleased
 
@@ -2629,7 +2832,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             filtrarProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
     }//GEN-LAST:event_cboResponsable_busKeyReleased
 
@@ -2638,25 +2841,25 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             filtrarProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
     }//GEN-LAST:event_jButton8KeyReleased
 
     private void jButton7KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton7KeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
     }//GEN-LAST:event_jButton7KeyReleased
 
     private void cboObra_busKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboObra_busKeyPressed
-       if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             filtrarProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
     }//GEN-LAST:event_cboObra_busKeyPressed
 
@@ -2683,7 +2886,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             filtrarProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
     }//GEN-LAST:event_txt_fechasalida_busKeyReleased
 
@@ -2692,7 +2895,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             filtrarProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            dialog_filtrar_salida.dispose(); 
+            dialog_filtrar_salida.dispose();
         }
     }//GEN-LAST:event_txtMotivo_busKeyReleased
 
@@ -2858,39 +3061,37 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private void btn_nueva_unidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nueva_unidadActionPerformed
         limpiar_caja_texto_crear_obra();
         MostrarComboCliente(cboCliente, true, true, null);
-        dialog_crear_obra.setSize(700,300);
+        dialog_crear_obra.setSize(700, 300);
         dialog_crear_obra.setLocationRelativeTo(ventana);
         dialog_crear_obra.setModal(true);
         dialog_crear_obra.setVisible(true);
     }//GEN-LAST:event_btn_nueva_unidadActionPerformed
 
     private void cboObraItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboObraItemStateChanged
-        
+
         ObrasBE obj = new ObrasBE();
-        if(cboObra.getSelectedItem()!= null && cboObra.getSelectedItem().toString().length() > 0)
+        if (cboObra.getSelectedItem() != null && cboObra.getSelectedItem().toString().length() > 0) {
             obj.setDescripcion(cboObra.getSelectedItem().toString().trim());
-        
+        }
+
         obj.setId_empresa(id_empresa_index);
-        
+
         try {
             List<ObrasBE> lst = objObrasBL.read(obj);
-            
-            if(!lst.isEmpty()){
+
+            if (!lst.isEmpty()) {
                 for (ObrasBE obra : lst) {
-                    if(obra.getDireccion() != null)
+                    if (obra.getDireccion() != null) {
                         txtDireccion.setText(obra.getDireccion().trim());
+                    }
                 }
             }
-            
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
-        
-        
-        
-        
-        
+
+
     }//GEN-LAST:event_cboObraItemStateChanged
 
     private void txt_codigoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_codigoKeyTyped
@@ -2916,7 +3117,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
     private void tabla_detalle_salida_materialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_detalle_salida_materialMouseClicked
         if (evt.getButton() == 3 && crear0_modificar1_producto != 2) {
-            mantenimiento_tabla_detalle_salida.show(tabla_detalle_salida_material, evt.getX(), evt.getY());                        
+            mantenimiento_tabla_detalle_salida.show(tabla_detalle_salida_material, evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_tabla_detalle_salida_materialMouseClicked
 
@@ -2941,15 +3142,15 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         MostrarCombo(cboUnidad_bus, 1, true, true, null);
         MostrarCombo(cboAlmacen_bus, 3, true, true, null);
         MostrarCombo(cboCategoria_bus, 6, true, true, null);
-        
+
         DefaultTableModel tabla = (DefaultTableModel) tabla_producto.getModel();
         tabla.setRowCount(0);
-            
+
         dialog_filtrar_producto.setSize(850, 500);
         dialog_filtrar_producto.setLocationRelativeTo(ventana);
         dialog_filtrar_producto.setModal(true);
-        dialog_filtrar_producto.setVisible(true);                
-                
+        dialog_filtrar_producto.setVisible(true);
+
     }//GEN-LAST:event_btn_buscar_proveedorActionPerformed
 
     private void cboClienteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboClienteItemStateChanged
@@ -2995,31 +3196,31 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
             crear0_modificar1_producto = 1;
             id_salidamaterial_global = idSalidaMaterial;
-            
+
             try {
                 SalidaMaterialBE obj = objSalidaMaterialBL.readId(idSalidaMaterial, id_empresa_index);
 
-                if(obj != null){
+                if (obj != null) {
                     SalidaMaterialDetalleBE objDet = new SalidaMaterialDetalleBE();
                     objDet.setId_salida_material(idSalidaMaterial);
                     objDet.setId_empresa(id_empresa_index);
                     List<SalidaMaterialDetalleBE> listaProDet = objSalidaMaterialDetalleBL.read(objDet);
 
                     limpiarCajaTextoEntregaMaterial();
-                            
+
                     txtCodigoSalidaMaterialEntrega.setText(insertarCeros(obj.getIdSalidaMaterial()));
                     txtFechaSalidaEntrega.setDate(obj.getFechaSalida());
                     txtResponsableEntrega.setText(obj.getDesPersonal());
                     txtObraEntrega.setText(obj.getDesObra());
-                    
+
                     /*Muestra la fecha*/
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     Date d = new Date();
                     String s = sdf.format(d);
                     txtFechaEntregaMaterial.setDate(d);
-            
+
                     tablaDetalleEntrega(listaProDet);
-                    
+
                     dialogoRetornoMaterial.setSize(925, 625);
                     dialogoRetornoMaterial.setLocationRelativeTo(ventana);
                     dialogoRetornoMaterial.setModal(true);
@@ -3027,13 +3228,13 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-            }                            
+            }
         }
     }//GEN-LAST:event_btnRetornoActionPerformed
 
     private void tabla_productoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabla_productoKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-             SeleccionProducto();
+            SeleccionProducto();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
             dialog_filtrar_producto.dispose();
@@ -3045,7 +3246,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }//GEN-LAST:event_cboAlmacen_busActionPerformed
 
     private void tabla_detalle_salida_materialKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tabla_detalle_salida_materialKeyReleased
-        
+
     }//GEN-LAST:event_tabla_detalle_salida_materialKeyReleased
 
     private void txt_cantidadKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_cantidadKeyPressed
@@ -3053,7 +3254,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             crearDetalleSalida();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearSalidaMaterial();        
+            CerrarDialogoCrearSalidaMaterial();
         }
     }//GEN-LAST:event_txt_cantidadKeyPressed
 
@@ -3062,7 +3263,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             crearDetalleSalida();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearSalidaMaterial();        
+            CerrarDialogoCrearSalidaMaterial();
         }
     }//GEN-LAST:event_txtProductoKeyPressed
 
@@ -3071,7 +3272,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             crearDetalleSalida();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearSalidaMaterial();        
+            CerrarDialogoCrearSalidaMaterial();
         }
     }//GEN-LAST:event_txtUnidadKeyPressed
 
@@ -3080,7 +3281,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             crearDetalleSalida();
         }
         if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            CerrarDialogoCrearSalidaMaterial();        
+            CerrarDialogoCrearSalidaMaterial();
         }
     }//GEN-LAST:event_txtStockKeyPressed
 
@@ -3091,11 +3292,11 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         txtMotivo_bus.setText("");
         txt_fechasalida_bus.setDate(null);
         txt_fecharetorno_bus.setDate(null);
-        
+
         incializarCombo(cboObra_bus);
         incializarCombo(cboResponsable_bus);
         incializarCombo(cbo_estado_bus);
-        
+
         mostrar_tabla_general();
     }//GEN-LAST:event_jButton10ActionPerformed
 
@@ -3109,25 +3310,24 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
-            try
-            {
+            try {
                 int band = 0;
                 DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
                 int idSalidaMaterial = Integer.parseInt((String) tm.getValueAt(fila, 1));
                 int estadoAbierto = objSalidaMaterialBL.readId(idSalidaMaterial, id_empresa_index).getEstadoAbierto();
-        
-                if(estadoAbierto == 90001){
-                    if(!verificaExistenciaStockTableBD(idSalidaMaterial, estadoAbierto)){
+
+                if (estadoAbierto == 90001) {
+                    if (!verificaExistenciaStockTableBD(idSalidaMaterial, estadoAbierto)) {
                         band++;
                     }
                 }
-                
-                if(band == 0){                    
-                    switch (estadoAbierto){
-                        case 90001: 
+
+                if (band == 0) {
+                    switch (estadoAbierto) {
+                        case 90001:
                             int respuesta = JOptionPane.showConfirmDialog(null, "Una vez impreso el documento, ya no se podrán efectuar cambios.\n\n"
                                     + "¿Desea continuar con esta operación?", "Confirmar Salida de material e Imprimir", JOptionPane.YES_NO_OPTION);
-            
+
                             if (respuesta == JOptionPane.YES_OPTION) {
                                 SalidaMaterialBE obj = new SalidaMaterialBE();
                                 obj.setIdSalidaMaterial(idSalidaMaterial);
@@ -3135,10 +3335,10 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                                 obj.setUsuarioModifica(aliasUsuarioIndex);
 
                                 objSalidaMaterialBL.confirmarSalida(obj);
-                                imprimirSalidaMaterial(idSalidaMaterial);    
+                                imprimirSalidaMaterial(idSalidaMaterial);
                                 mostrar_tabla_general();
                             }
-                            
+
                             break;
                         default:
                             imprimirSalidaMaterial(idSalidaMaterial);
@@ -3147,7 +3347,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
-            }            
+            }
         }
     }//GEN-LAST:event_btnImprimirSalidaActionPerformed
 
@@ -3157,35 +3357,34 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un registro.");
         } else {
-            try
-            {
+            try {
                 DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
                 int idSalidaMaterial = Integer.parseInt((String) tm.getValueAt(fila, 1));
                 int estadoAbierto = objSalidaMaterialBL.readId(idSalidaMaterial, id_empresa_index).getEstadoAbierto();
-        
-                switch (estadoAbierto){
+
+                switch (estadoAbierto) {
                     case 90003:
                         int respuesta = JOptionPane.showConfirmDialog(null, "Una vez impreso el documento, ya no se podrán efectuar cambios en el retorno de materiales.\n\n¿Desea continuar con esta operación?", "Confirmar Salida de material e Imprimir", JOptionPane.YES_NO_OPTION);
-            
+
                         if (respuesta == JOptionPane.YES_OPTION) {
                             SalidaMaterialBE obj = new SalidaMaterialBE();
                             obj.setIdSalidaMaterial(idSalidaMaterial);
                             obj.setId_empresa(id_empresa_index);
                             obj.setUsuarioModifica(aliasUsuarioIndex);
-                            
+
                             objSalidaMaterialBL.confirmarRetorno(obj);
                             imprimirEntregaMaterial(idSalidaMaterial);
                             mostrar_tabla_general();
                         }
                         break;
-                    
+
                     default:
                         imprimirEntregaMaterial(idSalidaMaterial);
                         break;
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
-            }            
+            }
         }
     }//GEN-LAST:event_btnImprimirRetornoActionPerformed
 
@@ -3209,6 +3408,122 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         tablaGeneralClick();
     }//GEN-LAST:event_tabla_generalMouseReleased
 
+    private void txt_fecha_inicioMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_fecha_inicioMousePressed
+        try {
+            SimpleDateFormat formato_fecha = new SimpleDateFormat("dd/MM/yyyy");
+
+            Date dia_inicio = txt_fecha_inicio.getDate();
+            String fecha_ini = formato_fecha.format(dia_inicio);
+            Date fecha_inicio = formato_fecha.parse(fecha_ini);
+
+            Date dia_fin = txt_fecha_fin.getDate();
+            String fecha_fin = formato_fecha.format(dia_fin);
+            Date fecha_final = formato_fecha.parse(fecha_fin);
+
+            if (fecha_inicio.before(fecha_final)) {
+                System.out.println("La Fecha 1 es menor");
+            } else if (fecha_final.before(fecha_inicio)) {
+                System.out.println("La Fecha 1 es Mayor");
+                JOptionPane.showMessageDialog(null, "La fecha de inicio es MAYOR a la fecha fin\n Por favor seleccione otra fecha", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } else {
+                System.out.println("Las Fechas Son iguales");
+            }
+        } catch (ParseException | HeadlessException e) {
+            System.out.println("Se Produjo un Error!!!  " + e.getMessage());
+        }// TODO add your handling code here:
+    }//GEN-LAST:event_txt_fecha_inicioMousePressed
+
+    private void btn_generar_reporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_generar_reporteActionPerformed
+        try {
+
+            if (reporteTodos.isSelected()) {
+                List<ReporteSalidaMaterialBE> report = objReporteBL.salidaMaterialesAll(id_empresa_index);
+
+                if (report.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "El personal no registra salida de materiales.");
+                } else {
+                    exportarReporte(report);
+                    dialogoReporteSalidaMaterial.dispose();
+                }
+            } else if (reporteEntreFechas.isSelected()) {
+                SimpleDateFormat formato_fecha = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat formato_consulta = new SimpleDateFormat("yyyy-MM-dd");
+
+                Date dia_inicio = txt_fecha_inicio.getDate();
+                String fecha_ini = formato_fecha.format(dia_inicio);
+                String fecha_ini_consulta = formato_consulta.format(dia_inicio);
+                Date fecha_inicio = formato_fecha.parse(fecha_ini);
+
+                Date dia_fin = txt_fecha_fin.getDate();
+                String fecha_fin = formato_fecha.format(dia_fin);
+                String fecha_fin_consulta = formato_consulta.format(dia_fin);
+                Date fecha_final = formato_fecha.parse(fecha_fin);
+
+                if (fecha_inicio.after(fecha_final)) {
+                    JOptionPane.showMessageDialog(null, "La fecha FIN es MENOR a la fecha de INICIO\n Por favor seleccione otra fecha", "ERROR", JOptionPane.ERROR_MESSAGE);
+
+                } else if (fecha_final.before(fecha_inicio)) {
+                    JOptionPane.showMessageDialog(null, "La fecha INICIO es MAYOR a la fecha FIN\n Por favor seleccione otra fecha", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    List<ReporteSalidaMaterialBE> report = objReporteBL.salidaMaterialesEntreFechas(fecha_ini_consulta, fecha_fin_consulta, id_empresa_index);
+
+                    if (report.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "El personal no registra salida de materiales en el periodo seleccionado.");
+                    } else {
+                        exportarReporte(report);
+                        dialogoReporteSalidaMaterial.dispose();
+                    }
+                }
+            }
+
+        } catch (ParseException | HeadlessException e) {
+            System.out.println("Se Produjo un Error!!!  " + e.getMessage());
+            dialogoReporteSalidaMaterial.dispose();
+            JOptionPane.showMessageDialog(null, "Ocurrio al mostrar el informe: \n" + e, "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            System.out.println("Se Produjo un Error!!!  " + ex.getMessage());
+            dialogoReporteSalidaMaterial.dispose();
+            JOptionPane.showMessageDialog(null, "Ocurrio al mostrar el informe: \n" + ex, "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btn_generar_reporteActionPerformed
+
+    private void btn_cancelar_reporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelar_reporteActionPerformed
+        dialogoReporteSalidaMaterial.dispose();
+    }//GEN-LAST:event_btn_cancelar_reporteActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        System.out.println("capturar fecha y poner en caja de texto");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date d = new Date();
+        String s = sdf.format(d);
+        txt_fecha_inicio.setDate(d);
+        txt_fecha_fin.setDate(d);
+
+        lb_fecha1.setVisible(false);
+        lb_fecha2.setVisible(false);
+        txt_fecha_inicio.setVisible(false);
+        txt_fecha_fin.setVisible(false);
+
+        dialogoReporteSalidaMaterial.setSize(450, 300);
+        dialogoReporteSalidaMaterial.setLocationRelativeTo(ventana);
+        dialogoReporteSalidaMaterial.setModal(true);
+        dialogoReporteSalidaMaterial.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void reporteTodosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_reporteTodosItemStateChanged
+        lb_fecha1.setVisible(false);
+        lb_fecha2.setVisible(false);
+        txt_fecha_inicio.setVisible(false);
+        txt_fecha_fin.setVisible(false);
+    }//GEN-LAST:event_reporteTodosItemStateChanged
+
+    private void reporteEntreFechasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_reporteEntreFechasItemStateChanged
+        lb_fecha1.setVisible(true);
+        lb_fecha2.setVisible(true);
+        txt_fecha_inicio.setVisible(true);
+        txt_fecha_fin.setVisible(true);
+    }//GEN-LAST:event_reporteEntreFechasItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Eliminar;
     private javax.swing.JButton btnEliminar;
@@ -3224,9 +3539,11 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JButton btn_cancelar1;
     private javax.swing.JButton btn_cancelar_cliente;
     private javax.swing.JButton btn_cancelar_guardar_detalle;
+    private javax.swing.JButton btn_cancelar_reporte;
     private javax.swing.JButton btn_cliente_cancelar_busqueda;
     private javax.swing.JButton btn_cliente_seleccionar;
     private javax.swing.JButton btn_crea_cliente;
+    private javax.swing.JButton btn_generar_reporte;
     private javax.swing.JButton btn_guardar;
     private javax.swing.JButton btn_guardar1;
     private javax.swing.JButton btn_guardar_detalle;
@@ -3249,7 +3566,9 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JDialog dialog_crear_salida;
     private javax.swing.JDialog dialog_filtrar_producto;
     private javax.swing.JDialog dialog_filtrar_salida;
+    private javax.swing.JDialog dialogoReporteSalidaMaterial;
     private javax.swing.JDialog dialogoRetornoMaterial;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton14;
@@ -3298,9 +3617,12 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel47;
     private javax.swing.JLabel jLabel48;
     private javax.swing.JLabel jLabel49;
+    private javax.swing.JLabel jLabel50;
     private javax.swing.JLabel jLabel64;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
@@ -3340,6 +3662,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JSeparator jSeparator9;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
+    private javax.swing.JLabel lb_fecha1;
+    private javax.swing.JLabel lb_fecha2;
     private javax.swing.JLabel lblIdProducto;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JLabel lblTotalProductos;
@@ -3348,8 +3672,14 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JPopupMenu mantenimiento_tabla_detalle_salida;
     private javax.swing.JPanel norte;
     private javax.swing.JPanel norte1;
+    private javax.swing.JPanel panel_cuerpo;
+    private javax.swing.JPanel panel_norte;
     private javax.swing.JPanel panel_nuevo_detalle;
+    private javax.swing.JPanel panel_seleccione_cliente;
     private javax.swing.JPanel panel_tabla;
+    private javax.swing.JRadioButton reporteEntreFechas;
+    private javax.swing.JRadioButton reporteTodos;
+    private javax.swing.ButtonGroup seleccionarFecha;
     private javax.swing.JToolBar.Separator spEliminar;
     private javax.swing.JToolBar.Separator spFiltrar;
     private javax.swing.JToolBar.Separator spImprimirEntrega;
@@ -3386,6 +3716,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private javax.swing.JTextField txt_cantidad;
     private javax.swing.JTextField txt_codigo;
     private javax.swing.JTextArea txt_direccion_obra;
+    private org.jdesktop.swingx.JXDatePicker txt_fecha_fin;
+    private org.jdesktop.swingx.JXDatePicker txt_fecha_inicio;
     private org.jdesktop.swingx.JXDatePicker txt_fecha_salida;
     private org.jdesktop.swingx.JXDatePicker txt_fecharetorno_bus;
     private org.jdesktop.swingx.JXDatePicker txt_fechasalida_bus;
@@ -3394,58 +3726,64 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
     private void MostrarComboMoneda(JComboBox cbo) {
         MonedaBE pbe = new MonedaBE();
-        
+
         try {
             List<MonedaBE> lmoneda = objMonedaBL.MonedaListar(pbe);
             if (lmoneda != null && !lmoneda.isEmpty()) {
                 AutoCompleteDecorator.decorate(cbo);
                 DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
                 //cboModel.addElement("");
-                
+
                 for (MonedaBE monedaBE : lmoneda) {
-                    cboModel.addElement(monedaBE.getNombre());                    
+                    cboModel.addElement(monedaBE.getNombre());
                 }
-                
+
                 cbo.setModel(cboModel);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
-        }   
+        }
     }
 
     private SalidaMaterialBE ObtenerFiltrosBusqueda() {
         SalidaMaterialBE pbe = new SalidaMaterialBE();
-        
-        if(txtCodigo_bus.getText().trim().length() > 0)
+
+        if (txtCodigo_bus.getText().trim().length() > 0) {
             pbe.setIdSalidaMaterial(Integer.parseInt(txtCodigo_bus.getText().trim()));
-        
-        if(txt_fechasalida_bus.getDate() != null){
+        }
+
+        if (txt_fechasalida_bus.getDate() != null) {
             java.util.Date utilDate = txt_fechasalida_bus.getDate();
             java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
             pbe.setFechaSalida(sqlDate);
         }
-        
-        if(txt_fecharetorno_bus.getDate() != null){
+
+        if (txt_fecharetorno_bus.getDate() != null) {
             java.util.Date utilDate = txt_fecharetorno_bus.getDate();
             java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
             pbe.setFechaRetorno(sqlDate);
         }
-        
-        if(cboResponsable_bus.getSelectedItem()!= null && cboResponsable_bus.getSelectedItem().toString().length() > 0)
+
+        if (cboResponsable_bus.getSelectedItem() != null && cboResponsable_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesPersonal(cboResponsable_bus.getSelectedItem().toString().trim());
-        
-        if(cboObra_bus.getSelectedItem()!= null && cboObra_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cboObra_bus.getSelectedItem() != null && cboObra_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesObra(cboObra_bus.getSelectedItem().toString().trim());
-        
-        if(cbo_estado_bus.getSelectedItem()!= null && cbo_estado_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cbo_estado_bus.getSelectedItem() != null && cbo_estado_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesEstadoAbierto(cbo_estado_bus.getSelectedItem().toString().trim());
-        
-        if(txtDireccion_bus.getText().trim().length() > 0)
+        }
+
+        if (txtDireccion_bus.getText().trim().length() > 0) {
             pbe.setDireccion(txtDireccion_bus.getText().trim());
-        
-        if(txtMotivo_bus.getText().trim().length() > 0)
+        }
+
+        if (txtMotivo_bus.getText().trim().length() > 0) {
             pbe.setMotivo(txtMotivo_bus.getText().trim());
-        
+        }
+
         return pbe;
     }
 
@@ -3455,7 +3793,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }
 
     private void mostrarSalidaMaterial(int accion, int id_salida) {
-        if(accion == 0){
+        if (accion == 0) {
             System.out.println("capturar fecha y poner en caja de texto");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             Date d = new Date();
@@ -3463,18 +3801,16 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             txt_fecha_salida.setDate(d);
             cargarCombos();
             limpiar_caja_texto_crear_salidamaterial();
-        }            
-        else{
+        } else {
             limpiar_caja_texto_crear_salidamaterial();
             modificarMaterial(id_salida);
         }
-            
-        
+
         dialog_crear_salida.setSize(925, 625);
         dialog_crear_salida.setLocationRelativeTo(ventana);
         dialog_crear_salida.setModal(true);
         dialog_crear_salida.setVisible(true);
-        
+
     }
 
     private void cargarCombos() {
@@ -3516,13 +3852,13 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         tabla.setRowCount(0);
         for (ProveedorBE obj : list) {
             Object[] fila = {
-                obj.getId_provedor(), 
+                obj.getId_provedor(),
                 obj.getRuc(),
                 obj.getRazon_social()
-                };
+            };
             tabla.addRow(fila);
         }
-        
+
         tablaProveedor.setRowHeight(35);
     }
 
@@ -3535,10 +3871,10 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 obj.getNombreMaterial(),
                 obj.getUnidadMaterial(),
                 obj.getCantidadSalida()
-                };
+            };
             tabla.addRow(fila);
         }
-        
+
         tabla_detalle_salida_material.setRowHeight(35);
     }
 
@@ -3553,13 +3889,13 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 obj.getCantidadSalida(),
                 obj.getCantidadRetorno(),
                 obj.getComentarioRetorno()
-                };
+            };
             tabla.addRow(fila);
         }
-        
+
         tablaDetalleEntrega.setRowHeight(35);
     }
-    
+
     private void tablaProveedorDetalle(List<ProductoDetalleBE> listaProDet) {
         DefaultTableModel tabla = (DefaultTableModel) tabla_detalle_salida_material.getModel();
         tabla.setRowCount(0);
@@ -3568,10 +3904,10 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 obj.getRucProveedor(),
                 obj.getRazonsocialProveedor(),
                 obj.getPrecio()
-                };
+            };
             tabla.addRow(fila);
         }
-        
+
         tabla_detalle_salida_material.setRowHeight(35);
     }
 
@@ -3650,60 +3986,60 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private void SeleccionProveedor() {
         int fila;
         fila = tablaProveedor.getSelectedRow();
-        
+
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un registro");
         } else {
             m = (DefaultTableModel) tablaProveedor.getModel();
-            
+
             int id_proveedor = (Integer) m.getValueAt(fila, 0);
             String ruc = (String) m.getValueAt(fila, 1);
             String razon_social = (String) m.getValueAt(fila, 2);
-            
+
             txtUnidad.setText(ruc);
             txtProducto.setText(razon_social);
-            
+
             cerrarDialogoBuscarProveedor();
         }
     }
-    
+
     private void SeleccionProducto() {
         int fila;
         fila = tabla_producto.getSelectedRow();
-        
+
         if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un registro");
         } else {
             m = (DefaultTableModel) tabla_producto.getModel();
-            
+
             int id = (Integer) m.getValueAt(fila, 0);
             String descripcion = (String) m.getValueAt(fila, 3);
             String unidad = (String) m.getValueAt(fila, 4);
             double stock = (Double) m.getValueAt(fila, 5);
-            
+
             lblIdProducto.setVisible(false);
-            lblIdProducto.setText(""+id);    
+            lblIdProducto.setText("" + id);
             txtProducto.setText(descripcion);
             txtUnidad.setText(unidad);
             txtStock.setText(Double.toString(stock));
-            
+
             cerrarDialogouscarProducto();
         }
     }
-    
-    private void cerrarDialogouscarProducto(){
+
+    private void cerrarDialogouscarProducto() {
         txtCodigo_bus1.setText("");
         txtDescripcion_bus.setText("");
         txtModelo_bus.setText("");
         txtMarca_bus.setText("");
         txtNombreComun_bus.setText("");
-        
+
         incializarCombo(cbo_referencia_bus);
         incializarCombo(cboUnidad_bus);
         incializarCombo(cboMoneda_bus);
         incializarCombo(cboAlmacen_bus);
         incializarCombo(cboCategoria_bus);
-        
+
         dialog_filtrar_producto.dispose();
     }
 
@@ -3723,124 +4059,127 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }
 
     private void filtrarProducto() {
-        mostrar_tabla_productos(); 
+        mostrar_tabla_productos();
         dialog_filtrar_salida.dispose();
     }
 
     private void CerrarDialogoCrearSalidaMaterial() {
         limpiarCajaTextoCrearDetalleSalidaMaterial();
         limpiar_caja_texto_crear_salidamaterial();
-        
+
         crear0_modificar1_producto = 0;
         id_salidamaterial_global = 0;
-        
+
         DefaultTableModel tablaDetalle = (DefaultTableModel) tabla_detalle_salida_material.getModel();
         tablaDetalle.setRowCount(0);
-        
+
         MostrarObjetos(true);
         dialog_crear_salida.dispose();
     }
 
     private SalidaMaterialBE capturarValorSalidaMaterial() {
-        
+
         SalidaMaterialBE sm = null;
-        
+
         String IdSalidaMaterial = txt_codigo.getText().trim();
-        
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date FechaSalida = txt_fecha_salida.getDate();
-        
+
         String DesPersonal = cboResponsable.getSelectedItem().toString();
         String DesObra = cboObra.getSelectedItem().toString();
         String Direccion = txtDireccion.getText();
         String Motivo = txtMotivo.getText();
-        
+
         int band = 0;
-        
-        if(FechaSalida == null){
+
+        if (FechaSalida == null) {
             JOptionPane.showMessageDialog(null, "Seleccione una fecha.");
             band++;
         }
-        
-        if(band == 0){
-            if(DesPersonal.length() == 0){
+
+        if (band == 0) {
+            if (DesPersonal.length() == 0) {
                 JOptionPane.showMessageDialog(null, "Seleccione un responsable.");
                 band++;
             }
         }
-        
-        if(band == 0){
-            if(Direccion.length() == 0){
+
+        if (band == 0) {
+            if (Direccion.length() == 0) {
                 JOptionPane.showMessageDialog(null, "Ingrese la dirección/destino.");
                 band++;
             }
         }
-        
-        if(band == 0){
+
+        if (band == 0) {
             DefaultTableModel tabla = (DefaultTableModel) tabla_detalle_salida_material.getModel();
-            
-            if(tabla.getRowCount() == 0){
+
+            if (tabla.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(null, "Ingrese los materiales a retirar.");
                 band++;
-            }            
+            }
         }
-        
-        if(band == 0){
+
+        if (band == 0) {
             sm = new SalidaMaterialBE();
-            
+
             sm.setDesPersonal(DesPersonal);
             sm.setDireccion(Direccion);
             sm.setFechaSalida(FechaSalida);
-            
-            if(IdSalidaMaterial.length() > 0)
+
+            if (IdSalidaMaterial.length() > 0) {
                 sm.setIdSalidaMaterial(Integer.parseInt(IdSalidaMaterial));
-                
-            if(DesObra.length() > 0)
+            }
+
+            if (DesObra.length() > 0) {
                 sm.setDesObra(DesObra);
-            
-            if(Motivo.length() > 0)
+            }
+
+            if (Motivo.length() > 0) {
                 sm.setMotivo(Motivo);
-            
+            }
+
             sm.setId_empresa(id_empresa_index);
             sm.setUsuarioInserta(aliasUsuarioIndex);
-            sm.setTipoOperacion(crear0_modificar1_producto);            
+            sm.setTipoOperacion(crear0_modificar1_producto);
         }
-        
+
         return sm;
     }
 
     private void crearmodificarSalidaMaterial() {
         try {
             int band = 0;
-            int filas =  tabla_detalle_salida_material.getRowCount();
-        
+            int filas = tabla_detalle_salida_material.getRowCount();
+
             /*verifica si se agrego materiales a la salida*/
-            if(filas < 1){
+            if (filas < 1) {
                 JOptionPane.showMessageDialog(null, "Ingrese materiales a la solicitud de Salida.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 band++;
             }
-        
+
             /*verifica stock de materiales*/
-            if(band == 0){
-                if(!verificaExistenciaStockJTable()){
+            if (band == 0) {
+                if (!verificaExistenciaStockJTable()) {
                     band++;
                 }
             }
-        
+
             /*crea la salida y el detalle*/
-            if(band == 0){
+            if (band == 0) {
                 SalidaMaterialBE sm = capturarValorSalidaMaterial();
 
-                if(sm != null){
+                if (sm != null) {
                     int id_salida = objSalidaMaterialBL.create(sm);
                     List<SalidaMaterialDetalleBE> listaSalidaDet = ObtenerRegistrosSalidaDetalle(id_salida);
 
-                    if(listaSalidaDet != null && !listaSalidaDet.isEmpty()){
+                    if (listaSalidaDet != null && !listaSalidaDet.isEmpty()) {
                         int i = 0;
                         for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
-                            if(i == 0){
+                            if (i == 0) {
                                 objSalidaMaterialDetalleBL.deleteAll(id_salida, obj.getId_empresa());
-                            }                                
+                            }
 
                             objSalidaMaterialDetalleBL.create(obj);
                             i++;
@@ -3850,7 +4189,7 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                     CerrarDialogoCrearSalidaMaterial();
                     JOptionPane.showMessageDialog(null, "Operación exitosa.");
                     mostrar_tabla_general();
-                }            
+                }
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -3860,19 +4199,19 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     private void modificarMaterial(int id) {
         try {
             SalidaMaterialBE obj = objSalidaMaterialBL.readId(id, id_empresa_index);
-            
-            if(obj != null){
+
+            if (obj != null) {
                 SalidaMaterialDetalleBE objDet = new SalidaMaterialDetalleBE();
                 objDet.setId_salida_material(id);
                 objDet.setId_empresa(id_empresa_index);
                 List<SalidaMaterialDetalleBE> listaProDet = objSalidaMaterialDetalleBL.read(objDet);
-            
+
                 MostrarComboPersonal(cboResponsable, true, true, obj.getDesPersonal());
                 MostrarComboObras(cboObra, true, true, obj.getDesObra());
                 mostrarDatosCajaTexto(obj);
-                
+
                 tablaSalidaMaterialDetalle(listaProDet);
-            }            
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
@@ -3880,12 +4219,13 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
     private void mostrarDatosCajaTexto(SalidaMaterialBE obj) {
         txtDireccion.setText(obj.getDireccion());
-        
-        if(obj.getMotivo()!= null && obj.getMotivo().length() > 0)
+
+        if (obj.getMotivo() != null && obj.getMotivo().length() > 0) {
             txtMotivo.setText(obj.getMotivo());
-        
-        txt_codigo.setText(insertarCeros(obj.getIdSalidaMaterial()));        
-        txt_fecha_salida.setDate(obj.getFechaSalida());        
+        }
+
+        txt_codigo.setText(insertarCeros(obj.getIdSalidaMaterial()));
+        txt_fecha_salida.setDate(obj.getFechaSalida());
     }
 
     private void MostrarObjetos(boolean mostrar) {
@@ -3896,44 +4236,46 @@ public class SalidaMaterialView extends javax.swing.JPanel {
 
     private String insertarCeros(int idSalidaMaterial) {
         String valor = String.valueOf(idSalidaMaterial);
-        
-        while(valor.length() <= 10){
+
+        while (valor.length() <= 10) {
             valor = "0" + valor;
         }
-        
+
         return valor;
     }
 
-    private void MostrarComboPersonal(JComboBox cbo, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault) 
-    {
+    private void MostrarComboPersonal(JComboBox cbo, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault) {
         try {
             List<PersonalBE> list = objPersonalBL.read(null);
             if (!list.isEmpty()) {
                 DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
-                
-                if(Autocompletado)
+
+                if (Autocompletado) {
                     AutoCompleteDecorator.decorate(cbo);
-                
-                if(MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())){
+                }
+
+                if (MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())) {
                     cboModel.addElement("");
                 }
-                
-                if(cadenaDefault != null && cadenaDefault.length() > 0)
+
+                if (cadenaDefault != null && cadenaDefault.length() > 0) {
                     cboModel.addElement(cadenaDefault);
-                
-                String valor; 
-                
+                }
+
+                String valor;
+
                 for (PersonalBE obj : list) {
                     valor = obj.getNombre();
-                    
-                    if(cadenaDefault != null){
-                        if(!valor.equals(cadenaDefault))
+
+                    if (cadenaDefault != null) {
+                        if (!valor.equals(cadenaDefault)) {
                             cboModel.addElement(valor);
-                    }else{
+                        }
+                    } else {
                         cboModel.addElement(valor);
-                    }                    
+                    }
                 }
-                
+
                 cbo.setModel(cboModel);
             }
         } catch (Exception e) {
@@ -3948,67 +4290,72 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             List<ObrasBE> list = objObrasBL.read(objObras);
             if (!list.isEmpty()) {
                 DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
-                
-                if(Autocompletado)
+
+                if (Autocompletado) {
                     AutoCompleteDecorator.decorate(cbo);
-                
-                if(MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())){
+                }
+
+                if (MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())) {
                     cboModel.addElement("");
                 }
-                
-                if(cadenaDefault != null && cadenaDefault.length() > 0)
+
+                if (cadenaDefault != null && cadenaDefault.length() > 0) {
                     cboModel.addElement(cadenaDefault);
-                
-                String valor; 
-                
+                }
+
+                String valor;
+
                 for (ObrasBE obj : list) {
                     valor = obj.getDescripcion();
-                    
-                    if(cadenaDefault != null){
-                        if(!valor.equals(cadenaDefault))
+
+                    if (cadenaDefault != null) {
+                        if (!valor.equals(cadenaDefault)) {
                             cboModel.addElement(valor);
-                    }else{
+                        }
+                    } else {
                         cboModel.addElement(valor);
-                    }                    
+                    }
                 }
-                
+
                 cbo.setModel(cboModel);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-    
-    private void MostrarComboCliente(JComboBox cbo, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault) 
-    {
+
+    private void MostrarComboCliente(JComboBox cbo, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault) {
         try {
             List<ClienteBE> list = objClienteBL.read(null);
             if (!list.isEmpty()) {
                 DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
-                
-                if(Autocompletado)
+
+                if (Autocompletado) {
                     AutoCompleteDecorator.decorate(cbo);
-                
-                if(MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())){
+                }
+
+                if (MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())) {
                     cboModel.addElement("");
                 }
-                
-                if(cadenaDefault != null && cadenaDefault.length() > 0)
+
+                if (cadenaDefault != null && cadenaDefault.length() > 0) {
                     cboModel.addElement(cadenaDefault);
-                
-                String valor; 
-                
+                }
+
+                String valor;
+
                 for (ClienteBE obj : list) {
                     valor = obj.getRazon_social();
-                    
-                    if(cadenaDefault != null){
-                        if(!valor.equals(cadenaDefault))
+
+                    if (cadenaDefault != null) {
+                        if (!valor.equals(cadenaDefault)) {
                             cboModel.addElement(valor);
-                    }else{
+                        }
+                    } else {
                         cboModel.addElement(valor);
-                    }                    
+                    }
                 }
-                
+
                 cbo.setModel(cboModel);
             }
         } catch (Exception e) {
@@ -4022,64 +4369,67 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         txtModelo_bus.setText("");
         txtMarca_bus.setText("");
         txtNombreComun_bus.setText("");
-        
+
         incializarCombo(cbo_referencia_bus);
         incializarCombo(cboMoneda_bus);
         incializarCombo(cboUnidad_bus);
         incializarCombo(cboAlmacen_bus);
         incializarCombo(cboCategoria_bus);
-        
+
         //mostrar_tabla_producto();
     }
-    
+
     private void MostrarCombo(JComboBox cbo, int CodigoTabla, boolean MostrarFilaVacia, boolean Autocompletado, String cadenaDefault) {
         try {
             List<DatoComunBE> list = objDatoComunBL.ReadDetalle(CodigoTabla);
             if (!list.isEmpty()) {
                 DefaultComboBoxModel cboModel = new DefaultComboBoxModel();
-                
-                if(Autocompletado)
+
+                if (Autocompletado) {
                     AutoCompleteDecorator.decorate(cbo);
-                
-                if(MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())){
+                }
+
+                if (MostrarFilaVacia && (cadenaDefault == null || cadenaDefault.isEmpty())) {
                     cboModel.addElement("");
                 }
-                
-                if(cadenaDefault != null && cadenaDefault.length() > 0)
+
+                if (cadenaDefault != null && cadenaDefault.length() > 0) {
                     cboModel.addElement(cadenaDefault);
-                
-                String DescripcionCorta; 
-                String codigoFila; 
-                
+                }
+
+                String DescripcionCorta;
+                String codigoFila;
+
                 for (DatoComunBE obj : list) {
                     DescripcionCorta = obj.getDescripcionCorta();
                     codigoFila = String.valueOf(obj.getCodigoFila());
-                    
-                    if(cadenaDefault != null){
-                        if(!DescripcionCorta.equals(cadenaDefault))
+
+                    if (cadenaDefault != null) {
+                        if (!DescripcionCorta.equals(cadenaDefault)) {
                             cboModel.addElement(DescripcionCorta);
-                    }else{
+                        }
+                    } else {
                         cboModel.addElement(DescripcionCorta);
-                    }                    
+                    }
                 }
-                
+
                 cbo.setModel(cboModel);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
-        } 
+        }
     }
 
     private void mostrar_tabla_productos() {
         ProductoBE pbe = ObtenerFiltrosBusquedaProducto();
-        
+
         try {
             List<ProductoBE> lProductos = objProductoBL.ProductoListar(pbe);
             DefaultTableModel tabla = (DefaultTableModel) tabla_producto.getModel();
             tabla.setRowCount(0);
             if (lProductos != null) {
                 tablaProductos(lProductos);
-                lblTotalProductos.setText("Total: "+lProductos.size()+" registros.");
+                lblTotalProductos.setText("Total: " + lProductos.size() + " registros.");
             } else {
                 lblTotalProductos.setText("No se encontraron resultados");
             }
@@ -4087,67 +4437,74 @@ public class SalidaMaterialView extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void tablaProductos(List<ProductoBE> list) {
-        
+
         try {
             DefaultTableModel tabla = (DefaultTableModel) tabla_producto.getModel();
             tabla.setRowCount(0);
             for (ProductoBE obj : list) {
                 Object[] fila = {
-                    obj.getId_producto(), 
+                    obj.getId_producto(),
                     obj.getFila(),
-                    obj.getCodigo(), 
-                    obj.getDescripcion(), 
-                    obj.getDesunidad(), 
+                    obj.getCodigo(),
+                    obj.getDescripcion(),
+                    obj.getDesunidad(),
                     obj.getCantidad().doubleValue(),
                     obj.getMarca(),
-                    obj.getModelo(),
-                    };
+                    obj.getModelo(),};
                 tabla.addRow(fila);
             }
 
             tabla_producto.setRowHeight(35);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-        }        
+        }
     }
-    
+
     private ProductoBE ObtenerFiltrosBusquedaProducto() {
         ProductoBE pbe = new ProductoBE();
-        
-        if(txtCodigo_bus1.getText().trim().length() > 0)
+
+        if (txtCodigo_bus1.getText().trim().length() > 0) {
             pbe.setCodigo(txtCodigo_bus1.getText().trim());
-        
-        if(txtDescripcion_bus.getText().trim().length() > 0)
+        }
+
+        if (txtDescripcion_bus.getText().trim().length() > 0) {
             pbe.setDescripcion(txtDescripcion_bus.getText().trim());
-        
-        if(txtModelo_bus.getText().trim().length() > 0)
+        }
+
+        if (txtModelo_bus.getText().trim().length() > 0) {
             pbe.setModelo(txtModelo_bus.getText().trim());
-        
-        if(txtMarca_bus.getText().trim().length() > 0)
+        }
+
+        if (txtMarca_bus.getText().trim().length() > 0) {
             pbe.setMarca(txtMarca_bus.getText().trim());
-        
-        if(txtNombreComun_bus.getText().trim().length() > 0)
+        }
+
+        if (txtNombreComun_bus.getText().trim().length() > 0) {
             pbe.setDescripcion_coloquial(txtNombreComun_bus.getText().trim());
-        
-        if(cbo_referencia_bus.getSelectedItem()!= null && cbo_referencia_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cbo_referencia_bus.getSelectedItem() != null && cbo_referencia_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesReferencia_precio(cbo_referencia_bus.getSelectedItem().toString().trim());
-        
-        if(cboMoneda_bus.getSelectedItem()!= null && cboMoneda_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cboMoneda_bus.getSelectedItem() != null && cboMoneda_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesmoneda(cboMoneda_bus.getSelectedItem().toString().trim());
-        
-        if(cboUnidad_bus.getSelectedItem()!= null && cboUnidad_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cboUnidad_bus.getSelectedItem() != null && cboUnidad_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesunidad(cboUnidad_bus.getSelectedItem().toString().trim());
-        
-        if(cboAlmacen_bus.getSelectedItem()!= null && cboAlmacen_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cboAlmacen_bus.getSelectedItem() != null && cboAlmacen_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesAlmacen(cboAlmacen_bus.getSelectedItem().toString().trim());
-        
-        if(cboCategoria_bus.getSelectedItem()!= null && cboCategoria_bus.getSelectedItem().toString().length() > 0)
+        }
+
+        if (cboCategoria_bus.getSelectedItem() != null && cboCategoria_bus.getSelectedItem().toString().length() > 0) {
             pbe.setDesproductotipo(cboCategoria_bus.getSelectedItem().toString().trim());
-        
-        
-        
+        }
+
         return pbe;
     }
 
@@ -4157,55 +4514,47 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         String unidad = txtUnidad.getText().trim();
         String stock = txtStock.getText().trim();
         String cantidad = txt_cantidad.getText().trim();
-        
+
         SalidaMaterialDetalleBE smd = new SalidaMaterialDetalleBE();
-        
+
         int ban = 0;
-        
-        if(ban == 0){
-            if(id != null && id.length() > 0 )
-            {
+
+        if (ban == 0) {
+            if (id != null && id.length() > 0) {
                 smd.setId_producto(Integer.parseInt(id));
                 smd.setNombreMaterial(material);
                 smd.setUnidadMaterial(unidad);
                 smd.setStockMaterial(new BigDecimal(stock));
-            }                
-            else
-            {
+            } else {
                 JOptionPane.showMessageDialog(null, "Seleccione un material");
-                ban++;
-            } 
-        }
-        
-        if(ban == 0){
-            if(Double.parseDouble(stock) == 0){
-                JOptionPane.showMessageDialog(null, "El material seleccionado no cuenta con stock. Por favor seleccione otro."); 
                 ban++;
             }
         }
-        
-        if(ban == 0){
-            if(cantidad != null && cantidad.length() >0)
-            {
-                if(Double.parseDouble(cantidad) <= Double.parseDouble(stock)){
+
+        if (ban == 0) {
+            if (Double.parseDouble(stock) == 0) {
+                JOptionPane.showMessageDialog(null, "El material seleccionado no cuenta con stock. Por favor seleccione otro.");
+                ban++;
+            }
+        }
+
+        if (ban == 0) {
+            if (cantidad != null && cantidad.length() > 0) {
+                if (Double.parseDouble(cantidad) <= Double.parseDouble(stock)) {
                     smd.setCantidadSalida(new BigDecimal(cantidad));
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "La cantidad de material solicitado es mayor al stock existente."); 
+                } else {
+                    JOptionPane.showMessageDialog(null, "La cantidad de material solicitado es mayor al stock existente.");
                     ban++;
                 }
-            }            
-            else
-            {
-                JOptionPane.showMessageDialog(null, "Ingrese la cantidad de material solcitado"); 
+            } else {
+                JOptionPane.showMessageDialog(null, "Ingrese la cantidad de material solcitado");
                 ban++;
-            }                
+            }
         }
-        
-        if(ban == 0){
+
+        if (ban == 0) {
             agegarFilaTalaDetalleSalida(smd);
-            limpiarCajaTextoCrearDetalleSalidaMaterial();            
+            limpiarCajaTextoCrearDetalleSalidaMaterial();
         }
     }
 
@@ -4214,57 +4563,57 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         txtProducto.setText("");
         txtUnidad.setText("");
         txtStock.setText("");
-        txt_cantidad.setText("");        
+        txt_cantidad.setText("");
     }
 
     private void agegarFilaTalaDetalleSalida(SalidaMaterialDetalleBE smd) {
         DefaultTableModel tabla = (DefaultTableModel) tabla_detalle_salida_material.getModel();
-        
+
         tabla.addRow(new Object[]{
-            smd.getId_producto(), 
+            smd.getId_producto(),
             smd.getNombreMaterial(),
             smd.getUnidadMaterial(),
             smd.getCantidadSalida()
         });
-        
+
         tabla_detalle_salida_material.setRowHeight(35);
     }
 
     private List<SalidaMaterialDetalleBE> ObtenerRegistrosSalidaDetalle(int id_salida) {
-        
+
         List<SalidaMaterialDetalleBE> list = new ArrayList();
-        int filas =  tabla_detalle_salida_material.getRowCount();
-        
-        if(filas > 0){
+        int filas = tabla_detalle_salida_material.getRowCount();
+
+        if (filas > 0) {
             SalidaMaterialDetalleBE obj;
             DefaultTableModel tm = (DefaultTableModel) tabla_detalle_salida_material.getModel();
-            
-            for(int i = 0; i < filas; i++){
+
+            for (int i = 0; i < filas; i++) {
                 obj = new SalidaMaterialDetalleBE();
                 obj.setId_producto((Integer) tm.getValueAt(i, 0));
                 obj.setCantidadSalida((BigDecimal) tm.getValueAt(i, 3));
                 obj.setId_salida_material(id_salida);
                 obj.setUsuarioSalida(aliasUsuarioIndex);
-                obj.setTipoOperacion(crear0_modificar1_producto);                     
+                obj.setTipoOperacion(crear0_modificar1_producto);
                 obj.setId_empresa(id_empresa_index);
-                list.add(obj);          
+                list.add(obj);
             }
         }
-        
-        return list;        
+
+        return list;
     }
 
     private void retornarMateriales() {
         try {
-            if(validaDatosEntregaMaterial()){
+            if (validaDatosEntregaMaterial()) {
 
                 SalidaMaterialBE sm = capturarValorEntregaMaterial();
 
-                if(sm != null){
+                if (sm != null) {
                     objSalidaMaterialBL.retornoMaterial(sm);
                     List<SalidaMaterialDetalleBE> listaSalidaDet = ObtenerRegistrosEntregaDetalle();
 
-                    if(listaSalidaDet != null && !listaSalidaDet.isEmpty()){
+                    if (listaSalidaDet != null && !listaSalidaDet.isEmpty()) {
                         for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
                             objSalidaMaterialDetalleBL.retornoMaterial(obj);
                         }
@@ -4273,54 +4622,54 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                     CerrarDialogoEntregaMaterial();
                     JOptionPane.showMessageDialog(null, "Operación exitosa.");
                     mostrar_tabla_general();
-                }            
-            }        
+                }
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-        }        
+        }
     }
 
     private SalidaMaterialBE capturarValorEntregaMaterial() {
         SalidaMaterialBE sm = null;
-        
+
         String IdSalidaMaterial = txtCodigoSalidaMaterialEntrega.getText().trim();
-        
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date FechaRetorno = txtFechaEntregaMaterial.getDate();
-        
+
         int band = 0;
-        
-        if(FechaRetorno == null){
+
+        if (FechaRetorno == null) {
             JOptionPane.showMessageDialog(null, "Seleccione una fecha.");
             band++;
         }
-        
-        if(band == 0){
+
+        if (band == 0) {
             sm = new SalidaMaterialBE();
-            
+
             sm.setFechaRetorno(FechaRetorno);
-            
-            if(IdSalidaMaterial.length() > 0)
+
+            if (IdSalidaMaterial.length() > 0) {
                 sm.setIdSalidaMaterial(Integer.parseInt(IdSalidaMaterial));
-                
+            }
+
             sm.setId_empresa(id_empresa_index);
             sm.setUsuarioModifica(aliasUsuarioIndex);
         }
-        
+
         return sm;
     }
-    
-    
-    private List<SalidaMaterialDetalleBE> ObtenerRegistrosEntregaDetalle() throws Exception{
-        
+
+    private List<SalidaMaterialDetalleBE> ObtenerRegistrosEntregaDetalle() throws Exception {
+
         List<SalidaMaterialDetalleBE> list = new ArrayList();
-        int filas =  tablaDetalleEntrega.getRowCount();
-        
-        if(filas > 0){
+        int filas = tablaDetalleEntrega.getRowCount();
+
+        if (filas > 0) {
             SalidaMaterialDetalleBE obj;
             DefaultTableModel tm = (DefaultTableModel) tablaDetalleEntrega.getModel();
-            
-            for(int i = 0; i < filas; i++){
+
+            for (int i = 0; i < filas; i++) {
                 obj = new SalidaMaterialDetalleBE();
                 obj.setId_detalle_salida_material((Integer) tm.getValueAt(i, 0));
                 obj.setNombreMaterial((String) tm.getValueAt(i, 1));
@@ -4328,41 +4677,41 @@ public class SalidaMaterialView extends javax.swing.JPanel {
                 obj.setCantidadRetorno((Double) tm.getValueAt(i, 4));
                 obj.setComentarioRetorno((String) tm.getValueAt(i, 5));
                 obj.setUsuarioEntrega(aliasUsuarioIndex);
-                list.add(obj);  
+                list.add(obj);
             }
         }
-        
-        return list;        
+
+        return list;
     }
 
-    private boolean validaDatosEntregaMaterial() throws Exception{
+    private boolean validaDatosEntregaMaterial() throws Exception {
         boolean resp = true;
-        
+
         List<SalidaMaterialDetalleBE> listaSalidaDet = ObtenerRegistrosEntregaDetalle();
-        
+
         for (SalidaMaterialDetalleBE obj : listaSalidaDet) {
-            if(obj.getCantidadSalida().compareTo(new BigDecimal(obj.getCantidadRetorno(), MathContext.DECIMAL64)) == -1){
-                JOptionPane.showMessageDialog(null, "Material: "+obj.getNombreMaterial().trim()+".\nEl valor de entrega("+obj.getCantidadRetorno()+") es mayor al valor de salida("+obj.getCantidadSalida()+") ", "ERROR", JOptionPane.ERROR_MESSAGE);
+            if (obj.getCantidadSalida().compareTo(new BigDecimal(obj.getCantidadRetorno(), MathContext.DECIMAL64)) == -1) {
+                JOptionPane.showMessageDialog(null, "Material: " + obj.getNombreMaterial().trim() + ".\nEl valor de entrega(" + obj.getCantidadRetorno() + ") es mayor al valor de salida(" + obj.getCantidadSalida() + ") ", "ERROR", JOptionPane.ERROR_MESSAGE);
                 resp = false;
                 break;
             }
         }
-        
-        return resp;        
+
+        return resp;
     }
 
     private void CerrarDialogoEntregaMaterial() {
         limpiarCajaTextoEntregaMaterial();
-        
+
         crear0_modificar1_producto = 0;
         id_salidamaterial_global = 0;
-        
+
         DefaultTableModel tablaDetalle = (DefaultTableModel) tablaDetalleEntrega.getModel();
         tablaDetalle.setRowCount(0);
-        
+
         dialogoRetornoMaterial.dispose();
     }
-    
+
     private void limpiarCajaTextoEntregaMaterial() {
         txtCodigoSalidaMaterialEntrega.setText("");
         txtResponsableEntrega.setText("");
@@ -4372,8 +4721,8 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }
 
     private void MotrarBotonesControl(
-            boolean modificar, 
-            boolean eliminar, 
+            boolean modificar,
+            boolean eliminar,
             boolean retorno,
             boolean imprimirSalida,
             boolean imprimirEntrega) {
@@ -4390,109 +4739,108 @@ public class SalidaMaterialView extends javax.swing.JPanel {
     }
 
     private void ControlBotones(int estadoAbierto) {
-        
-        switch (estadoAbierto){
-            
+
+        switch (estadoAbierto) {
+
             case 90001: //Por confirmar Salida
                 btnImprimirSalida.setText("Confirmar Salida");
                 MotrarBotonesControl(true, true, false, true, false);
                 break;
-                
+
             case 90002: //Salida de Material Confirmado
                 btnImprimirSalida.setText("Ver Salida");
-                btnRetorno.setText("Retorno");               
+                btnRetorno.setText("Retorno");
                 MotrarBotonesControl(false, false, true, true, false);
                 break;
-                
+
             case 90003: //Por confirmar Entrega
                 btnImprimirSalida.setText("Ver Salida");
                 btnRetorno.setText("Modificar Retorno");
                 btnImprimirRetorno.setText("Confirmar Retorno");
                 MotrarBotonesControl(false, false, true, true, true);
                 break;
-                
+
             case 90004: //Entrega de material confirmado
                 btnImprimirSalida.setText("Ver Salida");
                 btnImprimirRetorno.setText("Ver Retorno");
                 MotrarBotonesControl(false, false, false, true, true);
-                break;            
+                break;
         }
     }
 
-    private boolean verificaExistenciaStockJTable() throws Exception{
+    private boolean verificaExistenciaStockJTable() throws Exception {
         boolean resp = true;
-        int filas =  tabla_detalle_salida_material.getRowCount();
+        int filas = tabla_detalle_salida_material.getRowCount();
         DefaultTableModel tm = (DefaultTableModel) tabla_detalle_salida_material.getModel();
-        
+
         int idProducto;
         BigDecimal cantidadSalida;
         BigDecimal cantidadStock;
         String nombreMaterial;
-        
-        
+
         /*optenemos los registros del jtable*/
-        for(int i = 0; i < filas; i++){
+        for (int i = 0; i < filas; i++) {
             idProducto = (Integer) tm.getValueAt(i, 0);
             nombreMaterial = (String) tm.getValueAt(i, 1);
             cantidadSalida = (BigDecimal) tm.getValueAt(i, 3);
             cantidadStock = objProductoBL.GetData(idProducto).getCantidad();
-            
-            if(cantidadSalida.doubleValue() > cantidadStock.doubleValue()){
-                JOptionPane.showMessageDialog(null, nombreMaterial + ".\n\nLa cantidad de salida es mayor al Stock existente en almacen.", "ERROR", JOptionPane.ERROR_MESSAGE);                
+
+            if (cantidadSalida.doubleValue() > cantidadStock.doubleValue()) {
+                JOptionPane.showMessageDialog(null, nombreMaterial + ".\n\nLa cantidad de salida es mayor al Stock existente en almacen.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 resp = false;
-                break;                
-            }            
+                break;
+            }
         }
-        
+
         return resp;
     }
 
-    private boolean verificaExistenciaStockTableBD(int idSalidaMaterial, int estadoAbierto) throws Exception{
+    private boolean verificaExistenciaStockTableBD(int idSalidaMaterial, int estadoAbierto) throws Exception {
         boolean resp = true;
-        
+
         SalidaMaterialDetalleBE objDet = new SalidaMaterialDetalleBE();
         objDet.setId_salida_material(idSalidaMaterial);
         objDet.setId_empresa(id_empresa_index);
         List<SalidaMaterialDetalleBE> listaProDet = objSalidaMaterialDetalleBL.read(objDet);
-            
+
         BigDecimal cantidadStock;
-            
+
         for (SalidaMaterialDetalleBE objSalDet : listaProDet) {
             cantidadStock = objProductoBL.GetData(objSalDet.getId_producto()).getCantidad();
-                
-            if(objSalDet.getCantidadSalida().doubleValue() > cantidadStock.doubleValue()){
+
+            if (objSalDet.getCantidadSalida().doubleValue() > cantidadStock.doubleValue()) {
                 JOptionPane.showMessageDialog(null, objSalDet.getNombreMaterial() + ".\n\nLa cantidad de salida es mayor al Stock existente en almacen.\nPor favor, revise los datos de la solicitud de salida.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 resp = false;
                 break;
-            }                
+            }
         }
-        
+
         return resp;
     }
 
     private void tablaGeneralClick() {
-        try{
+        try {
             int fila = tabla_general.getSelectedRow();
             DefaultTableModel tm = (DefaultTableModel) tabla_general.getModel();
             int idSalida = Integer.parseInt((String) tm.getValueAt(fila, 1));
-            
+
             SalidaMaterialBE obj = objSalidaMaterialBL.readId(idSalida, id_empresa_index);
-            
+
             ControlBotones(obj.getEstadoAbierto());
-            
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void imprimirSalidaMaterial(int idSalidaMaterial) throws Exception{
+    private void imprimirSalidaMaterial(int idSalidaMaterial) throws Exception {
         String rutaInforme = "reportes\\SalidaMaterial.jasper";
         Map parametros = new HashMap();
         parametros.put("IdSalidaMaterial", idSalidaMaterial);
-        parametros.put("idEmpresa", id_empresa_index); 
+        parametros.put("idEmpresa", id_empresa_index);
         parametros.put(JRParameter.REPORT_LOCALE, Locale.US);
         Connection cn = AccesoDB.getConnection();
-            
+
         JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);
         JasperViewer view = new JasperViewer(print, false);
         view.setTitle("SALIDA DE MATERIAL  N° " + insertarCeros(idSalidaMaterial));
@@ -4506,10 +4854,63 @@ public class SalidaMaterialView extends javax.swing.JPanel {
         parametros.put("idEmpresa", id_empresa_index);
         parametros.put(JRParameter.REPORT_LOCALE, Locale.US);
         Connection cn = AccesoDB.getConnection();
-            
+
         JasperPrint print = JasperFillManager.fillReport(rutaInforme, parametros, cn);
         JasperViewer view = new JasperViewer(print, false);
         view.setTitle("SALIDA DE MATERIAL  N° " + insertarCeros(idSalidaMaterial));
         view.setVisible(true);
+    }
+
+    private void exportarReporte(List<ReporteSalidaMaterialBE> report) throws FileNotFoundException, IOException {
+        SimpleDateFormat formato_fecha = new SimpleDateFormat("dd.MM.yyyy_hh.mm.ss");
+        String rutaPlantilla = "reportes\\";
+        String rutaDescarga = "descargas\\";
+
+        String nombreArchivo = "reporteSalidaMateriales";
+        String extension = ".xlsx";
+        String archivoIn = rutaPlantilla + nombreArchivo + extension;
+        String archivoOut = rutaDescarga + nombreArchivo + formato_fecha.format(new Date()) + extension;
+
+        FileInputStream file = new FileInputStream(new File(archivoIn));
+        XSSFWorkbook worbook = new XSSFWorkbook(file);
+        XSSFSheet sheet = worbook.getSheetAt(0);
+
+        int fila = 10;
+        int item = 1;
+        for (ReporteSalidaMaterialBE obj : report) {
+            XSSFRow row = sheet.createRow(fila);
+            row.createCell(0).setCellValue(item);
+            row.createCell(1).setCellValue(obj.getNumeroSalida());
+            row.createCell(2).setCellValue(obj.getFechaSalida());
+            row.createCell(3).setCellValue(obj.getSolicitante());
+            row.createCell(4).setCellValue(obj.getMotivo());
+            row.createCell(5).setCellValue(obj.getCliente());
+            row.createCell(6).setCellValue(obj.getObra());
+            row.createCell(7).setCellValue(obj.getDireccion());
+            row.createCell(8).setCellValue(obj.getEstadoSalida());
+            row.createCell(9).setCellValue(obj.getCantidadRetorno());
+            row.createCell(10).setCellValue(obj.getIdProducto());
+            row.createCell(11).setCellValue(obj.getMaterial());
+            row.createCell(12).setCellValue(obj.getUnidad());
+            row.createCell(13).setCellValue(obj.getCantidad());
+            row.createCell(14).setCellValue(obj.getMarca());
+            row.createCell(15).setCellValue(obj.getCategoria());
+            fila++;
+            item++;
+        }
+
+        File fileExport;
+        fileExport = new File(archivoOut);
+        FileOutputStream fileOuS;
+        fileOuS = new FileOutputStream(fileExport);
+
+        if (fileExport.exists()) {// si el archivo existe se elimina
+            fileExport.delete();
+        }
+        worbook.write(fileOuS);
+        fileOuS.flush();
+        fileOuS.close();
+        
+        Desktop.getDesktop().open(fileExport);
     }
 }

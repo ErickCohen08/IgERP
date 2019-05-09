@@ -13,47 +13,21 @@ import java.util.Date;
  */
 public class ReporteSalidaMaterialBE {
 
-    Integer itemLista;
-    String nombreMaterial;
-    String unidadMaterial;
-    String categoriaMaterial;
     String numeroSalida;
-    Integer cantidadSalida;
-    Date fechaSalida;
+    String fechaSalida;
+    String solicitante;
+    String motivo;
+    String cliente;
     String obra;
-    String direccionObra;
-
-    public Integer getItemLista() {
-        return itemLista;
-    }
-
-    public void setItemLista(Integer itemLista) {
-        this.itemLista = itemLista;
-    }
-
-    public String getNombreMaterial() {
-        return nombreMaterial;
-    }
-
-    public void setNombreMaterial(String nombreMaterial) {
-        this.nombreMaterial = nombreMaterial;
-    }
-
-    public String getUnidadMaterial() {
-        return unidadMaterial;
-    }
-
-    public void setUnidadMaterial(String unidadMaterial) {
-        this.unidadMaterial = unidadMaterial;
-    }
-
-    public String getCategoriaMaterial() {
-        return categoriaMaterial;
-    }
-
-    public void setCategoriaMaterial(String categoriaMaterial) {
-        this.categoriaMaterial = categoriaMaterial;
-    }
+    String direccion;
+    String estadoSalida;
+    double cantidadRetorno;
+    int idProducto;
+    String material;
+    String unidad;
+    double cantidad;
+    String marca;
+    String categoria;
 
     public String getNumeroSalida() {
         return numeroSalida;
@@ -63,20 +37,36 @@ public class ReporteSalidaMaterialBE {
         this.numeroSalida = numeroSalida;
     }
 
-    public Integer getCantidadSalida() {
-        return cantidadSalida;
-    }
-
-    public void setCantidadSalida(Integer cantidadSalida) {
-        this.cantidadSalida = cantidadSalida;
-    }
-
-    public Date getFechaSalida() {
+    public String getFechaSalida() {
         return fechaSalida;
     }
 
-    public void setFechaSalida(Date fechaSalida) {
+    public void setFechaSalida(String fechaSalida) {
         this.fechaSalida = fechaSalida;
+    }
+
+    public String getSolicitante() {
+        return solicitante;
+    }
+
+    public void setSolicitante(String solicitante) {
+        this.solicitante = solicitante;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
     }
 
     public String getObra() {
@@ -87,12 +77,81 @@ public class ReporteSalidaMaterialBE {
         this.obra = obra;
     }
 
-    public String getDireccionObra() {
-        return direccionObra;
+    public String getDireccion() {
+        return direccion;
     }
 
-    public void setDireccionObra(String direccionObra) {
-        this.direccionObra = direccionObra;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getEstadoSalida() {
+        return estadoSalida;
+    }
+
+    public void setEstadoSalida(String estadoSalida) {
+        this.estadoSalida = estadoSalida;
+    }
+
+    public double getCantidadRetorno() {
+        return cantidadRetorno;
+    }
+
+    public void setCantidadRetorno(double cantidadRetorno) {
+        this.cantidadRetorno = cantidadRetorno;
+    }
+
+    public int getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
+    public String getUnidad() {
+        return unidad;
+    }
+
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
+    }
+
+    public double getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(double cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    @Override
+    public String toString() {
+        return "ReporteSalidaMaterialBE{" + "numeroSalida=" + numeroSalida + ", fechaSalida=" + fechaSalida + ", solicitante=" + solicitante + ", motivo=" + motivo + ", cliente=" + cliente + ", obra=" + obra + ", direccion=" + direccion + ", estadoSalida=" + estadoSalida + ", cantidadRetorno=" + cantidadRetorno + ", idProducto=" + idProducto + ", material=" + material + ", unidad=" + unidad + ", cantidad=" + cantidad + ", marca=" + marca + ", categoria=" + categoria + '}';
     }
 
 }
